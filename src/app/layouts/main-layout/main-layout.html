@@ -1,0 +1,13 @@
+<!-- Sidebar fijo en el lado izquierdo -->
+<app-sidebar></app-sidebar>
+
+<!-- Área de contenido con Header + Router Outlet -->
+<div class="content-area">
+  <!-- Header dinámico (cambia según rol y ruta) -->
+  <app-header></app-header>
+
+  <!-- Contenido principal que cambia según la ruta -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

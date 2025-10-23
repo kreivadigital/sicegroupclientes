@@ -1,0 +1,40 @@
+// ==========================================
+// MAIN LAYOUT
+// ==========================================
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+/**
+ * 📦 Content Area:
+ * Contiene el Header + Main Content
+ * Se ajusta al margen del sidebar
+ */
+.content-area {
+  margin-left: 240px; // Ancho del sidebar expandido
+  min-height: 100vh;
+  transition: margin-left 200ms ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+/**
+ * 📄 Main Content:
+ * Área donde se renderiza el <router-outlet>
+ * flex: 1 hace que ocupe todo el espacio disponible
+ */
+.main-content {
+  flex: 1;
+  background-color: #F9FAFB;
+  padding: 24px;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+// Cuando el sidebar está colapsado
+:host.sidebar-collapsed .content-area {
+  margin-left: 64px; // Ancho del sidebar colapsado
+}
