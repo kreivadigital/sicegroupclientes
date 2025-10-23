@@ -1,0 +1,138 @@
+// ==========================================
+// VARIABLES DE COLOR
+// ==========================================
+$color-primary: #02661e; // Verde principal (Brand Green)
+$color-dark-green: #01300e; // Verde oscuro para gradiente
+$color-white: #ffffff;
+$color-black: #000000;
+$color-text-gray: #6b7280;
+
+// ==========================================
+// HEADER BASE
+// ==========================================
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px;
+  border-bottom: 1px solid #e5e7eb;
+  min-height: 110px;
+
+  /**
+   * =� Responsive:
+   * En pantallas peque�as, reduce el padding
+   */
+  @media (max-width: 768px) {
+    padding: 16px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+// ==========================================
+// ESTILOS PARA CLIENTE
+// ==========================================
+/**
+ * �Por qu� una clase separada?
+ * - Facilita cambiar estilos seg�n el rol
+ * - M�s legible que muchos @if en el HTML
+ * - Mejor performance (CSS en lugar de l�gica JS)
+ */
+.page-header.client {
+  background-color: $color-white;
+
+  .header-title {
+    color: $color-black;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .header-subtitle {
+    color: $color-text-gray;
+    font-size: 14px;
+    margin: 4px 0 0 0;
+    font-weight: 400;
+  }
+
+  .profile-info {
+    color: $color-black;
+  }
+}
+
+// ==========================================
+// ESTILOS PARA ADMIN
+// ==========================================
+.page-header.admin {
+  /**
+   * <� GRADIENTE:
+   * - linear-gradient(to right, ...): De izquierda a derecha
+   * - $color-primary: Izquierda (Brand Green)
+   * - $color-dark-green: Derecha (m�s oscuro)
+   *
+   * �Por qu� gradiente?
+   * - Distingue visualmente al admin del cliente
+   * - M�s atractivo que un color plano
+   * - Profesional y moderno
+   */
+  background: linear-gradient(to right, $color-primary, $color-dark-green);
+
+  .header-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .header-subtitle {
+    font-size: 14px;
+    margin: 4px 0 0 0;
+    font-weight: 400;
+    opacity: 0.9; // Ligeramente transparente para jerarqu�a visual
+  }
+}
+
+// ==========================================
+// LAYOUT INTERNO
+// ==========================================
+.header-left {
+  color: $color-white;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+/**
+ * =d Perfil del Usuario
+ * - display: flex: Alinea icono + texto horizontalmente
+ * - align-items: center: Centra verticalmente
+ * - gap: 8px: Espacio entre icono y texto
+ */
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+
+  /**
+   * <� Fondo semi-transparente:
+   * - rgba(0, 0, 0, 0.05): Negro al 5% de opacidad
+   * - Crea un efecto sutil de resaltado
+   * - Funciona tanto en fondo blanco como verde
+   */
+  background-color: $color-white;
+
+  i {
+    font-size: 20px;
+  }
+}

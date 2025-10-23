@@ -1,0 +1,38 @@
+<!--
+  🎨 Header Dinámico
+  - [class.admin]: Aplica clase 'admin' cuando isAdmin = true
+  - [class.client]: Aplica clase 'client' cuando isAdmin = false
+
+  ¿Por qué usar clases dinámicas?
+  - Facilita aplicar estilos diferentes según el rol
+  - Evita duplicar HTML (un solo template para ambos roles)
+-->
+<header class="page-header" [class.admin]="headerData().isAdmin" [class.client]="!headerData().isAdmin">
+
+  <!-- Lado Izquierdo: Título y Subtítulo -->
+  <div class="header-left">
+    <h1 class="header-title">{{ headerData().title }}</h1>
+
+    <!--
+      @if: Control flow de Angular 17+
+      Muestra el subtítulo SOLO si existe
+
+      ¿Por qué no usar *ngIf?
+      - @if es la nueva sintaxis (más moderna y limpia)
+      - Mejor performance que *ngIf
+      - Más legible
+    -->
+    @if (headerData().subtitle) {
+      <p class="header-subtitle">{{ headerData().subtitle }}</p>
+    }
+  </div>
+
+  <!-- Lado Derecho: Perfil del Usuario -->
+  <div class="header-right">
+    <div class="profile-info">
+      <i class="bi bi-person"></i>
+      <span>{{ headerData().profileText }}</span>
+    </div>
+  </div>
+
+</header>
