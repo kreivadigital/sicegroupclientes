@@ -1,0 +1,16 @@
+<div class="client-layout">
+  <!-- Navbar superior -->
+  <app-navbar (toggleSidebar)="toggleSidebar()"></app-navbar>
+
+  <div class="layout-container">
+    <!-- Sidebar lateral -->
+    <app-sidebar [isOpen]="sidebarOpen" [userRole]="'client'"></app-sidebar>
+
+    <!-- Contenido principal -->
+    <main class="main-content" [class.sidebar-open]="sidebarOpen">
+      <div class="container-fluid py-4">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+.client-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  background-color: #f8f9fa;
+  transition: margin-left 0.3s ease;
+  margin-left: 250px;
+
+  &.sidebar-open {
+    margin-left: 250px;
+  }
+
+  @media (max-width: 768px) {
+    margin-left: 0 !important;
+  }
+}

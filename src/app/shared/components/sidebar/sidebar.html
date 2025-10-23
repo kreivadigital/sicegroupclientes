@@ -1,0 +1,16 @@
+<aside class="sidebar" [class.open]="isOpen">
+  <nav class="sidebar-nav">
+    <ul class="nav flex-column">
+      @for (item of menuItems; track item.route) {
+        <li class="nav-item">
+          <a class="nav-link"
+             [routerLink]="item.route"
+             routerLinkActive="active">
+            <i class="bi {{ item.icon }} me-2"></i>
+            <span>{{ item.label }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+</aside>
