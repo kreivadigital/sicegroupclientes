@@ -19,10 +19,11 @@ export class Auth {
 
   // ✨ SIGNALS - Estado reactivo automático
   public currentUser = signal<User | null>(this.getUserFromStorage());
+  private tokenSignal = signal<string | null>(this.getToken());
 
-  // Computed signals (se actualizan automáticamente)
+  // Computed signals (se actualizan automáticamente cuando un signal simple cambia)
   public isAuthenticated = computed(() => {
-    const token = this.getToken();
+    const token = this.tokenSignal();
     if (!token) return false;
 
     try {
@@ -40,7 +41,7 @@ export class Auth {
   constructor(
     private http: HttpClient,
     private router: Router
-  ) {}
+  ) { }
 
   /**
    * Login del usuario
@@ -96,6 +97,7 @@ export class Auth {
     if (this.isBrowser) {
       localStorage.setItem(this.TOKEN_KEY, token);
     }
+    this.tokenSignal.set(token); // Actualiza el signal
   }
 
   getToken(): string | null {
