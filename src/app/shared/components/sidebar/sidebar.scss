@@ -1,49 +1,224 @@
+// ==========================================
+// VARIABLES DE COLOR
+// ==========================================
+$color-primary: #02661E;           // Verde principal
+$color-primary-bg: #02661E1A;      // Verde con 10% opacidad (bg seleccionado)
+$color-inactive: #364153;          // Color de items no seleccionados
+$color-white: #FFFFFF;
+$color-border: #E5E7EB;
+
+// ==========================================
+// SIDEBAR
+// ==========================================
 .sidebar {
   position: fixed;
-  top: 56px; // Altura del navbar
+  top: 0;
   left: 0;
-  width: 250px;
-  height: calc(100vh - 56px);
-  background-color: #2c3e50;
-  color: white;
-  overflow-y: auto;
-  transition: transform 0.3s ease;
-  z-index: 1020;
+  width: 240px;
+  height: 100vh;
+  background-color: $color-white;
+  border-right: 1px solid $color-border;
+  display: flex;
+  flex-direction: column;
+  transition: width 200ms ease-in-out;
+  z-index: 1000;
 
-  &:not(.open) {
-    transform: translateX(-250px);
-  }
+  // Estado colapsado
+  &.collapsed {
+    width: 64px;
 
-  @media (max-width: 768px) {
-    &.open {
-      transform: translateX(0);
+    .logo {
+      opacity: 0;
+      width: 0;
+    }
+
+    .nav-label {
+      opacity: 0;
+      width: 0;
+    }
+
+    .logout-btn span {
+      opacity: 0;
+      width: 0;
     }
   }
 }
 
-.sidebar-nav {
-  padding: 1rem 0;
+// ==========================================
+// HEADER (Logo + Toggle)
+// ==========================================
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 12px;
+  min-height: 64px;
 
-  .nav-link {
-    color: rgba(255, 255, 255, 0.8);
-    padding: 0.75rem 1.5rem;
-    transition: all 0.2s;
+  .logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: $color-primary;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: opacity 200ms ease-in-out, width 200ms ease-in-out;
+
+    &.hidden {
+      opacity: 0;
+      width: 0;
+    }
+  }
+
+  .toggle-btn {
+    background: transparent;
+    color: black;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border: 1px #E5E5E5 solid;
+    border-radius: 50%;
     display: flex;
     align-items: center;
+    justify-content: center;
+    transition: background-color 150ms ease;
 
     &:hover {
       background-color: rgba(255, 255, 255, 0.1);
-      color: white;
     }
 
-    &.active {
-      background-color: #3498db;
-      color: white;
-      border-left: 4px solid #2980b9;
+    &:active {
+      background-color: rgba(255, 255, 255, 0.2);
     }
 
     i {
-      font-size: 1.2rem;
+      transition: transform 150ms ease;
+    }
+  }
+}
+
+// ==========================================
+// NAVEGACIÓN
+// ==========================================
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  // Scrollbar personalizado
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #D1D5DB;
+    border-radius: 3px;
+
+    &:hover {
+      background: #9CA3AF;
+    }
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    margin: 4px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: $color-inactive;
+    background-color: transparent;
+    cursor: pointer;
+    transition: all 150ms ease;
+    position: relative;
+
+    i {
+      font-size: 20px;
+      min-width: 24px;
+      transition: color 150ms ease;
+    }
+
+    .nav-label {
+      margin-left: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      transition: opacity 200ms ease-in-out, width 200ms ease-in-out;
+    }
+
+    // Hover
+    &:hover:not(.active) {
+      background-color: rgba($color-primary, 0.05);
+      color: $color-primary;
+    }
+
+    // Activo/Seleccionado
+    &.active {
+      background-color: $color-primary-bg;
+      color: $color-primary;
+
+      i {
+        color: $color-primary;
+      }
+
+      .nav-label {
+        color: $color-primary;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+// ==========================================
+// FOOTER (Cerrar Sesión)
+// ==========================================
+.sidebar-footer {
+  padding: 16px 12px;
+  border-top: 1px solid $color-border;
+
+  .logout-btn {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    background-color: transparent;
+    color: $color-inactive;
+    cursor: pointer;
+    transition: all 150ms ease;
+    font-size: 14px;
+    font-weight: 500;
+
+    i {
+      font-size: 20px;
+      min-width: 24px;
+      transition: color 150ms ease;
+    }
+
+    span {
+      margin-left: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      transition: opacity 200ms ease-in-out, width 200ms ease-in-out;
+    }
+
+    &:hover {
+      background-color: rgba(#DC2626, 0.1);
+      color: #DC2626;
+
+      i {
+        color: #DC2626;
+      }
+    }
+
+    &:active {
+      background-color: rgba(#DC2626, 0.15);
     }
   }
 }

@@ -1,16 +1,39 @@
-<aside class="sidebar" [class.open]="isOpen">
+<aside class="sidebar" [class.collapsed]="isCollapsed()">
+  <!-- Header con Logo y Toggle -->
+  <div class="sidebar-header">
+    <h1 class="logo" [class.hidden]="isCollapsed()">SICE GROUP</h1>
+    <button class="toggle-btn" (click)="toggleSidebar()" type="button" aria-label="Toggle sidebar">
+      <i class="bi" [class.bi-chevron-left]="!isCollapsed()" [class.bi-chevron-right]="isCollapsed()"></i>
+    </button>
+  </div>
+
+  <!-- Navegación Principal -->
   <nav class="sidebar-nav">
-    <ul class="nav flex-column">
-      @for (item of menuItems; track item.route) {
-        <li class="nav-item">
-          <a class="nav-link"
-             [routerLink]="item.route"
-             routerLinkActive="active">
-            <i class="bi {{ item.icon }} me-2"></i>
-            <span>{{ item.label }}</span>
-          </a>
-        </li>
-      }
-    </ul>
+    @for (item of menuItems(); track item.route) {
+      <a
+        class="nav-item"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        [title]="isCollapsed() ? item.label : ''">
+        <i class="bi {{ item.icon }}"></i>
+        @if (!isCollapsed()) {
+          <span class="nav-label">{{ item.label }}</span>
+        }
+      </a>
+    }
   </nav>
+
+  <!-- Footer con Cerrar Sesión -->
+  <div class="sidebar-footer">
+    <button
+      class="logout-btn"
+      (click)="logout()"
+      type="button"
+      [title]="isCollapsed() ? 'Cerrar Sesión' : ''">
+      <i class="bi bi-box-arrow-right"></i>
+      @if (!isCollapsed()) {
+        <span>Cerrar Sesión</span>
+      }
+    </button>
+  </div>
 </aside>
