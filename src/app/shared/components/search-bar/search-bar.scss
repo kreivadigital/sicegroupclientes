@@ -1,0 +1,21 @@
+.search-container {
+  position: relative;
+
+  .input-group-text {
+    border-right: none;
+  }
+
+  .form-control {
+    &:focus {
+      box-shadow: none;
+      border-color: #dee2e6;
+    }
+  }
+
+  .input-group:focus-within {
+    .input-group-text,
+    .form-control {
+      border-color: #86b7fe;
+    }
+  }
+}
