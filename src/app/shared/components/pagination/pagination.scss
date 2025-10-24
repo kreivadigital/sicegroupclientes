@@ -1,0 +1,46 @@
+.pagination-container {
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-top: 1.5rem;
+
+  .pagination-info {
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+
+  .pagination {
+    margin-bottom: 0;
+
+    .page-link {
+      border-color: #dee2e6;
+      color: #6c757d;
+      border-radius: 6px;
+      margin: 0 0.25rem;
+
+      &:hover {
+        background-color: #f8f9fa;
+        color: #02661E;
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(2, 102, 30, 0.25);
+      }
+    }
+
+    .page-item {
+      &.active .page-link {
+        background-color: #02661E;
+        border-color: #02661E;
+        color: #ffffff;
+      }
+
+      &.disabled .page-link {
+        color: #6c757d;
+        cursor: not-allowed;
+        background-color: transparent;
+      }
+    }
+  }
+}
