@@ -1,0 +1,19 @@
+<div class="stat-card">
+  <!-- Fila 1: Título -->
+  <div class="stat-card-title">
+    {{ title }}
+  </div>
+
+  <!-- Fila 2: Cantidad + Icono -->
+  <div class="stat-card-content">
+    <!-- Columna 1: Cantidad -->
+    <div class="stat-card-value">
+      {{ value }}
+    </div>
+
+    <!-- Columna 2: Icono -->
+    <div class="stat-card-icon">
+      <i class="bi {{ icon }}" [style.color]="iconColor"></i>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,88 @@
+// ==========================================
+// VARIABLES DE COLOR
+// ==========================================
+$color-title: #6A7282;    // Gris para el título
+$color-value: #000000;    // Negro para la cantidad
+$color-white: #FFFFFF;
+$border-radius: 12px;
+
+// ==========================================
+// STAT CARD
+// ==========================================
+.stat-card {
+  background-color: $color-white;
+  border-radius: $border-radius;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  /**
+   * Hover effect sutil
+   */
+  &:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// ==========================================
+// FILA 1: TÍTULO
+// ==========================================
+.stat-card-title {
+  color: $color-title;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  margin: 0;
+}
+
+// ==========================================
+// FILA 2: CONTENIDO (Cantidad + Icono)
+// ==========================================
+.stat-card-content {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 16px;
+}
+
+// Columna 1: Cantidad
+.stat-card-value {
+  color: $color-value;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0;
+}
+
+// Columna 2: Icono
+.stat-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    font-size: 32px; // Mismo tamaño que la cantidad
+    line-height: 1;
+  }
+}
+
+// ==========================================
+// RESPONSIVE
+// ==========================================
+@media (max-width: 768px) {
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-card-value {
+    font-size: 28px;
+  }
+
+  .stat-card-icon i {
+    font-size: 28px;
+  }
+}
