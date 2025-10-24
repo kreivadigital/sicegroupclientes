@@ -1,0 +1,61 @@
+<div class="filter-panel">
+  <div class="d-flex gap-3 align-items-start">
+    @for (filter of filters; track filter.key) {
+      <div class="filter-group">
+        <label class="form-label text-muted small mb-2">{{ filter.label }}</label>
+
+        @if (filter.type === 'checkbox') {
+          <div class="checkbox-group">
+            @for (option of filter.options; track option.value) {
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [id]="filter.key + '_' + option.value"
+                  [checked]="isCheckboxChecked(filter.key, option.value)"
+                  (change)="onCheckboxChange(filter.key, option.value, $any($event.target).checked)">
+                <label
+                  class="form-check-label"
+                  [for]="filter.key + '_' + option.value">
+                  {{ option.label }}
+                </label>
+              </div>
+            }
+          </div>
+        }
+
+        @if (filter.type === 'daterange') {
+          <div class="date-range-group">
+            <div class="mb-2">
+              <input
+                type="date"
+                class="form-control form-control-sm"
+                [value]="getDateValue(filter.key, 'desde')"
+                (change)="onDateChange(filter.key, 'desde', $any($event.target).value)"
+                placeholder="Desde">
+            </div>
+            <div>
+              <input
+                type="date"
+                class="form-control form-control-sm"
+                [value]="getDateValue(filter.key, 'hasta')"
+                (change)="onDateChange(filter.key, 'hasta', $any($event.target).value)"
+                placeholder="Hasta">
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (hasActiveFilters()) {
+      <div class="d-flex align-items-end h-100">
+        <button
+          class="btn btn-sm btn-outline-secondary"
+          (click)="clearFilters()"
+          type="button">
+          <i class="bi bi-x-circle"></i> Limpiar
+        </button>
+      </div>
+    }
+  </div>
+</div>
