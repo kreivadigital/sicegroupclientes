@@ -1,0 +1,62 @@
+<app-modal 
+  [title]="getTitle()" 
+  [size]="'md'"
+  (close)="onClose()">
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- Número de referencia -->
+      <div class="mb-3">
+        <label class="form-label">Número de referencia</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          formControlName="shipment_reference"
+          placeholder="Número de referencia">
+        @if (form.get('shipment_reference')?.invalid && form.get('shipment_reference')?.touched) {
+          <div class="text-danger small mt-1">Este campo es requerido</div>
+        }
+      </div>
+
+      <!-- Número de contenedor -->
+      <div class="mb-3">
+        <label class="form-label">Número de contenedor</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          formControlName="container_number"
+          placeholder="Número de contenedor">
+        @if (form.get('container_number')?.invalid && form.get('container_number')?.touched) {
+          <div class="text-danger small mt-1">Este campo es requerido</div>
+        }
+      </div>
+    </form>
+  }
+
+  <!-- Footer -->
+  <div footer>
+    <button 
+      type="button" 
+      class="btn btn-secondary" 
+      (click)="onClose()"
+      [disabled]="loading()">
+      Cancelar
+    </button>
+    <button 
+      type="button" 
+      class="btn btn-success" 
+      (click)="onSubmit()"
+      [disabled]="form.invalid || loading()">
+      @if (loading()) {
+        <span class="spinner-border spinner-border-sm me-2"></span>
+      }
+      Agregar
+    </button>
+  </div>
+</app-modal>

@@ -1,0 +1,54 @@
+<app-modal 
+  [title]="'Actualizar'" 
+  [size]="'md'"
+  (close)="onClose()">
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <!-- Estado (Select de contenedor) -->
+    <div class="mb-3">
+      <label class="form-label">Estado</label>
+      <select class="form-select" formControlName="container_id">
+        <option value="">Seleccionar contenedor</option>
+        @for (container of containers(); track container.id) {
+          <option [value]="container.id">
+            {{ container.container_number }} - {{ container.shipment_reference }}
+          </option>
+        }
+      </select>
+    </div>
+
+    <!-- Agregar comentario -->
+    <div class="mb-3">
+      <label class="form-label">Agregar comentario</label>
+      <textarea 
+        class="form-control" 
+        rows="4"
+        formControlName="comment"
+        placeholder="Escriba aquí su comentario"></textarea>
+      @if (form.get('comment')?.invalid && form.get('comment')?.touched) {
+        <div class="text-danger small mt-1">Este campo es requerido</div>
+      }
+    </div>
+  </form>
+
+  <!-- Footer -->
+  <div footer>
+    <button 
+      type="button" 
+      class="btn btn-secondary" 
+      (click)="onClose()"
+      [disabled]="loading()">
+      Cancelar
+    </button>
+    <button 
+      type="button" 
+      class="btn btn-success" 
+      (click)="onSubmit()"
+      [disabled]="form.invalid || loading()">
+      @if (loading()) {
+        <span class="spinner-border spinner-border-sm me-2"></span>
+      }
+      Actualizar
+    </button>
+  </div>
+</app-modal>
