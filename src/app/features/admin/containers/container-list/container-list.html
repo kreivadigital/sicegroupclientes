@@ -1,1 +1,39 @@
-<p>container-list works!</p>
+<div class="container-list-page">
+  <!-- Toolbar: Search + Add Button -->
+  <app-page-toolbar
+    [showSearch]="true"
+    [showFilters]="false"
+    addButtonText="Agregar Nuevo Contenedor"
+    (searchChange)="onSearch($event)"
+    (addClick)="onAddContainer()">
+  </app-page-toolbar>
+
+  <!-- Data Table -->
+  <app-data-table
+    [columns]="columns"
+    [data]="containers()"
+    [actions]="actions"
+    [loading]="loading()"
+    emptyMessage="No hay contenedores registrados"
+    (actionClick)="onTableAction($event)">
+  </app-data-table>
+
+  <!-- Pagination -->
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    [totalItems]="totalItems()"
+    [perPage]="perPage()"
+    (pageChange)="onPageChange($event)">
+  </app-pagination>
+
+  <!-- Modal -->
+  @if (showModal()) {
+    <app-container-modal
+      [mode]="modalMode()"
+      [containerId]="selectedContainerId()"
+      (close)="onModalClose()"
+      (save)="onContainerSaved($event)">
+    </app-container-modal>
+  }
+</div>
