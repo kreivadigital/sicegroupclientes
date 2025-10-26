@@ -1,0 +1,166 @@
+// Backdrop (fondo negro translúcido)
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+// Contenedor centrado del modal
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  padding: 1rem;
+  pointer-events: none; // Permite clicks en backdrop
+
+  // Tamaños del modal
+  &[data-size="sm"] .modal-content {
+    max-width: 400px;
+  }
+
+  &[data-size="md"] .modal-content {
+    max-width: 600px;
+  }
+
+  &[data-size="lg"] .modal-content {
+    max-width: 800px;
+  }
+
+  &[data-size="xl"] .modal-content {
+    max-width: 1000px;
+  }
+}
+
+// Contenido del modal
+.modal-content {
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto; // Habilita clicks en el modal
+  animation: slideUp 0.3s ease-out;
+}
+
+// Header del modal
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+
+  .modal-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.5rem;
+    line-height: 1;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #111827;
+    }
+
+    i {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+// Body del modal (con scroll si es necesario)
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+
+  // Scrollbar personalizada
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+
+    &:hover {
+      background: #555;
+    }
+  }
+}
+
+// Footer del modal
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+// Animaciones
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .modal-container {
+    &[data-size="sm"] .modal-content,
+    &[data-size="md"] .modal-content,
+    &[data-size="lg"] .modal-content,
+    &[data-size="xl"] .modal-content {
+      max-width: 100%;
+    }
+  }
+
+  .modal-content {
+    border-radius: 1rem 1rem 0 0;
+    max-height: 95vh;
+  }
+}
