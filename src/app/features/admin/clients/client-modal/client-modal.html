@@ -1,0 +1,166 @@
+<app-modal 
+  [title]="getTitle()" 
+  [size]="'md'"
+  (close)="onClose()">
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- Nombre de la empresa -->
+      <div class="mb-3">
+        <label class="form-label">Nombre de la empresa</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          formControlName="company_name"
+          placeholder="Nombre de la empresa">
+        @if (form.get('company_name')?.invalid && form.get('company_name')?.touched) {
+          <div class="text-danger small mt-1">Este campo es requerido</div>
+        }
+      </div>
+
+      <!-- Contacto -->
+      <div class="mb-3">
+        <label class="form-label">Contacto</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          formControlName="name"
+          placeholder="Nombre de contacto">
+        @if (form.get('name')?.invalid && form.get('name')?.touched) {
+          <div class="text-danger small mt-1">Este campo es requerido</div>
+        }
+      </div>
+
+      <!-- Correo electrónico -->
+      <div class="mb-3">
+        <label class="form-label">Correo electrónico</label>
+        <input 
+          type="email" 
+          class="form-control" 
+          formControlName="email"
+          placeholder="Correo electrónico">
+        @if (form.get('email')?.invalid && form.get('email')?.touched) {
+          <div class="text-danger small mt-1">
+            @if (form.get('email')?.hasError('required')) {
+              Este campo es requerido
+            }
+            @if (form.get('email')?.hasError('email')) {
+              Correo electrónico inválido
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Teléfono -->
+      <div class="mb-3">
+        <label class="form-label">Teléfono</label>
+        <input 
+          type="tel" 
+          class="form-control" 
+          formControlName="phone"
+          placeholder="Número de Teléfono">
+        @if (form.get('phone')?.invalid && form.get('phone')?.touched) {
+          <div class="text-danger small mt-1">Este campo es requerido</div>
+        }
+      </div>
+
+      <!-- RUT -->
+      <div class="mb-3">
+        <label class="form-label">RUT</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          formControlName="rut"
+          placeholder="Número de RUT">
+        @if (form.get('rut')?.invalid && form.get('rut')?.touched) {
+          <div class="text-danger small mt-1">Este campo es requerido</div>
+        }
+      </div>
+
+      <!-- Contraseña (solo en create) -->
+      @if (mode === 'create') {
+        <div class="mb-3">
+          <label class="form-label">Contraseña</label>
+          <input 
+            type="password" 
+            class="form-control" 
+            formControlName="password"
+            placeholder="Contraseña">
+          @if (form.get('password')?.invalid && form.get('password')?.touched) {
+            <div class="text-danger small mt-1">Mínimo 6 caracteres</div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Confirmar Contraseña</label>
+          <input 
+            type="password" 
+            class="form-control" 
+            formControlName="password_confirmation"
+            placeholder="Confirmar contraseña">
+        </div>
+      }
+
+      <!-- Estado (solo en edit) -->
+      @if (mode === 'edit') {
+        <div class="mb-3">
+          <label class="form-label">Estado</label>
+          <select class="form-select" formControlName="status">
+            <option value="active">Activo</option>
+            <option value="inactive">Inactivo</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Cambiar contraseña</label>
+          <input 
+            type="password" 
+            class="form-control mb-2" 
+            formControlName="current_password"
+            placeholder="Contraseña actual">
+          <input 
+            type="password" 
+            class="form-control" 
+            formControlName="new_password"
+            placeholder="Nueva contraseña">
+        </div>
+      }
+    </form>
+  }
+
+  <!-- Footer con botones -->
+  <div footer>
+    @if (mode === 'view') {
+      <button 
+        type="button" 
+        class="btn btn-secondary" 
+        (click)="onClose()">
+        Cerrar
+      </button>
+    } @else {
+      <button 
+        type="button" 
+        class="btn btn-secondary" 
+        (click)="onClose()"
+        [disabled]="loading()">
+        Cancelar
+      </button>
+      <button 
+        type="button" 
+        class="btn btn-success" 
+        (click)="onSubmit()"
+        [disabled]="form.invalid || loading()">
+        @if (loading()) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+        }
+        {{ mode === 'create' ? 'Agregar' : 'Actualizar' }}
+      </button>
+    }
+  </div>
+</app-modal>
