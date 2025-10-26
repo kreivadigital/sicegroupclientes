@@ -16,7 +16,9 @@ export interface Order {
     id: number;
     name: string;
     container_number: number;
+    shipment_reference: string;
     status: string;
+    date_of_discharge?: string;
   };
   performa_pdf_path?: string;
   description?: string;
