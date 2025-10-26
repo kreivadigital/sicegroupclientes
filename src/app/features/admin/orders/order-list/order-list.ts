@@ -29,7 +29,7 @@ export class OrderList implements OnInit {
   currentSearch = signal<string>('');
 
   // Modal state
-  showModal = signal(false);
+  showModal = signal<boolean>(false);
   modalMode = signal<'create' | 'edit' | 'view'>('create');
   selectedOrderId = signal<number | undefined>(undefined);
 
