@@ -27,12 +27,13 @@
     (pageChange)="onPageChange($event)">
   </app-pagination>
 
-  <!-- Modal placeholder (por ahora solo un comentario) -->
-  <!-- TODO: Implementar ClientModal -->
+  <!-- Modal -->
   @if (showModal()) {
-    <div class="modal-placeholder">
-      <p>Modal {{ modalMode() }}: Cliente {{ selectedClient()?.company_name || 'Nuevo' }}</p>
-      <button (click)="onCloseModal()">Cerrar</button>
-    </div>
+    <app-client-modal
+      [mode]="modalMode()"
+      [clientId]="selectedClientId()"
+      (close)="onCloseModal()"
+      (save)="onClientSaved($event)">
+    </app-client-modal>
   }
 </div>

@@ -48,6 +48,34 @@ export class DataTable {
     return column.badgeConfig.labelMap[value] || value;
   }
 
+  // Para columnas tipo 'port-with-date'
+  getPortLocation(row: any, column: TableColumn): string {
+    if (!column.portConfig) return '';
+    return this.getNestedValue(row, column.portConfig.locationKey);
+  }
+
+  getPortCountry(row: any, column: TableColumn): string {
+    if (!column.portConfig) return '';
+    return this.getNestedValue(row, column.portConfig.countryKey);
+  }
+
+  getPortDate(row: any, column: TableColumn): string {
+    if (!column.portConfig) return '';
+    return this.getNestedValue(row, column.portConfig.dateKey);
+  }
+
+  private getNestedValue(obj: any, path: string): any {
+    const keys = path.split('.');
+    let value = obj;
+
+    for (const key of keys) {
+      value = value?.[key];
+      if (value === undefined || value === null) break;
+    }
+
+    return value;
+  }
+
   onActionClick(action: TableAction, row: any) {
     this.actionClick.emit({ action: action.action, row });
   }

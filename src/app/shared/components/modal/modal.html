@@ -1,1 +1,31 @@
-<p>modal works!</p>
+<!-- Backdrop (fondo oscuro translúcido) -->
+<div class="modal-backdrop" (click)="onBackdropClick()"></div>
+
+<!-- Contenedor del modal -->
+<div class="modal-container" [attr.data-size]="size">
+  <div class="modal-content">
+    <!-- Header -->
+    <div class="modal-header">
+      <h2 class="modal-title">{{ title }}</h2>
+      <button 
+        type="button" 
+        class="modal-close-btn" 
+        (click)="onClose()"
+        aria-label="Cerrar">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <!-- Body (contenido proyectado) -->
+    <div class="modal-body">
+      <ng-content></ng-content>
+    </div>
+
+    <!-- Footer (opcional) -->
+    @if (showFooter) {
+      <div class="modal-footer">
+        <ng-content select="[footer]"></ng-content>
+      </div>
+    }
+  </div>
+</div>

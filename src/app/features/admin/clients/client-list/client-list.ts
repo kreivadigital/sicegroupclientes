@@ -6,11 +6,12 @@ import { Pagination } from '../../../../shared/components/pagination/pagination'
 import { ClientService } from '../../../../core/services/client.service';
 import { Client } from '../../../../core/models/client.model';
 import { TableColumn, TableAction } from '../../../../shared/interfaces/table.interface';
+import { ClientModal } from '../client-modal/client-modal';
 
 @Component({
   selector: 'app-client-list',
   standalone: true,
-  imports: [CommonModule, PageToolbar, DataTable, Pagination],
+  imports: [CommonModule, PageToolbar, DataTable, Pagination, ClientModal],
   templateUrl: './client-list.html',
   styleUrl: './client-list.scss',
 })
@@ -26,7 +27,7 @@ export class ClientList implements OnInit {
 
   showModal = signal(false);
   modalMode = signal<'view' | 'edit' | 'create'>('view');
-  selectedClient = signal<Client | null>(null);
+  selectedClientId = signal<number | undefined>(undefined);
 
   columns: TableColumn[] = [
     { key: 'company_name', label: 'Nombre de la Empresa', type: 'text' },
@@ -47,23 +48,11 @@ export class ClientList implements OnInit {
 
   loadClients(page: number = 1, search?: string) {
     this.loading.set(true);
-    console.log('🔍 Cargando clientes...', { page, search });
 
     this.clientService.getClients(page, search).subscribe({
       next: (response) => {
-        console.log('✅ Respuesta del backend:', response);
-        console.log('📊 Datos recibidos:', response.data);
-
-        // Laravel devuelve la paginación dentro de response.data
         const paginationData = response.data as any;
         const clients = paginationData.data || [];
-
-        console.log('📋 Clientes extraídos:', clients);
-        console.log('📈 Meta extraída:', {
-          current_page: paginationData.current_page,
-          last_page: paginationData.last_page,
-          total: paginationData.total
-        });
 
         this.clients.set(clients);
         this.currentPage.set(paginationData.current_page);
@@ -73,9 +62,7 @@ export class ClientList implements OnInit {
         this.loading.set(false);
       },
       error: (error) => {
-        console.error('❌ Error cargando clientes:', error);
-        console.error('❌ Status:', error.status);
-        console.error('❌ Mensaje:', error.message);
+        console.error('Error cargando clientes:', error);
         this.loading.set(false);
       }
     });
@@ -86,7 +73,7 @@ export class ClientList implements OnInit {
   }
 
   onTableAction(event: { action: string; row: Client }) {
-    this.selectedClient.set(event.row);
+    this.selectedClientId.set(event.row.id);
     if (event.action === 'view' || event.action === 'edit') {
       this.modalMode.set(event.action);
       this.showModal.set(true);
@@ -94,19 +81,19 @@ export class ClientList implements OnInit {
   }
 
   onAddClient() {
-    this.selectedClient.set(null);
+    this.selectedClientId.set(undefined);
     this.modalMode.set('create');
     this.showModal.set(true);
   }
 
-  onSaveClient(client: Client) {
+  onClientSaved(client: Client) {
     this.showModal.set(false);
     this.loadClients(this.currentPage());
   }
 
   onCloseModal() {
     this.showModal.set(false);
-    this.selectedClient.set(null);
+    this.selectedClientId.set(undefined);
   }
 
   onPageChange(page: number) {

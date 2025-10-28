@@ -1,0 +1,18 @@
+// Estilos adicionales si son necesarios
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #374151;
+}
+
+.form-control,
+.form-select {
+  &:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+  }
+}
+
+.text-danger {
+  font-size: 0.875rem;
+}
