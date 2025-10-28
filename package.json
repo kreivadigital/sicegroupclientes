@@ -5,8 +5,12 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:staging": "ng build --configuration=staging",
+    "build:prod": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "serve:staging": "ng serve --configuration=staging",
+    "serve:prod": "ng serve --configuration=production",
     "serve:ssr:siceweb": "node dist/siceweb/server/server.mjs"
   },
   "prettier": {
