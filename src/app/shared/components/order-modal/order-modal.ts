@@ -1,13 +1,13 @@
 import { Component, Input, Output, EventEmitter, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Modal } from '../../../../shared/components/modal/modal';
-import { OrderService } from '../../../../core/services/order.service';
-import { ClientService } from '../../../../core/services/client.service';
-import { ContainerService } from '../../../../core/services/container.service';
-import { Order, OrderFormData } from '../../../../core/models/order.model';
-import { Client } from '../../../../core/models/client.model';
-import { Container } from '../../../../core/models/container.model';
+import { Modal } from '../modal/modal';
+import { OrderService } from '../../../core/services/order.service';
+import { ClientService } from '../../../core/services/client.service';
+import { ContainerService } from '../../../core/services/container.service';
+import { Order, OrderFormData } from '../../../core/models/order.model';
+import { Client } from '../../../core/models/client.model';
+import { Container } from '../../../core/models/container.model';
 
 @Component({
   selector: 'app-order-modal',
@@ -53,8 +53,8 @@ export class OrderModal implements OnInit {
     this.form = this.fb.group({
       client_id: ['', [Validators.required]],
       description: [''],
-      delivery_address: [''],
-      bulk_quantity: [''],
+      delivery_address: ['', [Validators.required]],
+      package_count: ['', [Validators.required, Validators.min(1)]],
       status: ['pending', [Validators.required]],
       container_id: [''],
     });
@@ -98,6 +98,8 @@ export class OrderModal implements OnInit {
         this.form.patchValue({
           client_id: order.client_id,
           description: order.description || '',
+          delivery_address: order.delivery_address || '',
+          package_count: order.package_count || '',
           status: order.status,
           container_id: order.container_id || '',
         });
@@ -135,6 +137,17 @@ export class OrderModal implements OnInit {
     return titles[this.mode];
   }
 
+  getStatusLabel(status: string): string {
+    const statusLabels: { [key: string]: string } = {
+      'pending': 'Pendiente',
+      'processing': 'En Proceso',
+      'shipped': 'En tránsito',
+      'delivered': 'Entregada',
+      'cancelled': 'Cancelada'
+    };
+    return statusLabels[status] || status;
+  }
+
   onClose() {
     this.close.emit();
   }
@@ -146,6 +159,8 @@ export class OrderModal implements OnInit {
     const formData: OrderFormData = {
       ...this.form.value,
       performa_pdf: this.performaPdfFile || undefined,
+      packing_list_file: this.packinListFile || undefined,
+      invoice_file: this.invoiceFile || undefined,
     };
 
     if (this.mode === 'create') {

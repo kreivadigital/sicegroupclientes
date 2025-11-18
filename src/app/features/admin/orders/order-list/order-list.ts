@@ -6,11 +6,12 @@ import { TableColumn, TableAction } from '../../../../shared/interfaces/table.in
 import { PageToolbar } from '../../../../shared/components/page-toolbar/page-toolbar';
 import { DataTable } from '../../../../shared/components/data-table/data-table';
 import { Pagination } from '../../../../shared/components/pagination/pagination';
-import { OrderModal } from '../order-modal/order-modal';
+import { OrderModal } from '../../../../shared/components/order-modal/order-modal';
+import { OrderTrackingModal } from '../../../../shared/components/order-tracking-modal/order-tracking-modal';
 
 @Component({
   selector: 'app-order-list',
-  imports: [CommonModule, PageToolbar, DataTable, Pagination, OrderModal],
+  imports: [CommonModule, PageToolbar, DataTable, Pagination, OrderModal, OrderTrackingModal],
   templateUrl: './order-list.html',
   styleUrl: './order-list.scss',
 })
@@ -30,6 +31,7 @@ export class OrderList implements OnInit {
 
   // Modal state
   showModal = signal<boolean>(false);
+  showTrackingModal = signal<boolean>(false);
   modalMode = signal<'create' | 'edit' | 'view'>('create');
   selectedOrderId = signal<number | undefined>(undefined);
 
@@ -71,7 +73,8 @@ export class OrderList implements OnInit {
   // Configuración de acciones (botones en última columna)
   actions: TableAction[] = [
     { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-primary' },
-    { icon: 'bi-pencil', tooltip: 'Editar', action: 'edit', class: 'btn-outline-secondary' }
+    { icon: 'bi-pencil', tooltip: 'Editar', action: 'edit', class: 'btn-outline-secondary' },
+    { icon: 'bi-geo-alt', tooltip: 'Rastrear', action: 'track', class: 'btn-outline-success' }
   ];
 
   ngOnInit() {
@@ -128,11 +131,20 @@ export class OrderList implements OnInit {
         this.selectedOrderId.set(row.id);
         this.showModal.set(true);
         break;
+      case 'track':
+        this.selectedOrderId.set(row.id);
+        this.showTrackingModal.set(true);
+        break;
     }
   }
 
   onModalClose() {
     this.showModal.set(false);
+    this.selectedOrderId.set(undefined);
+  }
+
+  onTrackingModalClose() {
+    this.showTrackingModal.set(false);
     this.selectedOrderId.set(undefined);
   }
 

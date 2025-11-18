@@ -36,4 +36,12 @@
       (save)="onOrderSaved($event)">
     </app-order-modal>
   }
+
+  <!-- Modal de rastreo de orden -->
+  @if (showTrackingModal() && selectedOrderId()) {
+    <app-order-tracking-modal
+      [orderId]="selectedOrderId()!"
+      (close)="onTrackingModalClose()">
+    </app-order-tracking-modal>
+  }
 </div>

@@ -18,17 +18,19 @@ export class ClientModal implements OnInit {
 
   @Input() mode: 'create' | 'edit' | 'view' = 'create';
   @Input() clientId?: number;
-  
+
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<Client>();
 
   form!: FormGroup;
   loading = signal(false);
   client = signal<Client | null>(null);
+  formChanged = signal(false);
+  private originalFormValue: any = null;
 
   ngOnInit() {
     this.initForm();
-    
+
     if (this.mode !== 'create' && this.clientId) {
       this.loadClient();
     }
@@ -39,11 +41,14 @@ export class ClientModal implements OnInit {
       // User data
       name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      
+
       // Client data
       company_name: ['', [Validators.required]],
       phone: ['', [Validators.required]],
       rut: ['', [Validators.required]],
+      address: ['', [Validators.required]],
+      city: ['', [Validators.required]],
+      country: ['', [Validators.required]],
     });
 
     // Campos adicionales en modo create o edit
@@ -73,19 +78,37 @@ export class ClientModal implements OnInit {
       next: (response) => {
         const client = response.data;
         this.client.set(client);
-        
+
         // Poblar formulario
         this.form.patchValue({
           name: client.user?.name || '',
           email: client.user?.email || '',
           company_name: client.company_name,
           phone: client.phone,
-          rut: '', // Agregar si existe en el modelo
+          rut: client.rut || '',
+          address: client.address || '',
+          city: client.city || '',
+          country: client.country || '',
         });
 
         if (this.mode === 'edit') {
           this.form.patchValue({
             status: client.user?.status || 'active'
+          });
+        }
+
+        // Guardar valores originales después de cargar el cliente
+        if (this.mode === 'edit') {
+          // Usar setTimeout para asegurar que el valor se guarde después de todos los patchValue
+          setTimeout(() => {
+            // Hacer copia profunda del valor original para evitar problemas de referencia
+            this.originalFormValue = JSON.parse(JSON.stringify(this.form.getRawValue()));
+            console.log('Original form value:', this.originalFormValue);
+          }, 0);
+
+          // Activar detección de cambios DESPUÉS de guardar el valor original
+          this.form.valueChanges.subscribe(() => {
+            this.checkFormChanges();
           });
         }
 
@@ -98,6 +121,22 @@ export class ClientModal implements OnInit {
     });
   }
 
+  checkFormChanges() {
+    if (!this.originalFormValue) {
+      this.formChanged.set(false);
+      return;
+    }
+
+    const currentValue = this.form.getRawValue();
+    const hasChanges = JSON.stringify(currentValue) !== JSON.stringify(this.originalFormValue);
+    console.log('Checking changes:', {
+      current: currentValue,
+      original: this.originalFormValue,
+      hasChanges
+    });
+    this.formChanged.set(hasChanges);
+  }
+
   getTitle(): string {
     const titles = {
       'create': 'Agregar nuevo cliente',
@@ -105,6 +144,52 @@ export class ClientModal implements OnInit {
       'view': 'Detalles del cliente'
     };
     return titles[this.mode];
+  }
+
+  capitalizeName() {
+    const nameControl = this.form.get('name');
+    if (nameControl && nameControl.value) {
+      const capitalizedName = nameControl.value
+        .toLowerCase()
+        .split(' ')
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+      nameControl.setValue(capitalizedName, { emitEvent: false });
+
+      // Detectar cambios manualmente después de capitalizar
+      if (this.mode === 'edit') {
+        this.checkFormChanges();
+      }
+    }
+  }
+
+  capitalizeCompanyName() {
+    const companyControl = this.form.get('company_name');
+    if (companyControl && companyControl.value) {
+      const capitalizedCompany = companyControl.value
+        .toLowerCase()
+        .split(' ')
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+      companyControl.setValue(capitalizedCompany, { emitEvent: false });
+
+      // Detectar cambios manualmente después de capitalizar
+      if (this.mode === 'edit') {
+        this.checkFormChanges();
+      }
+    }
+  }
+
+  lowercaseEmail() {
+    const emailControl = this.form.get('email');
+    if (emailControl && emailControl.value) {
+      emailControl.setValue(emailControl.value.toLowerCase(), { emitEvent: false });
+
+      // Detectar cambios manualmente después de convertir a minúsculas
+      if (this.mode === 'edit') {
+        this.checkFormChanges();
+      }
+    }
   }
 
   onClose() {

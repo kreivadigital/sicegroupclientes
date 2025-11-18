@@ -62,6 +62,8 @@ export class OrderService {
   createOrder(data: OrderFormData): Observable<ApiResponse<Order>> {
     const formData = new FormData();
     formData.append('client_id', data.client_id.toString());
+    formData.append('delivery_address', data.delivery_address);
+    formData.append('package_count', data.package_count.toString());
     formData.append('status', data.status);
 
     if (data.container_id) {
@@ -74,6 +76,14 @@ export class OrderService {
 
     if (data.performa_pdf) {
       formData.append('performa_pdf', data.performa_pdf);
+    }
+
+    if (data.packing_list_file) {
+      formData.append('packing_list_file', data.packing_list_file);
+    }
+
+    if (data.invoice_file) {
+      formData.append('invoice_file', data.invoice_file);
     }
 
     return this.http.post<ApiResponse<Order>>(this.apiUrl, formData);
@@ -83,6 +93,8 @@ export class OrderService {
     const formData = new FormData();
     formData.append('_method', 'PUT');
     formData.append('client_id', data.client_id.toString());
+    formData.append('delivery_address', data.delivery_address);
+    formData.append('package_count', data.package_count.toString());
     formData.append('status', data.status);
 
     if (data.container_id) {
@@ -95,6 +107,14 @@ export class OrderService {
 
     if (data.performa_pdf) {
       formData.append('performa_pdf', data.performa_pdf);
+    }
+
+    if (data.packing_list_file) {
+      formData.append('packing_list_file', data.packing_list_file);
+    }
+
+    if (data.invoice_file) {
+      formData.append('invoice_file', data.invoice_file);
     }
 
     return this.http.post<ApiResponse<Order>>(`${this.apiUrl}/${id}`, formData);
@@ -116,4 +136,15 @@ export class OrderService {
       `${this.apiUrl}/${orderId}/detach-container/${containerId}`
     );
   }
+
+  getStats(): Observable<ApiResponse<OrderStats>> {
+    return this.http.get<ApiResponse<OrderStats>>(`${this.apiUrl}/stats`);
+  }
+}
+
+export interface OrderStats {
+  total: number;
+  in_transit: number;
+  delivered: number;
+  delayed: number;
 }

@@ -6,10 +6,14 @@
   <div class="modal-content">
     <!-- Header -->
     <div class="modal-header">
-      <h2 class="modal-title">{{ title }}</h2>
-      <button 
-        type="button" 
-        class="modal-close-btn" 
+      @if (title) {
+        <h2 class="modal-title">{{ title }}</h2>
+      } @else {
+        <ng-content select="[header]"></ng-content>
+      }
+      <button
+        type="button"
+        class="modal-close-btn"
         (click)="onClose()"
         aria-label="Cerrar">
         <i class="bi bi-x-lg"></i>

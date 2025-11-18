@@ -14,11 +14,12 @@
       <!-- Nombre de la empresa -->
       <div class="mb-3">
         <label class="form-label">Nombre de la empresa</label>
-        <input 
-          type="text" 
-          class="form-control" 
+        <input
+          type="text"
+          class="form-control"
           formControlName="company_name"
-          placeholder="Nombre de la empresa">
+          placeholder="Nombre de la empresa"
+          (blur)="capitalizeCompanyName()">
         @if (form.get('company_name')?.invalid && form.get('company_name')?.touched) {
           <div class="text-danger small mt-1">Este campo es requerido</div>
         }
@@ -27,11 +28,12 @@
       <!-- Contacto -->
       <div class="mb-3">
         <label class="form-label">Contacto</label>
-        <input 
-          type="text" 
-          class="form-control" 
+        <input
+          type="text"
+          class="form-control"
           formControlName="name"
-          placeholder="Nombre de contacto">
+          placeholder="Nombre de contacto"
+          (blur)="capitalizeName()">
         @if (form.get('name')?.invalid && form.get('name')?.touched) {
           <div class="text-danger small mt-1">Este campo es requerido</div>
         }
@@ -40,11 +42,12 @@
       <!-- Correo electrónico -->
       <div class="mb-3">
         <label class="form-label">Correo electrónico</label>
-        <input 
-          type="email" 
-          class="form-control" 
+        <input
+          type="email"
+          class="form-control"
           formControlName="email"
-          placeholder="Correo electrónico">
+          placeholder="Correo electrónico"
+          (blur)="lowercaseEmail()">
         @if (form.get('email')?.invalid && form.get('email')?.touched) {
           <div class="text-danger small mt-1">
             @if (form.get('email')?.hasError('required')) {
@@ -73,12 +76,51 @@
       <!-- RUT -->
       <div class="mb-3">
         <label class="form-label">RUT</label>
-        <input 
-          type="text" 
-          class="form-control" 
+        <input
+          type="text"
+          class="form-control"
           formControlName="rut"
           placeholder="Número de RUT">
         @if (form.get('rut')?.invalid && form.get('rut')?.touched) {
+          <div class="text-danger small mt-1">Este campo es requerido</div>
+        }
+      </div>
+
+      <!-- Dirección -->
+      <div class="mb-3">
+        <label class="form-label">Dirección</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="address"
+          placeholder="Dirección">
+        @if (form.get('address')?.invalid && form.get('address')?.touched) {
+          <div class="text-danger small mt-1">Este campo es requerido</div>
+        }
+      </div>
+
+      <!-- Ciudad -->
+      <div class="mb-3">
+        <label class="form-label">Ciudad</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="city"
+          placeholder="Ciudad">
+        @if (form.get('city')?.invalid && form.get('city')?.touched) {
+          <div class="text-danger small mt-1">Este campo es requerido</div>
+        }
+      </div>
+
+      <!-- País -->
+      <div class="mb-3">
+        <label class="form-label">País</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="country"
+          placeholder="País">
+        @if (form.get('country')?.invalid && form.get('country')?.touched) {
           <div class="text-danger small mt-1">Este campo es requerido</div>
         }
       </div>
@@ -151,11 +193,11 @@
         [disabled]="loading()">
         Cancelar
       </button>
-      <button 
-        type="button" 
-        class="btn btn-success" 
+      <button
+        type="button"
+        class="btn btn-success"
         (click)="onSubmit()"
-        [disabled]="form.invalid || loading()">
+        [disabled]="form.invalid || loading() || (mode === 'edit' && !formChanged())">
         @if (loading()) {
           <span class="spinner-border spinner-border-sm me-2"></span>
         }

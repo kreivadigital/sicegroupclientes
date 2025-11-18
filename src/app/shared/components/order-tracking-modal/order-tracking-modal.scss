@@ -1,0 +1,302 @@
+// Sección de Información de Orden y Contenedor
+.info-section {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border: 1.2px solid #E5E7EB;
+  border-radius: 13px;
+  background-color: #F9FAFB;
+  position: relative;
+}
+
+.info-numbers {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem 2rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.info-ports {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1rem 2rem;
+  align-items: center;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.no-container-message {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  color: #6B7280;
+  font-size: 0.95rem;
+  padding: 1rem 0;
+  margin-top: 0.5rem;
+}
+
+.info-label {
+  font-size: 0.875rem;
+  color: #6B7280;
+  font-weight: 500;
+}
+
+.info-value {
+  font-size: 1rem;
+  color: #111827;
+}
+
+.info-date {
+  font-size: 0.875rem;
+  color: #9CA3AF;
+  margin-top: 0.25rem;
+}
+
+.info-icon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 2px solid #02661E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #02661E;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  z-index: 10;
+  cursor: default;
+
+  &:hover {
+    background-color: rgba(2, 102, 30, 0.1);
+  }
+}
+
+.info-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  padding: 0 1rem;
+}
+
+.arrow-line {
+  width: 100%;
+  height: 2px;
+  background: #3B82F6;
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.arrow-circle {
+  width: 8px;
+  height: 8px;
+  background-color: #3B82F6;
+  border-radius: 50%;
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+// Sección de Progreso del Envío
+.progress-section {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border: 1.2px solid #02661E66;
+  border-radius: 13px;
+  background-color: #02661E1A;
+  position: relative;
+}
+
+.progress-title {
+  color: #02661E;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.progress-percentage {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #02661E;
+}
+
+.progress-tracker {
+  position: relative;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.progress-line {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  height: 4px;
+  background-color: #FFFFFF;
+  border-radius: 2px;
+  z-index: 1;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #02661E, #10B981);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+}
+
+.step-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+
+  i {
+    font-size: 1.25rem;
+    color: #6B7280;
+  }
+}
+
+.progress-step.active .step-icon {
+  background-color: #02661E;
+
+  i {
+    color: white;
+  }
+}
+
+.step-label {
+  font-size: 0.875rem;
+  color: #6B7280;
+  text-align: center;
+}
+
+.progress-step.active .step-label {
+  color: #02661E;
+  font-weight: 600;
+}
+
+// Sección de Maps
+.maps-section {
+  margin-bottom: 1.5rem;
+  border: 1.2px solid #E5E7EB;
+  border-radius: 13px;
+  overflow: hidden;
+}
+
+.maps-placeholder {
+  height: 300px;
+  background-color: #F3F4F6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #9CA3AF;
+
+  i {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+  }
+}
+
+// Sección de Notificaciones
+.notifications-section {
+  h6 {
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .table {
+    margin-bottom: 0;
+
+    thead {
+      background-color: #F9FAFB;
+
+      th {
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: #6B7280;
+        border-bottom: 1px solid #E5E7EB;
+        padding: 0.75rem 1rem;
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          padding: 0.75rem 1rem;
+          border-bottom: 1px solid #F3F4F6;
+          font-size: 0.875rem;
+
+          &.notification-detail {
+            max-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+
+        &:hover {
+          background-color: #F9FAFB;
+        }
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .info-numbers {
+    grid-template-columns: 1fr;
+  }
+
+  .info-ports {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+
+    .info-arrow {
+      transform: rotate(90deg);
+      padding: 0.5rem 0;
+    }
+  }
+
+  .progress-percentage {
+    position: static;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+}

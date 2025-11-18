@@ -8,6 +8,7 @@ export interface Client {
     status: string;
   };
   company_name: string;
+  rut: string;
   address: string;
   phone: string;
   city: string;
