@@ -89,6 +89,13 @@ export class Auth {
     );
   }
 
+  /**
+   * Cambiar contraseña del usuario actual
+   */
+  changePassword(data: { current_password: string; password: string; password_confirmation: string }): Observable<any> {
+    return this.http.post(`${environment.apiBase}/auth/password/change`, data);
+  }
+
   // ==========================================
   // Métodos privados
   // ==========================================

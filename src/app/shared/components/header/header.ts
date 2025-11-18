@@ -128,6 +128,13 @@ export class Header {
         isAdmin: false,
         profileText: 'Perfil del Cliente'
       };
+    } else if (url.includes('/client/perfil')) {
+      return {
+        title: 'Mi perfil',
+        subtitle: 'Gestiona tu información personal y preferencias',
+        isAdmin: false,
+        profileText: 'Perfil del Cliente'
+      };
     }
 
     // Fallback por defecto

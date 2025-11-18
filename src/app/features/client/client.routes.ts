@@ -26,7 +26,7 @@ export const clientRoutes: Routes = [
     title: 'Detalle Orden - Sice Group'
   },
   {
-    path: 'profile',
+    path: 'perfil',
     component: Profile,
     title: 'Mi Perfil - Sice Group'
   }
