@@ -79,7 +79,7 @@ export class ClientModal implements OnInit {
         const client = response.data;
         this.client.set(client);
 
-        // Poblar formulario
+        // Poblar formulario con todos los datos, incluyendo status
         this.form.patchValue({
           name: client.user?.name || '',
           email: client.user?.email || '',
@@ -89,13 +89,8 @@ export class ClientModal implements OnInit {
           address: client.address || '',
           city: client.city || '',
           country: client.country || '',
+          ...(this.mode === 'edit' && { status: client.user?.status || 'active' })
         });
-
-        if (this.mode === 'edit') {
-          this.form.patchValue({
-            status: client.user?.status || 'active'
-          });
-        }
 
         // Guardar valores originales después de cargar el cliente
         if (this.mode === 'edit') {
@@ -104,12 +99,12 @@ export class ClientModal implements OnInit {
             // Hacer copia profunda del valor original para evitar problemas de referencia
             this.originalFormValue = JSON.parse(JSON.stringify(this.form.getRawValue()));
             console.log('Original form value:', this.originalFormValue);
-          }, 0);
 
-          // Activar detección de cambios DESPUÉS de guardar el valor original
-          this.form.valueChanges.subscribe(() => {
-            this.checkFormChanges();
-          });
+            // Activar detección de cambios DESPUÉS de guardar el valor original
+            this.form.valueChanges.subscribe(() => {
+              this.checkFormChanges();
+            });
+          }, 0);
         }
 
         this.loading.set(false);

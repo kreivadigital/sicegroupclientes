@@ -24,9 +24,11 @@ export interface ClientFormData {
   email: string;
   password?: string;
   password_confirmation?: string;
+  status?: string;
 
   // Client data
   company_name: string;
+  rut: string;
   address: string;
   phone: string;
   city: string;

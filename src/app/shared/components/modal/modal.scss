@@ -25,19 +25,19 @@
   pointer-events: none; // Permite clicks en backdrop
 
   // Tamaños del modal
-  &[data-size="sm"] .modal-content {
+  &[data-size='sm'] .modal-content {
     max-width: 400px;
   }
 
-  &[data-size="md"] .modal-content {
+  &[data-size='md'] .modal-content {
     max-width: 600px;
   }
 
-  &[data-size="lg"] .modal-content {
+  &[data-size='lg'] .modal-content {
     max-width: 800px;
   }
 
-  &[data-size="xl"] .modal-content {
+  &[data-size='xl'] .modal-content {
     max-width: 1000px;
   }
 }
@@ -122,9 +122,16 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.75rem;
   padding: 1.5rem;
   border-top: 1px solid #e5e7eb;
+
+}
+
+// Aplicar gap a los contenedores de botones
+// ::ng-deep sirve para que el CSS de un componente pueda aplicar estilos más allá de su propio scope. "Rompiendo" el encapsulamiento de estilos.
+::ng-deep .modal-footer > [footer] {
+  display: flex;
+  gap: 20px;
 }
 
 // Animaciones
@@ -151,10 +158,10 @@
 // Responsive
 @media (max-width: 768px) {
   .modal-container {
-    &[data-size="sm"] .modal-content,
-    &[data-size="md"] .modal-content,
-    &[data-size="lg"] .modal-content,
-    &[data-size="xl"] .modal-content {
+    &[data-size='sm'] .modal-content,
+    &[data-size='md'] .modal-content,
+    &[data-size='lg'] .modal-content,
+    &[data-size='xl'] .modal-content {
       max-width: 100%;
     }
   }

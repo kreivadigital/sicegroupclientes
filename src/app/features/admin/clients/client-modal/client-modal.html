@@ -13,7 +13,12 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <!-- Nombre de la empresa -->
       <div class="mb-3">
-        <label class="form-label">Nombre de la empresa</label>
+        <label class="form-label">
+          Nombre de la empresa
+          @if (mode === 'create') {
+            <span class="text-danger">(*)</span>
+          }
+        </label>
         <input
           type="text"
           class="form-control"
@@ -27,7 +32,12 @@
 
       <!-- Contacto -->
       <div class="mb-3">
-        <label class="form-label">Contacto</label>
+        <label class="form-label">
+          Contacto
+          @if (mode === 'create') {
+            <span class="text-danger">(*)</span>
+          }
+        </label>
         <input
           type="text"
           class="form-control"
@@ -41,7 +51,12 @@
 
       <!-- Correo electrónico -->
       <div class="mb-3">
-        <label class="form-label">Correo electrónico</label>
+        <label class="form-label">
+          Correo electrónico
+          @if (mode === 'create') {
+            <span class="text-danger">(*)</span>
+          }
+        </label>
         <input
           type="email"
           class="form-control"
@@ -62,10 +77,15 @@
 
       <!-- Teléfono -->
       <div class="mb-3">
-        <label class="form-label">Teléfono</label>
-        <input 
-          type="tel" 
-          class="form-control" 
+        <label class="form-label">
+          Teléfono
+          @if (mode === 'create') {
+            <span class="text-danger">(*)</span>
+          }
+        </label>
+        <input
+          type="tel"
+          class="form-control"
           formControlName="phone"
           placeholder="Número de Teléfono">
         @if (form.get('phone')?.invalid && form.get('phone')?.touched) {
@@ -75,7 +95,12 @@
 
       <!-- RUT -->
       <div class="mb-3">
-        <label class="form-label">RUT</label>
+        <label class="form-label">
+          RUT
+          @if (mode === 'create') {
+            <span class="text-danger">(*)</span>
+          }
+        </label>
         <input
           type="text"
           class="form-control"
@@ -88,7 +113,12 @@
 
       <!-- Dirección -->
       <div class="mb-3">
-        <label class="form-label">Dirección</label>
+        <label class="form-label">
+          Dirección
+          @if (mode === 'create') {
+            <span class="text-danger">(*)</span>
+          }
+        </label>
         <input
           type="text"
           class="form-control"
@@ -101,7 +131,12 @@
 
       <!-- Ciudad -->
       <div class="mb-3">
-        <label class="form-label">Ciudad</label>
+        <label class="form-label">
+          Ciudad
+          @if (mode === 'create') {
+            <span class="text-danger">(*)</span>
+          }
+        </label>
         <input
           type="text"
           class="form-control"
@@ -114,7 +149,12 @@
 
       <!-- País -->
       <div class="mb-3">
-        <label class="form-label">País</label>
+        <label class="form-label">
+          País
+          @if (mode === 'create') {
+            <span class="text-danger">(*)</span>
+          }
+        </label>
         <input
           type="text"
           class="form-control"
@@ -128,10 +168,10 @@
       <!-- Contraseña (solo en create) -->
       @if (mode === 'create') {
         <div class="mb-3">
-          <label class="form-label">Contraseña</label>
-          <input 
-            type="password" 
-            class="form-control" 
+          <label class="form-label">Contraseña <span class="text-danger">(*)</span></label>
+          <input
+            type="password"
+            class="form-control"
             formControlName="password"
             placeholder="Contraseña">
           @if (form.get('password')?.invalid && form.get('password')?.touched) {
@@ -140,10 +180,10 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Confirmar Contraseña</label>
-          <input 
-            type="password" 
-            class="form-control" 
+          <label class="form-label">Confirmar Contraseña <span class="text-danger">(*)</span></label>
+          <input
+            type="password"
+            class="form-control"
             formControlName="password_confirmation"
             placeholder="Confirmar contraseña">
         </div>
