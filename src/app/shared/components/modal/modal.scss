@@ -115,6 +115,26 @@
       background: #555;
     }
   }
+
+}
+
+// Estilos para inputs en modo view (readonly/disabled)
+// ::ng-deep rompe el encapsulamiento para aplicar estilos a componentes proyectados
+::ng-deep .modal-body {
+  input[readonly],
+  textarea[readonly],
+  select[readonly],
+  input[disabled],
+  textarea[disabled],
+  select[disabled],
+  input:disabled,
+  textarea:disabled,
+  select:disabled,
+  .form-control:disabled,
+  .form-select:disabled {
+    background-color: #f3f4f6 !important;
+    cursor: not-allowed;
+  }
 }
 
 // Footer del modal

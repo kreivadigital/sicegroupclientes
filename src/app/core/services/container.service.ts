@@ -78,4 +78,8 @@ export class ContainerService {
   refreshContainerFromShipsGo(id: number): Observable<ApiResponse<Container>> {
     return this.http.get<ApiResponse<Container>>(`${this.apiUrl}/${id}/refresh`);
   }
+
+  importFromShipsGo(): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/import-from-shipsgo`, {});
+  }
 }

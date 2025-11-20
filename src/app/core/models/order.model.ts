@@ -27,7 +27,7 @@ export interface Order {
     created_at?: string;
   };
   performa_pdf_path?: string;
-  packing_list_path?: string;
+  picking_list_path?: string;
   invoice_path?: string;
   package_count: number;
   delivery_address: string;
@@ -51,7 +51,7 @@ export interface OrderFormData {
   package_count: number;
   description?: string;
   status: OrderStatus;
-  performa_pdf?: File;
-  packing_list_file?: File;
+  performa_pdf_file?: File;
+  picking_list_file?: File;
   invoice_file?: File;
 }

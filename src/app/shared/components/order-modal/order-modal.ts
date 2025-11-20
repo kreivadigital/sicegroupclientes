@@ -5,6 +5,7 @@ import { Modal } from '../modal/modal';
 import { OrderService } from '../../../core/services/order.service';
 import { ClientService } from '../../../core/services/client.service';
 import { ContainerService } from '../../../core/services/container.service';
+import { Auth } from '../../../core/services/auth';
 import { Order, OrderFormData } from '../../../core/models/order.model';
 import { Client } from '../../../core/models/client.model';
 import { Container } from '../../../core/models/container.model';
@@ -21,6 +22,7 @@ export class OrderModal implements OnInit {
   private orderService = inject(OrderService);
   private clientService = inject(ClientService);
   private containerService = inject(ContainerService);
+  public auth = inject(Auth);
 
   @Input() mode: 'create' | 'edit' | 'view' = 'create';
   @Input() orderId?: number;
@@ -113,14 +115,14 @@ export class OrderModal implements OnInit {
     });
   }
 
-  onFileSelect(event: Event, type: 'performa' | 'packin' | 'invoice') {
+  onFileSelect(event: Event, type: 'performa' | 'picking' | 'invoice') {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
 
       if (type === 'performa') {
         this.performaPdfFile = file;
-      } else if (type === 'packin') {
+      } else if (type === 'picking') {
         this.packinListFile = file;
       } else if (type === 'invoice') {
         this.invoiceFile = file;
@@ -148,6 +150,11 @@ export class OrderModal implements OnInit {
     return statusLabels[status] || status;
   }
 
+  downloadFile(type: 'picking-list' | 'invoice' | 'performa-pdf') {
+    if (!this.orderId) return;
+    this.orderService.downloadFile(this.orderId, type);
+  }
+
   onClose() {
     this.close.emit();
   }
@@ -158,8 +165,8 @@ export class OrderModal implements OnInit {
     this.loading.set(true);
     const formData: OrderFormData = {
       ...this.form.value,
-      performa_pdf: this.performaPdfFile || undefined,
-      packing_list_file: this.packinListFile || undefined,
+      performa_pdf_file: this.performaPdfFile || undefined,
+      picking_list_file: this.packinListFile || undefined,
       invoice_file: this.invoiceFile || undefined,
     };
 

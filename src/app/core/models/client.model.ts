@@ -24,6 +24,8 @@ export interface ClientFormData {
   email: string;
   password?: string;
   password_confirmation?: string;
+  current_password?: string;
+  new_password?: string;
   status?: string;
 
   // Client data

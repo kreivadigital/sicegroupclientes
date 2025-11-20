@@ -74,12 +74,12 @@ export class OrderService {
       formData.append('description', data.description);
     }
 
-    if (data.performa_pdf) {
-      formData.append('performa_pdf', data.performa_pdf);
+    if (data.performa_pdf_file) {
+      formData.append('performa_pdf_file', data.performa_pdf_file);
     }
 
-    if (data.packing_list_file) {
-      formData.append('packing_list_file', data.packing_list_file);
+    if (data.picking_list_file) {
+      formData.append('picking_list_file', data.picking_list_file);
     }
 
     if (data.invoice_file) {
@@ -105,12 +105,12 @@ export class OrderService {
       formData.append('description', data.description);
     }
 
-    if (data.performa_pdf) {
-      formData.append('performa_pdf', data.performa_pdf);
+    if (data.performa_pdf_file) {
+      formData.append('performa_pdf_file', data.performa_pdf_file);
     }
 
-    if (data.packing_list_file) {
-      formData.append('packing_list_file', data.packing_list_file);
+    if (data.picking_list_file) {
+      formData.append('picking_list_file', data.picking_list_file);
     }
 
     if (data.invoice_file) {
@@ -139,6 +139,92 @@ export class OrderService {
 
   getStats(): Observable<ApiResponse<OrderStats>> {
     return this.http.get<ApiResponse<OrderStats>>(`${this.apiUrl}/stats`);
+  }
+
+  /**
+   * Descarga un archivo desde el servidor.
+   * @param orderId Número de orden que se relaciona con el archivo.
+   * @param type Tipo de archivo que se desea descargar. Puede ser 'picking-list', 'invoice' o 'performa-pdf'.
+   */
+  downloadFile(orderId: number, type: 'picking-list' | 'invoice' | 'performa-pdf'): void {
+    const url = `${this.apiUrl}/${orderId}/files/${type}`;
+
+    this.http.get(url, {
+      responseType: 'blob',
+      observe: 'response'
+    }).subscribe({
+      next: (response) => {
+        // Obtener el nombre del archivo desde el header Content-Disposition
+        const contentDisposition = response.headers.get('Content-Disposition');
+        let filename: string;
+
+        if (contentDisposition) {
+          const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+          if (filenameMatch && filenameMatch[1]) {
+            filename = filenameMatch[1];
+          } else {
+            // Si no hay filename en Content-Disposition, determinar por Content-Type
+            filename = this.getFilenameFromContentType(response.headers.get('Content-Type'), type);
+          }
+        } else {
+          // Si no hay Content-Disposition, determinar por Content-Type
+          filename = this.getFilenameFromContentType(response.headers.get('Content-Type'), type);
+        }
+
+        // Crear blob y descargar
+        const blob = response.body;
+        if (blob) {
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+        }
+      },
+      error: (error) => {
+        console.error('Error descargando archivo:', error);
+      }
+    });
+  }
+
+  /**
+   * Genera un nombre de archivo basado en el Content-Type y el tipo de archivo.
+   * Si el Content-Type no se puede determinar, se usa un mapeo manual para determinar la extensión.
+   * @param contentType Content-Type del archivo.
+   * @param type Tipo de archivo que se desea descargar. Puede ser 'picking-list', 'invoice' o 'performa-pdf'.
+   * @returns Un nombre de archivo con la extensión correspondiente.
+   */
+  private getFilenameFromContentType(contentType: string | null, type: string): string {
+    // Mapeo de Content-Type a extensión
+    const mimeToExtension: { [key: string]: string } = {
+      'application/pdf': 'pdf',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+      'application/vnd.ms-excel': 'xls',
+      'text/csv': 'csv'
+    };
+
+    // Obtener extensión desde Content-Type
+    let extension = 'pdf'; // default
+    if (contentType) {
+      extension = mimeToExtension[contentType] || 'pdf';
+    }
+
+    // Si no se pudo determinar por Content-Type, usar mapeo manual
+    if (extension === 'pdf' && type === 'picking-list') {
+      extension = 'xlsx';
+    }
+
+    // Generar nombre de archivo
+    const typeNames: { [key: string]: string } = {
+      'picking-list': 'picking_list',
+      'invoice': 'invoice',
+      'performa-pdf': 'proforma'
+    };
+
+    return `${typeNames[type] || type}.${extension}`;
   }
 }
 

@@ -92,23 +92,47 @@ export const ActiveOrderStatuses: OrderStatus[] = [
 // CONTAINER STATUS (Estados de Contenedor)
 // ==========================================
 export enum ContainerStatus {
-  Running = 'running',
-  Stopped = 'stopped'
+  New = 'NEW',
+  InProgress = 'INPROGRESS',
+  Booked = 'BOOKED',
+  Loaded = 'LOADED',
+  Sailing = 'SAILING',
+  Arrived = 'ARRIVED',
+  Discharged = 'DISCHARGED',
+  Untracked = 'UNTRACKED'
 }
 
 export const ContainerStatusLabels: Record<ContainerStatus, string> = {
-  [ContainerStatus.Running]: 'En Movimiento',
-  [ContainerStatus.Stopped]: 'Detenido'
+  [ContainerStatus.New]: 'Nuevo',
+  [ContainerStatus.InProgress]: 'En Progreso',
+  [ContainerStatus.Booked]: 'Reservado',
+  [ContainerStatus.Loaded]: 'Cargado',
+  [ContainerStatus.Sailing]: 'Navegando',
+  [ContainerStatus.Arrived]: 'Arribado',
+  [ContainerStatus.Discharged]: 'Descargado',
+  [ContainerStatus.Untracked]: 'Sin Rastreo'
 };
 
 export const ContainerStatusColors: Record<ContainerStatus, string> = {
-  [ContainerStatus.Running]: 'success',
-  [ContainerStatus.Stopped]: 'warning'
+  [ContainerStatus.New]: 'secondary',
+  [ContainerStatus.InProgress]: 'info',
+  [ContainerStatus.Booked]: 'primary',
+  [ContainerStatus.Loaded]: 'warning',
+  [ContainerStatus.Sailing]: 'primary',
+  [ContainerStatus.Arrived]: 'success',
+  [ContainerStatus.Discharged]: 'success',
+  [ContainerStatus.Untracked]: 'danger'
 };
 
 export const ContainerStatusIcons: Record<ContainerStatus, string> = {
-  [ContainerStatus.Running]: 'bi-arrow-right-circle',
-  [ContainerStatus.Stopped]: 'bi-pause-circle'
+  [ContainerStatus.New]: 'bi-plus-circle',
+  [ContainerStatus.InProgress]: 'bi-hourglass-split',
+  [ContainerStatus.Booked]: 'bi-calendar-check',
+  [ContainerStatus.Loaded]: 'bi-box-seam',
+  [ContainerStatus.Sailing]: 'bi-water',
+  [ContainerStatus.Arrived]: 'bi-geo-alt-fill',
+  [ContainerStatus.Discharged]: 'bi-check-circle-fill',
+  [ContainerStatus.Untracked]: 'bi-question-circle'
 };
 
 // ==========================================

@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContainerService } from '../../../../core/services/container.service';
 import { Container } from '../../../../core/models/container.model';
+import { ContainerStatusLabels, ContainerStatusColors } from '../../../../core/models/enums';
 import { TableColumn, TableAction } from '../../../../shared/interfaces/table.interface';
 import { PageToolbar } from '../../../../shared/components/page-toolbar/page-toolbar';
 import { DataTable } from '../../../../shared/components/data-table/data-table';
@@ -33,6 +34,9 @@ export class ContainerList implements OnInit {
   modalMode = signal<'create' | 'edit'>('create');
   selectedContainerId = signal<number | undefined>(undefined);
 
+  // Import state
+  importing = signal<boolean>(false);
+
   // Configuración de columnas
   columns: TableColumn[] = [
     { key: 'container_number', label: 'Nro. de Contenedor', type: 'text' },
@@ -43,13 +47,16 @@ export class ContainerList implements OnInit {
       type: 'badge',
       badgeConfig: {
         colorMap: {
-          'running': 'success',   // Verde
-          'stopped': 'danger'     // Rojo
+          'NEW': 'secondary',          // Gris - Nuevo
+          'INPROGRESS': 'info',        // Azul claro - En Progreso
+          'BOOKED': 'primary',         // Azul - Reservado
+          'LOADED': 'warning',         // Amarillo - Cargado
+          'SAILING': 'primary',        // Azul - Navegando
+          'ARRIVED': 'success',        // Verde - Arribado
+          'DISCHARGED': 'success',     // Verde - Descargado
+          'UNTRACKED': 'danger'        // Rojo - Sin Rastreo
         },
-        labelMap: {
-          'running': 'En Movimiento',
-          'stopped': 'Detenido'
-        }
+        labelMap: ContainerStatusLabels as Record<string, string>
       }
     },
     {
@@ -151,5 +158,23 @@ export class ContainerList implements OnInit {
 
   onPageChange(page: number) {
     this.loadContainers(page, this.currentSearch());
+  }
+
+  onImportFromShipsGo() {
+    this.importing.set(true);
+    console.log('🚀 Iniciando importación desde ShipsGo...');
+
+    this.containerService.importFromShipsGo().subscribe({
+      next: (response) => {
+        console.log('✅ Importación exitosa:', response);
+        this.importing.set(false);
+        // Recargar la lista de contenedores
+        this.loadContainers(this.currentPage(), this.currentSearch());
+      },
+      error: (error) => {
+        console.error('❌ Error en importación:', error);
+        this.importing.set(false);
+      }
+    });
   }
 }
