@@ -1,0 +1,194 @@
+// ==========================================
+// MODAL
+// ==========================================
+@use '../../../../assets/styles/variables' as *;
+
+// Backdrop (fondo negro translúcido)
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba($text-black, 0.5);
+  z-index: $z-modal-backdrop;
+  animation: fadeIn $transition-base;
+}
+
+// Contenedor centrado del modal
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: $z-modal;
+  padding: 1rem;
+  pointer-events: none;
+
+  // Tamaños del modal
+  &[data-size='sm'] .modal-content {
+    max-width: 400px;
+  }
+
+  &[data-size='md'] .modal-content {
+    max-width: 600px;
+  }
+
+  &[data-size='lg'] .modal-content {
+    max-width: 800px;
+  }
+
+  &[data-size='xl'] .modal-content {
+    max-width: 1000px;
+  }
+}
+
+// Contenido del modal
+.modal-content {
+  position: relative;
+  background-color: $bg-white;
+  border-radius: 1rem;
+  box-shadow: 0 10px 40px rgba($text-black, 0.2);
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+  animation: slideUp $transition-slow;
+}
+
+// Header del modal
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid $border-base;
+
+  .modal-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $text-darkest;
+  }
+
+  .modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: $text-muted;
+    cursor: pointer;
+    padding: 0.5rem;
+    line-height: 1;
+    transition: color $transition-base;
+
+    &:hover {
+      color: $text-darkest;
+    }
+
+    i {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+// Body del modal (con scroll si es necesario)
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+
+  // Scrollbar personalizada
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $bg-light;
+    border-radius: $radius-sm;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $border-dark;
+    border-radius: $radius-sm;
+
+    &:hover {
+      background: $text-muted;
+    }
+  }
+}
+
+// Estilos para inputs en modo view (readonly/disabled)
+::ng-deep .modal-body {
+  input[readonly],
+  textarea[readonly],
+  select[readonly],
+  input[disabled],
+  textarea[disabled],
+  select[disabled],
+  input:disabled,
+  textarea:disabled,
+  select:disabled,
+  .form-control:disabled,
+  .form-select:disabled {
+    background-color: $bg-light !important;
+    cursor: not-allowed;
+  }
+}
+
+// Footer del modal
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 1.5rem;
+  border-top: 1px solid $border-base;
+}
+
+// Aplicar gap a los contenedores de botones
+::ng-deep .modal-footer > [footer] {
+  display: flex;
+  gap: 20px;
+}
+
+// Animaciones
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .modal-container {
+    &[data-size='sm'] .modal-content,
+    &[data-size='md'] .modal-content,
+    &[data-size='lg'] .modal-content,
+    &[data-size='xl'] .modal-content {
+      max-width: 100%;
+    }
+  }
+
+  .modal-content {
+    border-radius: 1rem 1rem 0 0;
+    max-height: 95vh;
+  }
+}

@@ -1,0 +1,53 @@
+<div class="pagination-container">
+  <div class="d-flex justify-content-between align-items-center">
+    <!-- Info de items mostrados -->
+    <div class="pagination-info text-muted">
+      Mostrando <strong>{{ showingFrom() }}</strong> a <strong>{{ showingTo() }}</strong> de <strong>{{ totalItemsValue() }}</strong> resultados
+    </div>
+
+    <!-- Controles de paginación -->
+    <nav aria-label="Paginación">
+      <ul class="pagination mb-0">
+        <!-- Botón Previous -->
+        <li [class.disabled]="isFirstPage()" class="page-item">
+          <button
+            class="page-link"
+            (click)="previousPage()"
+            [disabled]="isFirstPage()"
+            type="button">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+        </li>
+
+        <!-- Números de página -->
+        @for (page of getPageNumbers(); track page) {
+          @if (page === -1) {
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          } @else {
+            <li [class.active]="page === currentPageValue()" class="page-item">
+              <button
+                class="page-link"
+                (click)="goToPage(page)"
+                type="button">
+                {{ page }}
+              </button>
+            </li>
+          }
+        }
+
+        <!-- Botón Next -->
+        <li [class.disabled]="isLastPage()" class="page-item">
+          <button
+            class="page-link"
+            (click)="nextPage()"
+            [disabled]="isLastPage()"
+            type="button">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>

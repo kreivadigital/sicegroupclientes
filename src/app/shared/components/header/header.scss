@@ -1,0 +1,144 @@
+// ==========================================
+// HEADER
+// ==========================================
+@use '../../../../assets/styles/variables' as *;
+
+// ==========================================
+// HEADER BASE
+// ==========================================
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px;
+  border-bottom: 1px solid $border-base;
+  min-height: 110px;
+
+  /**
+   * =� Responsive:
+   * En pantallas peque�as, reduce el padding
+   */
+  @media (max-width: 768px) {
+    padding: 16px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+// ==========================================
+// ESTILOS PARA CLIENTE
+// ==========================================
+/**
+ * �Por qu� una clase separada?
+ * - Facilita cambiar estilos seg�n el rol
+ * - M�s legible que muchos @if en el HTML
+ * - Mejor performance (CSS en lugar de l�gica JS)
+ */
+.page-header.client {
+  background-color: $bg-white;
+
+  .header-title {
+    color: $text-black;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .header-subtitle {
+    color: $text-muted;
+    font-size: 14px;
+    margin: 4px 0 0 0;
+    font-weight: 400;
+  }
+
+  .profile-info {
+    color: $text-black;
+  }
+}
+
+// ==========================================
+// ESTILOS PARA ADMIN
+// ==========================================
+.page-header.admin {
+  /**
+   * <� GRADIENTE:
+   * - linear-gradient(to right, ...): De izquierda a derecha
+   * - $color-primary: Izquierda (Brand Green)
+   * - $color-dark-green: Derecha (m�s oscuro)
+   *
+   * �Por qu� gradiente?
+   * - Distingue visualmente al admin del cliente
+   * - M�s atractivo que un color plano
+   * - Profesional y moderno
+   */
+  background: linear-gradient(to right, $primary, $primary-darker);
+
+  .header-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .header-subtitle {
+    font-size: 14px;
+    margin: 4px 0 0 0;
+    font-weight: 400;
+    opacity: 0.9; // Ligeramente transparente para jerarqu�a visual
+  }
+}
+
+// ==========================================
+// LAYOUT INTERNO
+// ==========================================
+.header-left {
+  color: $text-white;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+/**
+ * =d Perfil del Usuario
+ * - display: flex: Alinea icono + texto horizontalmente
+ * - align-items: center: Centra verticalmente
+ * - gap: 8px: Espacio entre icono y texto
+ */
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid $border-dark;
+  border-radius: $radius-xl;
+  background-color: $bg-white;
+
+  i {
+    font-size: 20px;
+  }
+}
+
+// Estilos para el botón de perfil del cliente
+.profile-btn {
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    background-color: $primary;
+    border-color: $primary;
+    color: $text-white;
+
+    i, span {
+      color: $text-white;
+    }
+  }
+}

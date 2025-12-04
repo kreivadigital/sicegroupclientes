@@ -1,0 +1,68 @@
+// ==========================================
+// ORDER MODAL
+// ==========================================
+@use '../../../../assets/styles/variables' as *;
+
+.file-display {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background-color: $bg-light;
+  border-radius: $radius-base;
+  border: 1px solid $border-base;
+  min-height: 50px;
+  cursor: pointer;
+  transition: background-color $transition-base, border-color $transition-base;
+
+  &:hover {
+    background-color: $border-base;
+    border-color: $border-dark;
+  }
+
+  i.bi-file-earmark-spreadsheet,
+  i.bi-file-earmark-pdf {
+    font-size: 1.25rem;
+    color: $text-muted;
+  }
+
+  span {
+    flex: 1;
+    font-size: 0.875rem;
+    color: $text-base;
+  }
+
+  .btn-link {
+    padding: 0.25rem 0.5rem;
+    color: $primary;
+
+    &:hover {
+      color: $primary-dark;
+    }
+  }
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: $text-base;
+}
+
+.form-control,
+.form-select {
+  &:focus {
+    border-color: $primary;
+    box-shadow: 0 0 0 0.2rem rgba($primary, 0.25);
+  }
+}
+
+textarea.form-control {
+  resize: vertical;
+}
+
+// Altura mínima para botones de upload de archivos
+.btn-secondary.w-100 {
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

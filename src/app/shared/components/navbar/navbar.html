@@ -1,0 +1,30 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+  <div class="container-fluid">
+    <!-- Botón hamburguesa -->
+    <button class="btn btn-link text-white" (click)="onToggleSidebar()">
+      <i class="bi bi-list fs-4"></i>
+    </button>
+
+    <!-- Logo / Título -->
+    <a class="navbar-brand ms-2" href="#">
+      <strong>Sice Group Dashboard</strong>
+    </a>
+
+    <!-- Usuario y acciones -->
+    <div class="d-flex align-items-center">
+      @if (authService.currentUser(); as user) {
+        <div class="dropdown">
+          <button class="btn btn-link text-white text-decoration-none dropdown-toggle"
+                  type="button"
+                  data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle me-1"></i>
+            {{ user.name }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" (click)="onLogout()">Cerrar Sesión</a></li>
+          </ul>
+        </div>
+      }
+    </div>
+  </div>
+</nav>

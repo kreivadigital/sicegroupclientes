@@ -1,0 +1,51 @@
+// ==========================================
+// PAGINATION
+// ==========================================
+@use '../../../../assets/styles/variables' as *;
+
+.pagination-container {
+  padding: 1.5rem;
+  background-color: $bg-white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  margin-top: 1.5rem;
+
+  .pagination-info {
+    font-size: 0.9rem;
+    color: $text-muted;
+  }
+
+  .pagination {
+    margin-bottom: 0;
+
+    .page-link {
+      border-color: $border-darker;
+      color: $text-muted;
+      border-radius: $radius-base;
+      margin: 0 0.25rem;
+
+      &:hover {
+        background-color: $bg-lightest;
+        color: $primary;
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba($primary, 0.25);
+      }
+    }
+
+    .page-item {
+      &.active .page-link {
+        background-color: $primary;
+        border-color: $primary;
+        color: $text-white;
+      }
+
+      &.disabled .page-link {
+        color: $text-muted;
+        cursor: not-allowed;
+        background-color: transparent;
+      }
+    }
+  }
+}

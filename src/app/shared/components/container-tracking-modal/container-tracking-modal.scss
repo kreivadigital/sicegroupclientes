@@ -1,0 +1,397 @@
+// ==========================================
+// CONTAINER TRACKING MODAL
+// ==========================================
+@use '../../../../assets/styles/variables' as *;
+
+// Sección de Información de Orden y Contenedor
+.info-section {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border: 1.2px solid $border-base;
+  border-radius: $radius-xl;
+  background-color: $bg-lightest;
+  position: relative;
+}
+
+.info-numbers {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem 2rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.info-ports {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1rem 2rem;
+  align-items: center;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.no-container-message {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  color: $text-muted;
+  font-size: 0.95rem;
+  padding: 1rem 0;
+  margin-top: 0.5rem;
+}
+
+.info-label {
+  font-size: 0.875rem;
+  color: $text-muted;
+  font-weight: 500;
+}
+
+.info-value {
+  font-size: 1rem;
+  color: $text-darkest;
+}
+
+.info-date {
+  font-size: 0.875rem;
+  color: $text-light;
+  margin-top: 0.25rem;
+}
+
+.info-icon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 2px solid $primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $primary;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color $transition-base;
+  z-index: 10;
+  cursor: default;
+
+  &:hover {
+    background-color: rgba($primary, 0.1);
+  }
+}
+
+.info-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  padding: 0 1rem;
+}
+
+.arrow-line {
+  width: 100%;
+  height: 2px;
+  background: $accent-blue;
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.arrow-circle {
+  width: 8px;
+  height: 8px;
+  background-color: $accent-blue;
+  border-radius: 50%;
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+// Sección de Progreso del Envío
+.progress-section {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border: 1.2px solid rgba($primary, 0.4);
+  border-radius: $radius-xl;
+  background-color: $primary-light;
+  position: relative;
+}
+
+.progress-title {
+  color: $primary;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.progress-percentage {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: $primary;
+}
+
+.progress-tracker {
+  position: relative;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.progress-line {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  height: 4px;
+  background-color: $bg-white;
+  border-radius: 2px;
+  z-index: 1;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, $primary, $accent-emerald);
+  border-radius: 2px;
+  transition: width $transition-slow;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+}
+
+.step-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: $bg-white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  transition: all $transition-slow;
+
+  i {
+    font-size: 1.25rem;
+    color: $text-muted;
+  }
+}
+
+.progress-step.active .step-icon {
+  background-color: $primary;
+
+  i {
+    color: $text-white;
+  }
+}
+
+.step-label {
+  font-size: 0.875rem;
+  color: $text-muted;
+  text-align: center;
+}
+
+.progress-step.active .step-label {
+  color: $primary;
+  font-weight: 600;
+}
+
+// Sección de Maps
+.maps-section {
+  margin-bottom: 1.5rem;
+  border: 1.2px solid $border-base;
+  border-radius: $radius-xl;
+  overflow: hidden;
+}
+
+.maps-header {
+  padding: 1rem 1rem 0;
+
+  h6 {
+    color: $text-base;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+
+    i {
+      color: $primary;
+    }
+
+    .vessel-name {
+      font-weight: 400;
+      color: $text-muted;
+      margin-left: 0.25rem;
+    }
+  }
+}
+
+.maps-loading {
+  height: 300px;
+  background-color: $bg-light;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: $primary;
+
+  .spinner-border {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: $text-muted;
+  }
+}
+
+.maps-placeholder {
+  height: 300px;
+  background-color: $bg-light;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: $text-light;
+
+  i {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+  }
+}
+
+// Sección de Agregar Notificación
+.add-notification-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  h6 {
+    font-weight: 400;
+    color: $text-darkest;
+    margin-bottom: 0.75rem;
+    align-self: start;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+    margin-bottom: 0.75rem;
+
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 0.2rem rgba($primary, 0.15);
+    }
+  }
+
+  .btn-add-notification {
+    display: inline-flex;
+    align-items: center;
+    background-color: $primary;
+    color: $text-white;
+    font-weight: 400;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: $radius-base;
+    transition: background-color $transition-base;
+
+    &:hover:not(:disabled) {
+      background-color: darken($primary, 8%);
+      color: $text-white;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Sección de Notificaciones
+.notifications-section {
+  margin-bottom: 1.5rem;
+  h6 {
+    font-weight: 600;
+    color: $text-darkest;
+  }
+
+  .table {
+    margin-bottom: 0;
+
+    thead {
+      background-color: $bg-lightest;
+
+      th {
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: $text-muted;
+        border-bottom: 1px solid $border-base;
+        padding: 0.75rem 1rem;
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          padding: 0.75rem 1rem;
+          border-bottom: 1px solid $bg-light;
+          font-size: 0.875rem;
+
+          &.notification-detail {
+            max-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+
+        &:hover {
+          background-color: $bg-lightest;
+        }
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .info-numbers {
+    grid-template-columns: 1fr;
+  }
+
+  .info-ports {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+
+    .info-arrow {
+      transform: rotate(90deg);
+      padding: 0.5rem 0;
+    }
+  }
+
+  .progress-percentage {
+    position: static;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+}

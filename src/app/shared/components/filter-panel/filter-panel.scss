@@ -1,0 +1,31 @@
+.filter-panel {
+  .filter-group {
+    min-width: 180px;
+
+    .form-label {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .form-check {
+        margin-bottom: 0;
+      }
+
+      .form-check-label {
+        font-size: 0.9rem;
+        cursor: pointer;
+      }
+    }
+
+    .date-range-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+}

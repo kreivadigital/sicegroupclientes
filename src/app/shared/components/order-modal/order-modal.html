@@ -1,0 +1,246 @@
+<app-modal [title]="getTitle()" [size]="'lg'" (close)="onClose()">
+  @if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+  } @else {
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <!-- Cliente -->
+      <div class="col-12 mb-3">
+        <label class="form-label">Cliente</label>
+        @if (mode === 'view' && order()) {
+        <input
+          type="text"
+          class="form-control"
+          [value]="order()?.client?.company_name || ''"
+          readonly
+        />
+        } @else {
+        <select class="form-select" formControlName="client_id">
+          <option value="">Seleccionar cliente</option>
+          @for (client of clients(); track client.id) {
+          <option [value]="client.id">{{ client.company_name }}</option>
+          }
+        </select>
+        }
+      </div>
+
+      <!-- Descripción y Dirección de entrega -->
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Descripción@if (auth.isAdmin()) { (opcional)}</label>
+        <textarea
+          class="form-control"
+          rows="3"
+          formControlName="description"
+          placeholder="Descripción"
+        ></textarea>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Dirección de entrega</label>
+        <textarea
+          class="form-control"
+          rows="3"
+          formControlName="delivery_address"
+          placeholder="Agregar dirección"
+        ></textarea>
+        @if (form.get('delivery_address')?.invalid && form.get('delivery_address')?.touched) {
+          <div class="text-danger small mt-1">Este campo es requerido</div>
+        }
+      </div>
+
+      <!-- Cantidad de bultos y Packin list -->
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Cantidad de bultos</label>
+        <input type="number" class="form-control" formControlName="package_count" placeholder="0" min="0" />
+        @if (form.get('package_count')?.invalid && form.get('package_count')?.touched) {
+          <div class="text-danger small mt-1">Este campo es requerido (mínimo 1)</div>
+        }
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Picking list@if (auth.isAdmin()) { (opcional)}</label>
+        @if (mode === 'view') {
+          @if (order()?.picking_list_path) {
+            <div class="file-display" (click)="downloadFile('picking-list')">
+              <i class="bi bi-file-earmark-spreadsheet me-2"></i>
+              <span>picking_list.xlsx</span>
+              <button type="button" class="btn btn-sm btn-link" (click)="downloadFile('picking-list'); $event.stopPropagation()">
+                <i class="bi bi-download"></i>
+              </button>
+            </div>
+          } @else {
+            <input type="text" class="form-control" value="No adjuntado" readonly />
+          }
+        } @else {
+          @if (auth.isAdmin()) {
+            <button type="button" class="btn btn-secondary w-100" (click)="packinInput.click()">
+              <i class="bi bi-upload me-2"></i>
+              Adjuntar Excel
+            </button>
+            <input
+              #packinInput
+              type="file"
+              class="d-none"
+              accept=".xlsx,.xls"
+              (change)="onFileSelect($event, 'picking')"
+            />
+            @if (packinListFile) {
+              <small class="text-muted d-block mt-1">{{ packinListFile.name }}</small>
+            }
+          } @else {
+            <input type="text" class="form-control" value="Solo visible en modo lectura" readonly />
+          }
+        }
+      </div>
+
+
+      <!-- PDF Proforma y Factura -->
+      <div class="col-md-6 mb-3">
+        <label class="form-label">PDF Proforma@if (auth.isAdmin()) { (opcional)}</label>
+        @if (mode === 'view') {
+          @if (order()?.performa_pdf_path) {
+            <div class="file-display" (click)="downloadFile('performa-pdf')">
+              <i class="bi bi-file-earmark-pdf me-2"></i>
+              <span>proforma.pdf</span>
+              <button type="button" class="btn btn-sm btn-link" (click)="downloadFile('performa-pdf'); $event.stopPropagation()">
+                <i class="bi bi-download"></i>
+              </button>
+            </div>
+          } @else {
+            <input type="text" class="form-control" value="No adjuntado" readonly />
+          }
+        } @else {
+          @if (auth.isAdmin()) {
+            <button type="button" class="btn btn-secondary w-100" (click)="performaInput.click()">
+              <i class="bi bi-upload me-2"></i>
+              Adjuntar PDF
+            </button>
+            <input
+              #performaInput
+              type="file"
+              class="d-none"
+              accept=".pdf"
+              (change)="onFileSelect($event, 'performa')"
+            />
+            @if (performaPdfFile) {
+              <small class="text-muted d-block mt-1">{{ performaPdfFile.name }}</small>
+            }
+          } @else {
+            <input type="text" class="form-control" value="Solo visible en modo lectura" readonly />
+          }
+        }
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Factura@if (auth.isAdmin()) { (opcional)}</label>
+        @if (mode === 'view') {
+          @if (order()?.invoice_path) {
+            <div class="file-display" (click)="downloadFile('invoice')">
+              <i class="bi bi-file-earmark-pdf me-2"></i>
+              <span>invoice.pdf</span>
+              <button type="button" class="btn btn-sm btn-link" (click)="downloadFile('invoice'); $event.stopPropagation()">
+                <i class="bi bi-download"></i>
+              </button>
+            </div>
+          } @else {
+            <input type="text" class="form-control" value="No adjuntado" readonly />
+          }
+        } @else {
+          @if (auth.isAdmin()) {
+            <button type="button" class="btn btn-secondary w-100" (click)="invoiceInput.click()">
+              <i class="bi bi-upload me-2"></i>
+              Adjuntar PDF
+            </button>
+            <input
+              #invoiceInput
+              type="file"
+              class="d-none"
+              accept=".pdf"
+              (change)="onFileSelect($event, 'invoice')"
+            />
+            @if (invoiceFile) {
+              <small class="text-muted d-block mt-1">{{ invoiceFile.name }}</small>
+            }
+          } @else {
+            <input type="text" class="form-control" value="Solo visible en modo lectura" readonly />
+          }
+        }
+      </div>
+
+      <!-- Estado y Contenedor -->
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Estado</label>
+        @if (mode === 'view' && order()) {
+        <input type="text" class="form-control" [value]="getStatusLabel(order()?.status || '')" readonly />
+        } @else {
+        <select class="form-select" formControlName="status">
+          <option value="pending">Pendiente</option>
+          <option value="processing">En Proceso</option>
+          <option value="shipped">En tránsito</option>
+          <option value="delivered">Entregada</option>
+          <option value="cancelled">Cancelada</option>
+        </select>
+        }
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Contenedor@if (auth.isAdmin()) { (opcional)}</label>
+        @if (mode === 'view') {
+          @if (order()?.container) {
+            <input
+              type="text"
+              class="form-control"
+              [value]="
+                order()?.container?.container_number + ' - ' + order()?.container?.shipment_reference ||
+                ''
+              "
+              readonly
+            />
+          } @else {
+            <input type="text" class="form-control" value="No asignado" readonly />
+          }
+        } @else {
+          @if (auth.isAdmin()) {
+            <select class="form-select" formControlName="container_id">
+              <option value="">Seleccionar contenedor</option>
+              @for (container of containers(); track container.id) {
+              <option [value]="container.id">
+                {{ container.container_number }} - {{ container.shipment_reference }}
+              </option>
+              }
+            </select>
+          } @else {
+            <input type="text" class="form-control" value="Solo visible en modo lectura" readonly />
+          }
+        }
+      </div>
+    </div>
+  </form>
+  }
+
+  <!-- Footer -->
+  <div footer>
+    @if (mode === 'view') {
+    <button type="button" class="btn btn-secondary" (click)="onClose()">Cerrar</button>
+    } @else {
+    <button type="button" class="btn btn-secondary" (click)="onClose()" [disabled]="loading()">
+      Cancelar
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="onSubmit()"
+      [disabled]="form.invalid || loading()"
+    >
+      @if (loading()) {
+      <span class="spinner-border spinner-border-sm me-2"></span>
+      }
+      {{ mode === 'create' ? 'Agregar' : 'Actualizar' }}
+    </button>
+    }
+  </div>
+</app-modal>

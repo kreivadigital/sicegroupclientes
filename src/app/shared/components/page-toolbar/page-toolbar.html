@@ -1,0 +1,40 @@
+<div class="page-toolbar mb-4">
+  <div class="row g-3">
+    <!-- Search Bar -->
+    @if (showSearch) {
+      <div class="col-md-3">
+        <app-search-bar
+          [placeholder]="searchPlaceholder"
+          (searchChange)="searchChange.emit($event)">
+        </app-search-bar>
+      </div>
+    }
+
+    <!-- Filters -->
+    @if (showFilters && filters.length > 0) {
+      <div class="col">
+        <app-filter-panel
+          [filters]="filters"
+          (filterChange)="filterChange.emit($event)">
+        </app-filter-panel>
+      </div>
+    }
+
+    <!-- Spacer cuando no hay filtros -->
+    @if (!showFilters || filters.length === 0) {
+      <div class="col"></div>
+    }
+
+    <!-- Add Button -->
+    @if (showAddButton && addButtonText) {
+      <div class="col-auto">
+        <button
+          class="btn btn-primary text-nowrap"
+          (click)="addClick.emit()"
+          type="button">
+          <i class="bi bi-plus-circle me-2"></i>{{ addButtonText }}
+        </button>
+      </div>
+    }
+  </div>
+</div>
