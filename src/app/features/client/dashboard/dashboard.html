@@ -1,0 +1,100 @@
+<div class="container-fluid">
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando estadísticas...</span>
+      </div>
+    </div>
+  } @else {
+    <!-- Tarjetas de estadísticas -->
+    <div class="row g-4 mb-4">
+      <!-- Pedidos Totales -->
+      <div class="col-md-3">
+        <app-stat-card
+          title="Pedidos Totales"
+          [value]="stats().total"
+          icon="bi-box-seam"
+          iconColor="#155DFC">
+        </app-stat-card>
+      </div>
+
+      <!-- En Tránsito -->
+      <div class="col-md-3">
+        <app-stat-card
+          title="En Tránsito"
+          [value]="stats().in_transit"
+          icon="bi-truck"
+          iconColor="#FFDF20">
+        </app-stat-card>
+      </div>
+
+      <!-- Entregados -->
+      <div class="col-md-3">
+        <app-stat-card
+          title="Entregados"
+          [value]="stats().delivered"
+          icon="bi-check-circle"
+          iconColor="#2AC364">
+        </app-stat-card>
+      </div>
+
+      <!-- Retrasados -->
+      <div class="col-md-3">
+        <app-stat-card
+          title="Retrasados"
+          [value]="stats().delayed"
+          icon="bi-exclamation-circle"
+          iconColor="#E7000B">
+        </app-stat-card>
+      </div>
+    </div>
+
+    <!-- Tabla de órdenes -->
+    <div class="row">
+      <div class="col">
+        <app-data-table
+          title="Ordenes de Compra"
+          [showFilters]="true"
+          [showSearch]="true"
+          [columns]="columns"
+          [data]="orders()"
+          [actions]="actions"
+          [loading]="loadingOrders()"
+          emptyMessage="No tienes órdenes registradas"
+          (actionClick)="onTableAction($event)">
+        </app-data-table>
+
+        <!-- Pagination -->
+        @if (orders().length > 0) {
+          <app-pagination
+            [currentPage]="currentPage()"
+            [totalPages]="totalPages()"
+            [totalItems]="totalItems()"
+            [perPage]="perPage()"
+            (pageChange)="onPageChange($event)">
+          </app-pagination>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Modal de detalle de orden -->
+  @if (showModal()) {
+    <app-order-modal
+      mode="view"
+      [orderId]="selectedOrderId()"
+      (close)="onModalClose()"
+      (save)="onOrderSaved($event)">
+    </app-order-modal>
+  }
+
+  <!-- Modal de rastreo de contenedor -->
+  @if (showTrackingModal() && selectedContainerId()) {
+    <app-container-tracking-modal
+      [containerId]="selectedContainerId()!"
+      [orderNumber]="selectedOrderNumber()"
+      [showAddNotification]="false"
+      (close)="onTrackingModalClose()">
+    </app-container-tracking-modal>
+  }
+</div>

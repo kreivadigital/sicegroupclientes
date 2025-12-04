@@ -1,0 +1,192 @@
+<div class="profile-page">
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+  } @else if (client()) {
+    <!-- Sección corta: Información del perfil -->
+    <div class="profile-summary">
+      <div class="profile-avatar">
+        {{ getInitials() }}
+      </div>
+
+      <div class="profile-info">
+        <h2 class="profile-name">{{ client()!.company_name }}</h2>
+        <p class="profile-role">{{ getUserRole() }}</p>
+
+        <div class="profile-contact">
+          <div class="contact-item">
+            <i class="bi bi-envelope"></i>
+            <span>{{ personalInfoForm.value.email }}</span>
+          </div>
+          <div class="contact-item">
+            <i class="bi bi-telephone"></i>
+            <span>{{ personalInfoForm.value.phone }}</span>
+          </div>
+        </div>
+      </div>
+
+      @if (!isEditMode()) {
+        <button type="button" class="btn btn-outline-primary edit-btn" (click)="toggleEditMode()">
+          <i class="bi bi-pencil"></i>
+          Editar perfil
+        </button>
+      }
+    </div>
+
+    <!-- Sección completa: Detalles del perfil -->
+    <div class="profile-details">
+      <!-- Mensajes de éxito -->
+      @if (updateSuccess()) {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <i class="bi bi-check-circle me-2"></i>
+          Perfil actualizado correctamente
+        </div>
+      }
+
+      <!-- Subsección: Información personal -->
+      <div class="detail-section">
+        <h6 class="section-title">Información personal</h6>
+        <p class="section-subtitle">Actualiza tus datos personales y de contacto</p>
+
+        <form [formGroup]="personalInfoForm" class="section-form">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Nombre</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="name"
+                placeholder="Global">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Correo Electrónico</label>
+              <input
+                type="email"
+                class="form-control"
+                formControlName="email"
+                placeholder="maria.gonzalez@empresa.com">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Teléfono</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="phone"
+                placeholder="+598 678 345">
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Subsección: Datos de la empresa -->
+      <div class="detail-section">
+        <h6 class="section-title">Datos de la empresa</h6>
+        <p class="section-subtitle">Actualiza tus datos personales y de contacto</p>
+
+        <form [formGroup]="companyInfoForm" class="section-form">
+          <div class="row">
+            <div class="col-md-8 mb-3">
+              <label class="form-label">Dirección</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="address"
+                placeholder="Montevideo, Uruguay">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">RUT</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="rut"
+                placeholder="12345">
+            </div>
+          </div>
+        </form>
+
+        @if (isEditMode()) {
+          <div class="section-actions">
+            <button type="button" class="btn btn-secondary" (click)="toggleEditMode()">
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="onUpdateProfile()"
+              [disabled]="personalInfoForm.invalid || companyInfoForm.invalid || loading()">
+              @if (loading()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+              }
+              Guardar cambios
+            </button>
+          </div>
+        }
+      </div>
+
+      <!-- Subsección: Seguridad -->
+      <div class="detail-section">
+        <h6 class="section-title">Seguridad</h6>
+        <p class="section-subtitle">Cambiar contraseña</p>
+
+        @if (passwordChangeSuccess()) {
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>
+            Contraseña actualizada correctamente
+          </div>
+        }
+
+        <form [formGroup]="securityForm" class="section-form">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Contraseña actual</label>
+              <input
+                type="password"
+                class="form-control"
+                formControlName="current_password"
+                placeholder="Contraseña actual">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Nueva contraseña</label>
+              <input
+                type="password"
+                class="form-control"
+                formControlName="password"
+                placeholder="Nueva contraseña"
+                [class.is-invalid]="securityForm.hasError('passwordMismatch') && securityForm.get('password_confirmation')?.touched">
+              @if (securityForm.hasError('passwordMismatch') && securityForm.get('password_confirmation')?.touched) {
+                <div class="invalid-feedback">
+                  Las contraseñas no coinciden
+                </div>
+              }
+            </div>
+            <div class="col-md-6 mb-3">
+              <input
+                type="password"
+                class="form-control"
+                formControlName="password_confirmation"
+                placeholder="Confirmar nueva contraseña"
+                [class.is-invalid]="securityForm.hasError('passwordMismatch') && securityForm.get('password_confirmation')?.touched"
+                style="visibility: hidden; position: absolute;">
+            </div>
+          </div>
+
+          <div class="section-actions">
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="onChangePassword()"
+              [disabled]="securityForm.invalid || loading()">
+              @if (loading()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+              }
+              Actualizar contraseña
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>
