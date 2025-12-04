@@ -1,0 +1,48 @@
+// ==========================================
+// ESTILOS DE BADGES GLOBALES
+// ==========================================
+@use 'variables' as *;
+
+// Estilos base para badges
+.badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.1875rem 0.875rem;
+  border-radius: 0.9375rem;
+  border: 1.5px solid;
+
+  // Success (Verde)
+  &.bg-success {
+    background-color: $success-bg !important;
+    color: $success-text !important;
+    border-color: $success-border !important;
+  }
+
+  // Warning (Amarillo)
+  &.bg-warning {
+    background-color: $warning-bg !important;
+    color: $warning-text !important;
+    border-color: $warning-border !important;
+  }
+
+  // Danger (Rojo)
+  &.bg-danger {
+    background-color: $danger-bg !important;
+    color: $danger-text !important;
+    border-color: $danger-border !important;
+  }
+
+  // Info (Azul)
+  &.bg-info {
+    background-color: $info-bg !important;
+    color: $info-text !important;
+    border-color: $info-border !important;
+  }
+
+  // Secondary (Gris)
+  &.bg-secondary {
+    background-color: $secondary-bg !important;
+    color: $secondary-text !important;
+    border-color: $secondary-border !important;
+  }
+}

@@ -1,0 +1,32 @@
+// ==========================================
+// MAIN LAYOUT
+// ==========================================
+@use '../../../assets/styles/variables' as *;
+
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.content-area {
+  margin-left: 240px;
+  min-height: 100vh;
+  transition: margin-left $transition-base;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  background-color: $bg-lightest;
+  padding: 24px;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+// Cuando el sidebar está colapsado
+:host.sidebar-collapsed .content-area {
+  margin-left: 64px;
+}

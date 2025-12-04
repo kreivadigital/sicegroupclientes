@@ -1,0 +1,114 @@
+// ==========================================
+// VARIABLES GLOBALES - SICE
+// ==========================================
+
+// ------------------------------------------
+// Colores Primarios (Brand)
+// ------------------------------------------
+$primary: #02661E;
+$primary-light: #02661E1A;      // 10% opacity
+$primary-dark: #015417;
+$primary-darker: #01300e;
+
+// ------------------------------------------
+// Colores de Texto
+// ------------------------------------------
+$text-darkest: #111827;         // Títulos principales
+$text-dark: #1f2937;            // Títulos secundarios
+$text-base: #374151;            // Texto base
+$text-muted: #6B7280;           // Labels, texto secundario
+$text-light: #9CA3AF;           // Placeholders, texto terciario
+$text-white: #FFFFFF;
+$text-black: #000000;
+
+// ------------------------------------------
+// Colores de Background
+// ------------------------------------------
+$bg-white: #FFFFFF;
+$bg-lightest: #F9FAFB;          // Background principal
+$bg-light: #F3F4F6;             // Cards, secciones
+$bg-gray: #E9ECEF;              // Elementos secundarios
+
+// ------------------------------------------
+// Colores de Bordes
+// ------------------------------------------
+$border-light: #F0F0F0;         // Bordes muy sutiles
+$border-base: #E5E7EB;          // Bordes estándar
+$border-dark: #D1D5DB;          // Bordes más visibles
+$border-darker: #DEE2E6;        // Bordes Bootstrap-like
+
+// ------------------------------------------
+// Colores de Estado - Success (Verde)
+// ------------------------------------------
+$success-bg: #dcfce7;
+$success-text: #016630;
+$success-border: #7bf1a8;
+
+// ------------------------------------------
+// Colores de Estado - Warning (Amarillo)
+// ------------------------------------------
+$warning-bg: #fef9c2;
+$warning-text: #894b00;
+$warning-border: #ffdf20;
+
+// ------------------------------------------
+// Colores de Estado - Danger (Rojo)
+// ------------------------------------------
+$danger-bg: #ffe2e2;
+$danger-text: #9f0712;
+$danger-border: #ffa2a2;
+$danger-solid: #DC2626;         // Para botones, iconos
+$danger-light: #ef4444;
+
+// ------------------------------------------
+// Colores de Estado - Info (Azul)
+// ------------------------------------------
+$info-bg: #9FE2FF;
+$info-text: #004A6B;
+$info-border: #004A6B;
+
+// ------------------------------------------
+// Colores de Estado - Secondary (Gris)
+// ------------------------------------------
+$secondary-bg: #E0E0E0;
+$secondary-text: #4A4A4A;
+$secondary-border: #4A4A4A;
+
+// ------------------------------------------
+// Colores de Acento
+// ------------------------------------------
+$accent-blue: #3B82F6;
+$accent-blue-dark: #2563eb;
+$accent-emerald: #10B981;
+
+// ------------------------------------------
+// Sombras
+// ------------------------------------------
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+$shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+$shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
+
+// ------------------------------------------
+// Border Radius
+// ------------------------------------------
+$radius-sm: 4px;
+$radius-base: 6px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 13px;
+$radius-full: 9999px;
+
+// ------------------------------------------
+// Transiciones
+// ------------------------------------------
+$transition-fast: 0.15s ease;
+$transition-base: 0.2s ease;
+$transition-slow: 0.3s ease;
+
+// ------------------------------------------
+// Z-Index
+// ------------------------------------------
+$z-dropdown: 1000;
+$z-modal-backdrop: 1040;
+$z-modal: 1050;
+$z-tooltip: 1070;

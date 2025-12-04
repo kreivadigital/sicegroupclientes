@@ -1,0 +1,63 @@
+/* Global Styles */
+@use 'assets/styles/variables' as *;
+@use 'assets/styles/badges';
+
+/* Bootstrap Icons */
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+/* Estilos globales base */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: $bg-lightest;
+  color: $text-base;
+}
+
+/* Focus states con color primario */
+.form-control:focus,
+.form-select:focus {
+  border-color: $primary;
+  box-shadow: 0 0 0 0.2rem rgba($primary, 0.15);
+}
+
+/* Botón primario override */
+.btn-primary {
+  background-color: $primary;
+  border-color: $primary;
+
+  &:hover,
+  &:focus {
+    background-color: $primary-dark;
+    border-color: $primary-dark;
+  }
+
+  &:active {
+    background-color: $primary-darker;
+    border-color: $primary-darker;
+  }
+}
+
+.btn-outline-primary {
+  color: $primary;
+  border-color: $primary;
+
+  &:hover,
+  &:focus {
+    background-color: $primary;
+    border-color: $primary;
+    color: $text-white;
+  }
+}
+
+/* Text utilities */
+.text-primary {
+  color: $primary !important;
+}
+
+/* Link styles */
+a {
+  color: $primary;
+
+  &:hover {
+    color: $primary-dark;
+  }
+}
