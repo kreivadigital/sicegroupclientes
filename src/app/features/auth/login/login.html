@@ -1,0 +1,150 @@
+<div class="login-container">
+  <div class="row g-0">
+    <!-- Columna Izquierda: Panel Informativo -->
+    <div class="col-lg-6 left-panel">
+      <div class="left-panel-content">
+        <div class="info-section">
+          <h1 class="info-title">
+            <i class="bi bi-box-seam me-3"></i>
+            Rastrea tus envíos en tiempo real
+          </h1>
+          <p class="info-description">
+            Sistema integral de gestión logística para el comercio exterior.
+            Monitorea el estado de tus contenedores y órdenes desde cualquier lugar.
+          </p>
+          <div class="features-list">
+            <div class="feature-item">
+              <i class="bi bi-check-circle-fill me-2"></i>
+              <span>Seguimiento en tiempo real</span>
+            </div>
+            <div class="feature-item">
+              <i class="bi bi-check-circle-fill me-2"></i>
+              <span>Notificaciones automáticas</span>
+            </div>
+            <div class="feature-item">
+              <i class="bi bi-check-circle-fill me-2"></i>
+              <span>Reportes detallados</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna Derecha: Formulario de Login -->
+    <div class="col-lg-6 right-panel">
+      <div class="right-panel-content">
+        <!-- Logo y título -->
+        <div class="login-header text-center mb-4">
+          <h2 class="brand-name">SICE GROUP</h2>
+          <p class="brand-subtitle">Servicio Integral de Comercio Exterior</p>
+        </div>
+
+        <!-- Formulario de login -->
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <!-- Campo Email -->
+          <div class="mb-3">
+            <label for="email" class="form-label">
+              <i class="bi bi-envelope me-1"></i>
+              Correo Electrónico
+            </label>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              formControlName="email"
+              placeholder="tu@email.com"
+              [class.is-invalid]="isFieldInvalid('email')"
+              (input)="onFieldChange()"
+              autocomplete="email"
+            />
+            @if (isFieldInvalid('email')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('email') }}
+              </div>
+            }
+          </div>
+
+          <!-- Campo Contraseña -->
+          <div class="mb-3">
+            <label for="password" class="form-label">
+              <i class="bi bi-lock me-1"></i>
+              Contraseña
+            </label>
+            <div class="input-group">
+              <input
+                [type]="showPassword() ? 'text' : 'password'"
+                class="form-control"
+                id="password"
+                formControlName="password"
+                placeholder="••••••••"
+                [class.is-invalid]="isFieldInvalid('password')"
+                (input)="onFieldChange()"
+                autocomplete="current-password"
+              />
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="togglePasswordVisibility()"
+                [disabled]="loading()"
+              >
+                <i [class]="showPassword() ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+              </button>
+              @if (isFieldInvalid('password')) {
+                <div class="invalid-feedback">
+                  {{ getFieldError('password') }}
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Mensaje de error global -->
+          @if (error()) {
+            <div class="alert alert-danger d-flex align-items-center" role="alert">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              <div>{{ error() }}</div>
+            </div>
+          }
+
+          <!-- Link de recuperación de contraseña -->
+          <div class="text-end mb-3">
+            <a
+              routerLink="/auth/password-reset"
+              class="text-decoration-none password-reset-link"
+              [class.disabled]="loading()"
+            >
+              <i class="bi bi-key me-1"></i>
+              ¿Olvidaste tu contraseña?
+            </a>
+          </div>
+
+          <!-- Botón de submit -->
+          <button
+            type="submit"
+            class="btn btn-primary w-100"
+            [disabled]="loading()"
+          >
+            @if (loading()) {
+              <span>
+                <app-loading-spinner></app-loading-spinner>
+                Iniciando sesión...
+              </span>
+            } @else {
+              <span>
+                <i class="bi bi-box-arrow-in-right me-2"></i>
+                Iniciar Sesión
+              </span>
+            }
+          </button>
+        </form>
+
+        <!-- Footer -->
+        <div class="login-footer text-center mt-4 pt-3">
+          <small class="text-muted">
+            <i class="bi bi-shield-check me-1"></i>
+            Conexión segura con SSL
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
