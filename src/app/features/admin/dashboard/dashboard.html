@@ -1,0 +1,34 @@
+<div class="container-fluid">
+  <!-- Tarjetas de estadísticas -->
+  <div class="row g-4">
+    <!-- Total de Clientes -->
+    <div class="col-md-4">
+      <app-stat-card
+        title="Total de Clientes"
+        [value]="4"
+        icon="bi-people"
+        iconColor="#155DFC">
+      </app-stat-card>
+    </div>
+
+    <!-- Pedidos Activos -->
+    <div class="col-md-4">
+      <app-stat-card
+        title="Pedidos Activos"
+        [value]="3"
+        icon="bi-box-seam"
+        iconColor="#02661E">
+      </app-stat-card>
+    </div>
+
+    <!-- Contenedores -->
+    <div class="col-md-4">
+      <app-stat-card
+        title="Contenedores"
+        [value]="8"
+        icon="bi-box"
+        iconColor="#9810FA">
+      </app-stat-card>
+    </div>
+  </div>
+</div>

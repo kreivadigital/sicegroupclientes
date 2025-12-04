@@ -1,0 +1,72 @@
+<div class="container-list-page">
+  <!-- Toolbar: Search + Buttons -->
+  <div class="page-toolbar mb-4">
+    <div class="d-flex justify-content-between align-items-center gap-3">
+      <div class="flex-grow-1" style="max-width: 300px;">
+        <app-search-bar
+          placeholder="Buscar contenedor..."
+          (searchChange)="onSearch($event)">
+        </app-search-bar>
+      </div>
+      <div class="d-flex gap-2 flex-shrink-0">
+        <button
+          type="button"
+          class="btn btn-primary text-nowrap"
+          (click)="onImportFromShipsGo()"
+          [disabled]="importing()">
+          @if (importing()) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+          } @else {
+            <i class="bi bi-cloud-download me-2"></i>
+          }
+          Importar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary text-nowrap"
+          (click)="onAddContainer()">
+          <i class="bi bi-plus-circle me-2"></i>
+          Agregar Nuevo Contenedor
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <app-data-table
+    [columns]="columns"
+    [data]="containers()"
+    [actions]="actions"
+    [loading]="loading()"
+    emptyMessage="No hay contenedores registrados"
+    (actionClick)="onTableAction($event)">
+  </app-data-table>
+
+  <!-- Pagination -->
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    [totalItems]="totalItems()"
+    [perPage]="perPage()"
+    (pageChange)="onPageChange($event)">
+  </app-pagination>
+
+  <!-- Modal de crear/editar -->
+  @if (showModal()) {
+    <app-container-modal
+      [mode]="modalMode()"
+      [containerId]="selectedContainerId()"
+      (close)="onModalClose()"
+      (save)="onContainerSaved($event)">
+    </app-container-modal>
+  }
+
+  <!-- Modal de tracking -->
+  @if (showTrackingModal() && selectedContainerId()) {
+    <app-container-tracking-modal
+      [containerId]="selectedContainerId()!"
+      [showAddNotification]="true"
+      (close)="onTrackingModalClose()">
+    </app-container-tracking-modal>
+  }
+</div>

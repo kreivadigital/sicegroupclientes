@@ -1,0 +1,39 @@
+<div class="client-list-page">
+  <!-- Toolbar: Search + Add Button -->
+  <app-page-toolbar
+    [showSearch]="true"
+    [showFilters]="false"
+    addButtonText="Agregar Nuevo Cliente"
+    (searchChange)="onSearch($event)"
+    (addClick)="onAddClient()">
+  </app-page-toolbar>
+
+  <!-- Data Table -->
+  <app-data-table
+    [columns]="columns"
+    [data]="clients()"
+    [actions]="actions"
+    [loading]="loading()"
+    emptyMessage="No hay clientes registrados"
+    (actionClick)="onTableAction($event)">
+  </app-data-table>
+
+  <!-- Pagination -->
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    [totalItems]="totalItems()"
+    [perPage]="perPage()"
+    (pageChange)="onPageChange($event)">
+  </app-pagination>
+
+  <!-- Modal -->
+  @if (showModal()) {
+    <app-client-modal
+      [mode]="modalMode()"
+      [clientId]="selectedClientId()"
+      (close)="onCloseModal()"
+      (save)="onClientSaved($event)">
+    </app-client-modal>
+  }
+</div>

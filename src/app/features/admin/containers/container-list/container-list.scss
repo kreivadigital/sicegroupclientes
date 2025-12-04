@@ -1,0 +1,11 @@
+// ==========================================
+// CONTAINER LIST
+// ==========================================
+@use '../../../../../assets/styles/variables' as *;
+
+.page-toolbar {
+  background-color: $bg-white;
+  padding: 1.5rem;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+}

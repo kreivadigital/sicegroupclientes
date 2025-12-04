@@ -1,0 +1,22 @@
+// ==========================================
+// CLIENT MODAL
+// ==========================================
+@use '../../../../../assets/styles/variables' as *;
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: $text-base;
+}
+
+.form-control,
+.form-select {
+  &:focus {
+    border-color: $primary;
+    box-shadow: 0 0 0 0.2rem rgba($primary, 0.25);
+  }
+}
+
+.text-danger {
+  font-size: 0.875rem;
+}

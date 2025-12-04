@@ -1,0 +1,49 @@
+<div class="order-list-page">
+  <!-- Toolbar: Search + Add Button -->
+  <app-page-toolbar
+    [showSearch]="true"
+    [showFilters]="false"
+    addButtonText="Agregar Nueva Orden"
+    (searchChange)="onSearch($event)"
+    (addClick)="onAddOrder()">
+  </app-page-toolbar>
+
+  <!-- Data Table -->
+  <app-data-table
+    [columns]="columns"
+    [data]="orders()"
+    [actions]="actions"
+    [loading]="loading()"
+    emptyMessage="No hay órdenes registradas"
+    (actionClick)="onTableAction($event)">
+  </app-data-table>
+
+  <!-- Pagination -->
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    [totalItems]="totalItems()"
+    [perPage]="perPage()"
+    (pageChange)="onPageChange($event)">
+  </app-pagination>
+
+  <!-- Modal -->
+  @if (showModal()) {
+    <app-order-modal
+      [mode]="modalMode()"
+      [orderId]="selectedOrderId()"
+      (close)="onModalClose()"
+      (save)="onOrderSaved($event)">
+    </app-order-modal>
+  }
+
+  <!-- Modal de rastreo de contenedor -->
+  @if (showTrackingModal() && selectedContainerId()) {
+    <app-container-tracking-modal
+      [containerId]="selectedContainerId()!"
+      [orderNumber]="selectedOrderNumber()"
+      [showAddNotification]="false"
+      (close)="onTrackingModalClose()">
+    </app-container-tracking-modal>
+  }
+</div>

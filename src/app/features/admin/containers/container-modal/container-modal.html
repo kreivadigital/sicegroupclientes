@@ -1,0 +1,86 @@
+<app-modal
+  [title]="getTitle()"
+  [size]="'md'"
+  (close)="onClose()">
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="mt-2 text-muted">Buscando contenedor en Shipsgo...</p>
+    </div>
+  } @else {
+    <!-- Mensaje de resultado -->
+    @if (showResult()) {
+      <div class="alert mb-3" [class]="getResultClass()">
+        <i class="bi" [class.bi-check-circle]="resultType() === 'success'"
+           [class.bi-info-circle]="resultType() === 'info'"
+           [class.bi-exclamation-circle]="resultType() === 'error'"></i>
+        {{ resultMessage() }}
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- Número de contenedor -->
+      <div class="mb-3">
+        <label class="form-label">Número de contenedor <span class="text-danger">*</span></label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="container_number"
+          placeholder="Ej: MAEU1234567"
+          [class.is-invalid]="form.get('container_number')?.invalid && form.get('container_number')?.touched">
+        @if (form.get('container_number')?.invalid && form.get('container_number')?.touched) {
+          <div class="invalid-feedback">
+            @if (form.get('container_number')?.errors?.['required']) {
+              Este campo es requerido
+            }
+            @if (form.get('container_number')?.errors?.['maxlength']) {
+              Máximo 50 caracteres
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Número de referencia (opcional) -->
+      <div class="mb-3">
+        <label class="form-label">Número de referencia <span class="text-muted">(opcional)</span></label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="shipment_reference"
+          placeholder="Ej: SICE-2025-001"
+          [class.is-invalid]="form.get('shipment_reference')?.invalid && form.get('shipment_reference')?.touched">
+        @if (form.get('shipment_reference')?.errors?.['maxlength']) {
+          <div class="invalid-feedback">Máximo 255 caracteres</div>
+        }
+        <div class="form-text">Si se proporciona, se usará para filtrar en la búsqueda.</div>
+      </div>
+    </form>
+  }
+
+  <!-- Footer -->
+  <div footer>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="onClose()"
+      [disabled]="loading()">
+      Cancelar
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="onSubmit()"
+      [disabled]="form.invalid || loading() || showResult()">
+      @if (loading()) {
+        <span class="spinner-border spinner-border-sm me-2"></span>
+        Buscando...
+      } @else {
+        <i class="bi bi-search me-1"></i>
+        {{ mode === 'create' ? 'Buscar y agregar' : 'Guardar' }}
+      }
+    </button>
+  </div>
+</app-modal>
