@@ -2,7 +2,18 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Container, ContainerFormData, ContainerCreateData, ContainerCreateResponse, Movement, ContainerLiveStatus, VesselInfo } from '../models/container.model';
+import { Container, ContainerFormData, ContainerCreateData, ContainerCreateResponse, Movement, ContainerLiveStatus, VesselInfo, MovementCreateData, MovementUpdateData } from '../models/container.model';
+import { Note, NoteCreateData, Notification } from '../models/notification.model';
+
+export interface NotesResponse {
+  message: string;
+  data: Note[];
+}
+
+export interface NotificationsResponse {
+  message: string;
+  data: Notification[];
+}
 import { ApiResponse, PaginatedResponse } from '../interfaces/api-response.interface';
 
 export interface ContainerFilters {
@@ -55,6 +66,13 @@ export class ContainerService {
     return this.http.get<ApiResponse<Container>>(`${this.apiUrl}/${id}`);
   }
 
+  /**
+   * Obtener todos los contenedores sin paginación (para selects)
+   */
+  getAllContainers(): Observable<ApiResponse<Container[]>> {
+    return this.http.get<ApiResponse<Container[]>>(`${this.apiUrl}?all=true`);
+  }
+
   createContainer(data: ContainerCreateData): Observable<ContainerCreateResponse> {
     return this.http.post<ContainerCreateResponse>(this.apiUrl, data);
   }
@@ -85,5 +103,73 @@ export class ContainerService {
 
   getVesselInfo(id: number): Observable<ApiResponse<VesselInfo>> {
     return this.http.get<ApiResponse<VesselInfo>>(`${this.apiUrl}/${id}/vessel-info`);
+  }
+
+  // ==========================================
+  // MOVEMENTS CRUD (movimientos manuales NOTI)
+  // ==========================================
+
+  /**
+   * Obtener un movimiento específico
+   */
+  getMovement(containerId: number, movementId: number): Observable<ApiResponse<Movement>> {
+    return this.http.get<ApiResponse<Movement>>(`${this.apiUrl}/${containerId}/movements/${movementId}`);
+  }
+
+  /**
+   * Crear un movimiento manual (NOTI)
+   */
+  createMovement(containerId: number, data: MovementCreateData): Observable<ApiResponse<Movement>> {
+    return this.http.post<ApiResponse<Movement>>(`${this.apiUrl}/${containerId}/movements`, data);
+  }
+
+  /**
+   * Actualizar un movimiento manual (solo NOTI)
+   */
+  updateMovement(containerId: number, movementId: number, data: MovementUpdateData): Observable<ApiResponse<Movement>> {
+    return this.http.put<ApiResponse<Movement>>(`${this.apiUrl}/${containerId}/movements/${movementId}`, data);
+  }
+
+  /**
+   * Eliminar un movimiento manual (solo NOTI)
+   */
+  deleteMovement(containerId: number, movementId: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${containerId}/movements/${movementId}`);
+  }
+
+  // ==========================================
+  // NOTES CRUD (Notas de contenedor)
+  // ==========================================
+
+  /**
+   * Obtener notas de un contenedor
+   */
+  getNotes(containerId: number): Observable<NotesResponse> {
+    return this.http.get<NotesResponse>(`${this.apiUrl}/${containerId}/notes`);
+  }
+
+  /**
+   * Crear una nota para un contenedor
+   */
+  createNote(containerId: number, data: NoteCreateData): Observable<ApiResponse<Note>> {
+    return this.http.post<ApiResponse<Note>>(`${this.apiUrl}/${containerId}/notes`, data);
+  }
+
+  /**
+   * Eliminar una nota
+   */
+  deleteNote(containerId: number, noteId: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${containerId}/notes/${noteId}`);
+  }
+
+  // ==========================================
+  // NOTIFICATIONS (Notificaciones de contenedor)
+  // ==========================================
+
+  /**
+   * Obtener notificaciones de un contenedor (ordenadas cronológicamente, más reciente primero)
+   */
+  getNotifications(containerId: number): Observable<NotificationsResponse> {
+    return this.http.get<NotificationsResponse>(`${this.apiUrl}/${containerId}/notifications`);
   }
 }

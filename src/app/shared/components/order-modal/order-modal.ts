@@ -78,11 +78,10 @@ export class OrderModal implements OnInit {
   }
 
   loadContainers() {
-    // Cargar todos los contenedores para el select
-    this.containerService.getContainers(1, undefined).subscribe({
+    // Cargar todos los contenedores para el select (sin paginación)
+    this.containerService.getAllContainers().subscribe({
       next: (response) => {
-        const paginationData = response.data as any;
-        this.containers.set(paginationData.data || []);
+        this.containers.set(response.data || []);
       },
       error: (error) => console.error('Error cargando contenedores:', error)
     });

@@ -19,38 +19,61 @@ body {
   box-shadow: 0 0 0 0.2rem rgba($primary, 0.15);
 }
 
-/* Botón primario override */
+/* Botón primario override - Verde SICE */
 .btn-primary {
-  background-color: $primary;
-  border-color: $primary;
+  background-color: $primary !important;
+  border-color: $primary !important;
+  color: $text-white !important;
 
   &:hover,
   &:focus {
-    background-color: $primary-dark;
-    border-color: $primary-dark;
+    background-color: $primary-dark !important;
+    border-color: $primary-dark !important;
+    color: $text-white !important;
   }
 
-  &:active {
-    background-color: $primary-darker;
-    border-color: $primary-darker;
+  &:active,
+  &:active:focus {
+    background-color: $primary-darker !important;
+    border-color: $primary-darker !important;
+    color: $text-white !important;
+  }
+
+  &:disabled {
+    background-color: $primary !important;
+    border-color: $primary !important;
+    opacity: 0.65;
   }
 }
 
 .btn-outline-primary {
-  color: $primary;
-  border-color: $primary;
+  color: $primary !important;
+  border-color: $primary !important;
+  background-color: transparent !important;
 
   &:hover,
   &:focus {
-    background-color: $primary;
-    border-color: $primary;
-    color: $text-white;
+    background-color: $primary !important;
+    border-color: $primary !important;
+    color: $text-white !important;
+  }
+
+  &:active,
+  &:active:focus {
+    background-color: $primary-dark !important;
+    border-color: $primary-dark !important;
+    color: $text-white !important;
   }
 }
 
 /* Text utilities */
 .text-primary {
   color: $primary !important;
+}
+
+/* Background utilities */
+.bg-primary {
+  background-color: $primary !important;
 }
 
 /* Link styles */

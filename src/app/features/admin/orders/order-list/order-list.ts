@@ -1,6 +1,7 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderService } from '../../../../core/services/order.service';
+import { Auth } from '../../../../core/services/auth';
 import { Order } from '../../../../core/models/order.model';
 import { TableColumn, TableAction } from '../../../../shared/interfaces/table.interface';
 import { PageToolbar } from '../../../../shared/components/page-toolbar/page-toolbar';
@@ -8,15 +9,17 @@ import { DataTable } from '../../../../shared/components/data-table/data-table';
 import { Pagination } from '../../../../shared/components/pagination/pagination';
 import { OrderModal } from '../../../../shared/components/order-modal/order-modal';
 import { ContainerTrackingModal } from '../../../../shared/components/container-tracking-modal/container-tracking-modal';
+import { NotificationModal } from '../../../../shared/components/notification-modal/notification-modal';
 
 @Component({
   selector: 'app-order-list',
-  imports: [CommonModule, PageToolbar, DataTable, Pagination, OrderModal, ContainerTrackingModal],
+  imports: [CommonModule, PageToolbar, DataTable, Pagination, OrderModal, ContainerTrackingModal, NotificationModal],
   templateUrl: './order-list.html',
   styleUrl: './order-list.scss',
 })
 export class OrderList implements OnInit {
   private orderService = inject(OrderService);
+  private auth = inject(Auth);
 
   // State management con signals
   orders = signal<Order[]>([]);
@@ -38,6 +41,11 @@ export class OrderList implements OnInit {
   // Para el modal de tracking
   selectedContainerId = signal<number | undefined>(undefined);
   selectedOrderNumber = signal<number | undefined>(undefined);
+
+  // Para el modal de notificaciones
+  showNotificationModal = signal<boolean>(false);
+  selectedNotificationOrderId = signal<number | undefined>(undefined);
+  selectedNotificationOrderNumber = signal<number | undefined>(undefined);
 
   // Configuración de columnas
   columns: TableColumn[] = [
@@ -75,11 +83,20 @@ export class OrderList implements OnInit {
   ];
 
   // Configuración de acciones (botones en última columna)
-  actions: TableAction[] = [
-    { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-primary' },
-    { icon: 'bi-pencil', tooltip: 'Editar', action: 'edit', class: 'btn-outline-secondary' },
-    { icon: 'bi-geo-alt', tooltip: 'Rastrear', action: 'track', class: 'btn-outline-success' }
-  ];
+  // Admin ve: Ver, Editar, Notificación
+  // Cliente ve: Ver, Editar, Rastrear
+  actions = computed<TableAction[]>(() => {
+    const baseActions: TableAction[] = [
+      { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-primary' },
+      { icon: 'bi-pencil', tooltip: 'Editar', action: 'edit', class: 'btn-outline-secondary' }
+    ];
+
+    if (this.auth.isAdmin()) {
+      return [...baseActions, { icon: 'bi-bell', tooltip: 'Notificación', action: 'notify', class: 'btn-outline-success' }];
+    }
+
+    return [...baseActions, { icon: 'bi-geo-alt', tooltip: 'Rastrear', action: 'track', class: 'btn-outline-success' }];
+  });
 
   ngOnInit() {
     this.loadOrders();
@@ -142,6 +159,11 @@ export class OrderList implements OnInit {
           this.showTrackingModal.set(true);
         }
         break;
+      case 'notify':
+        this.selectedNotificationOrderId.set(row.id);
+        this.selectedNotificationOrderNumber.set(row.id);
+        this.showNotificationModal.set(true);
+        break;
     }
   }
 
@@ -154,6 +176,12 @@ export class OrderList implements OnInit {
     this.showTrackingModal.set(false);
     this.selectedContainerId.set(undefined);
     this.selectedOrderNumber.set(undefined);
+  }
+
+  onNotificationModalClose() {
+    this.showNotificationModal.set(false);
+    this.selectedNotificationOrderId.set(undefined);
+    this.selectedNotificationOrderNumber.set(undefined);
   }
 
   onOrderSaved(order: Order) {

@@ -1,0 +1,113 @@
+<app-modal [title]="getTitle()" [size]="'lg'" (close)="onClose()">
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+  } @else {
+    <!-- Tabla de notificaciones -->
+    <div class="notifications-table-section mb-4">
+      <h6 class="section-title">Historial de notificaciones</h6>
+
+      @if (notifications().length === 0) {
+        <div class="empty-state">
+          <i class="bi bi-bell-slash"></i>
+          <p>No hay notificaciones para esta orden</p>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Detalle</th>
+                <th class="text-center">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (notification of notifications(); track notification.id) {
+                <tr>
+                  <td class="date-cell">
+                    {{ notification.created_at | date:'dd/MM/yyyy HH:mm' }}
+                  </td>
+                  <td class="detail-cell">{{ notification.message }}</td>
+                  <td class="text-center">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-primary"
+                      (click)="onEdit(notification)"
+                      title="Ver/Modificar"
+                    >
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+
+    <!-- Sección de agregar/editar notificación -->
+    <div class="add-notification-section">
+      <h6 class="section-title">
+        {{ editingNotification() ? 'Modificar notificación' : 'Agregar nueva notificación' }}
+      </h6>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label class="form-label">Tipo</label>
+          <select class="form-select" formControlName="type">
+            @for (type of notificationTypes; track type.value) {
+              <option [value]="type.value">{{ type.label }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Detalle</label>
+          <textarea
+            class="form-control"
+            formControlName="message"
+            rows="3"
+            placeholder="Escriba el detalle de la notificación..."
+          ></textarea>
+          @if (form.get('message')?.invalid && form.get('message')?.touched) {
+            <div class="text-danger small mt-1">El detalle es requerido (mínimo 3 caracteres)</div>
+          }
+        </div>
+
+        <div class="form-actions">
+          @if (editingNotification()) {
+            <button
+              type="button"
+              class="btn btn-outline-secondary me-2"
+              (click)="onCancelEdit()"
+            >
+              Cancelar
+            </button>
+          }
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="form.invalid || saving()"
+          >
+            @if (saving()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            }
+            {{ editingNotification() ? 'Actualizar' : 'Agregar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- Footer -->
+  <div footer>
+    <button type="button" class="btn btn-secondary" (click)="onClose()">
+      Cerrar
+    </button>
+  </div>
+</app-modal>

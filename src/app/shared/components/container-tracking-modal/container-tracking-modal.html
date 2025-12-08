@@ -127,51 +127,176 @@
     }
   </div>
 
-  <!-- Sección de Notificaciones -->
-  <div class="notifications-section">
-    <h6 class="mb-3">Notificaciones</h6>
-    <div class="table-responsive">
+  <!-- Sección de Actividades (movimientos manuales NOTI) -->
+  <div class="activities-section">
+    <h6 class="mb-3">Actividades</h6>
+
+    @if (movementsLoading()) {
+    <div class="text-center py-3">
+      <div class="spinner-border spinner-border-sm text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+    } @else if (allMovements().length === 0) {
+    <div class="text-muted text-center py-3">
+      <i class="bi bi-inbox me-2"></i>No hay actividades registradas
+    </div>
+    } @else {
+    <div class="table-responsive scrolleable-table">
       <table class="table table-hover">
         <thead>
           <tr>
-            <th style="width: 150px">Fecha</th>
+            <th style="width: 170px">Fecha</th>
             <th>Detalle</th>
+            @if (showAddNotification) {
+            <th style="width: 100px" class="text-center">Acción</th>
+            }
           </tr>
         </thead>
         <tbody>
-          @for (notification of notifications; track $index) {
+          @for (movement of allMovements(); track movement.id) {
           <tr>
-            <td>{{ notification.date }}</td>
-            <td class="notification-detail">{{ notification.detail }}</td>
+            @if (editingMovementId() === movement.id) {
+            <!-- Modo edición (solo para NOTI) -->
+            <td>
+              <input
+                type="datetime-local"
+                class="form-control form-control-sm"
+                [(ngModel)]="editingTimestamp"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                [(ngModel)]="editingDetail"
+                placeholder="Detalle de la actividad"
+              />
+            </td>
+            <td class="text-center d-flex">
+              <button
+                type="button"
+                class="btn btn-sm btn-success me-1"
+                (click)="saveEdit(movement)"
+                title="Guardar"
+              >
+                <i class="bi bi-check"></i>
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-secondary"
+                (click)="cancelEdit()"
+                title="Cancelar"
+              >
+                <i class="bi bi-x"></i>
+              </button>
+            </td>
+            } @else {
+            <!-- Modo visualización -->
+            <td>{{ formatDateTime(movement.event_timestamp) }}</td>
+            <td class="activity-detail">{{ movement.detail || '-' }}</td>
+            @if (showAddNotification) {
+            <td class="text-center d-flex">
+              @if (isEditable(movement)) {
+              <!-- Solo NOTI se puede editar/eliminar -->
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-primary me-1"
+                (click)="startEdit(movement)"
+                title="Editar"
+              >
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                (click)="deleteMovement(movement)"
+                title="Eliminar"
+              >
+                <i class="bi bi-trash"></i>
+              </button>
+              } @else {
+              <!-- Movimientos de Shipsgo: solo lectura -->
+              <span class="text-muted" title="Movimiento de Shipsgo (solo lectura)">
+                <i class="bi bi-lock"></i>
+              </span>
+              }
+            </td>
+            }
+            }
           </tr>
           }
         </tbody>
       </table>
     </div>
+    }
   </div>
 
-  <!-- Sección de Agregar Notificación (solo visible desde Containers) -->
+  <!-- Sección de Agregar Actividad (solo visible desde Containers para admin) -->
   @if (showAddNotification) {
-  <div class="add-notification-section">
-    <h6>Agregar nueva notificación</h6>
+  <div class="add-activity-section">
+    <h6>Agregar nueva actividad</h6>
     <textarea
       class="form-control"
       rows="3"
-      placeholder="Escriba el detalle de su notificación"
+      placeholder="Escriba el detalle de la actividad"
       [(ngModel)]="newNotification"
+      [disabled]="savingNotification()"
     >
     </textarea>
     <button
       type="button"
-      class="btn btn-add-notification"
+      class="btn btn-add-activity"
       (click)="onAddNotification()"
-      [disabled]="!newNotification.trim()"
+      [disabled]="!newNotification.trim() || savingNotification()"
     >
+      @if (savingNotification()) {
+      <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+      Guardando...
+      } @else {
       <i class="bi bi-plus-circle me-1"></i>
       Agregar
+      }
     </button>
   </div>
-  } }
+  }
+
+  <!-- Sección de Notas -->
+  <div class="notes-section">
+    <h6 class="mb-3">Notas</h6>
+
+    @if (notificationsLoading()) {
+    <div class="text-center py-3">
+      <div class="spinner-border spinner-border-sm text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+    } @else if (notifications().length === 0) {
+    <div class="text-muted text-center py-3">
+      <i class="bi bi-sticky me-2"></i>No hay notas registradas
+    </div>
+    } @else {
+    <div class="table-responsive scrolleable-table">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th style="width: 170px">Fecha</th>
+            <th>Detalle</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (notification of notifications(); track notification.id) {
+          <tr>
+            <td>{{ formatDateTime(notification.created_at) }}</td>
+            <td class="note-detail">{{ notification.message }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </div>
+  }
 
   <!-- Footer -->
   <div footer>

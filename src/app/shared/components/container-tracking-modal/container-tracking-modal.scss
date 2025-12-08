@@ -1,6 +1,7 @@
 // ==========================================
 // CONTAINER TRACKING MODAL
 // ==========================================
+@use 'sass:color';
 @use '../../../../assets/styles/variables' as *;
 
 // Sección de Información de Orden y Contenedor
@@ -278,9 +279,15 @@
     font-size: 0.95rem;
   }
 }
+// Seccion de Actividades y Notas - tabla scrolleable
+.activities-section .scrolleable-table,
+.notes-section .scrolleable-table {
+  max-height: 300px;
+  overflow-y: auto;
+}
 
-// Sección de Agregar Notificación
-.add-notification-section {
+// Sección de Agregar Actividad
+.add-activity-section {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -304,7 +311,7 @@
     }
   }
 
-  .btn-add-notification {
+  .btn-add-activity {
     display: inline-flex;
     align-items: center;
     background-color: $primary;
@@ -316,7 +323,7 @@
     transition: background-color $transition-base;
 
     &:hover:not(:disabled) {
-      background-color: darken($primary, 8%);
+      background-color: color.adjust($primary, $lightness: -8%);
       color: $text-white;
     }
 
@@ -327,8 +334,9 @@
   }
 }
 
-// Sección de Notificaciones
-.notifications-section {
+// Sección de Actividades y Notas (estilos compartidos)
+.activities-section,
+.notes-section {
   margin-bottom: 1.5rem;
   h6 {
     font-weight: 600;
@@ -357,7 +365,8 @@
           border-bottom: 1px solid $bg-light;
           font-size: 0.875rem;
 
-          &.notification-detail {
+          &.activity-detail,
+          &.note-detail {
             max-width: 0;
             white-space: nowrap;
             overflow: hidden;

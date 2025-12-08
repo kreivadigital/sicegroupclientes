@@ -1,9 +1,9 @@
 import { ContainerStatus } from './enums';
 
 /**
- * Movement Event Types (from Shipsgo API)
+ * Movement Event Types (from Shipsgo API + NOTI for manual movements)
  */
-export type MovementEventType = 'EMSH' | 'GTIN' | 'LOAD' | 'DEPA' | 'ARRV' | 'DISC' | 'GTOT' | 'EMRT';
+export type MovementEventType = 'EMSH' | 'GTIN' | 'LOAD' | 'DEPA' | 'ARRV' | 'DISC' | 'GTOT' | 'EMRT' | 'NOTI';
 
 /**
  * Movement Status Types
@@ -120,20 +120,39 @@ export interface Movement {
 
   // Evento
   event: MovementEventType;
-  event_status: MovementStatusType;
+  event_status: MovementStatusType | null;
   event_timestamp: string;
 
-  // Ubicación
-  location_name: string;
-  location_country: string;
+  // Detalle (para movimientos manuales NOTI)
+  detail?: string | null;
+
+  // Ubicación (nullable para movimientos manuales)
+  location_name?: string | null;
+  location_country?: string | null;
 
   // Buque
-  vessel_imo?: string;
-  vessel_name?: string;
-  voyage?: string;
+  vessel_imo?: string | null;
+  vessel_name?: string | null;
+  voyage?: string | null;
 
   created_at: string;
   updated_at: string;
+}
+
+/**
+ * Data para crear un movimiento manual
+ */
+export interface MovementCreateData {
+  event_timestamp: string;
+  detail: string;
+}
+
+/**
+ * Data para actualizar un movimiento manual
+ */
+export interface MovementUpdateData {
+  event_timestamp?: string;
+  detail?: string;
 }
 
 /**
@@ -167,7 +186,38 @@ export const MovementEventLabels: Record<MovementEventType, string> = {
   'ARRV': 'Arribó',
   'DISC': 'Descargado',
   'GTOT': 'Salida del Puerto',
-  'EMRT': 'Vacío Devuelto'
+  'EMRT': 'Vacío Devuelto',
+  'NOTI': 'Actividad'
+};
+
+/**
+ * Movement event colors for UI
+ */
+export const MovementEventColors: Record<MovementEventType, string> = {
+  'EMSH': 'secondary',
+  'GTIN': 'info',
+  'LOAD': 'primary',
+  'DEPA': 'primary',
+  'ARRV': 'warning',
+  'DISC': 'success',
+  'GTOT': 'warning',
+  'EMRT': 'secondary',
+  'NOTI': 'purple'
+};
+
+/**
+ * Movement event icons (Bootstrap Icons)
+ */
+export const MovementEventIcons: Record<MovementEventType, string> = {
+  'EMSH': 'bi-box-seam',
+  'GTIN': 'bi-door-open',
+  'LOAD': 'bi-box-arrow-in-down',
+  'DEPA': 'bi-airplane-fill',
+  'ARRV': 'bi-geo-alt-fill',
+  'DISC': 'bi-box-arrow-up',
+  'GTOT': 'bi-door-closed',
+  'EMRT': 'bi-arrow-return-left',
+  'NOTI': 'bi-pencil'
 };
 
 /**

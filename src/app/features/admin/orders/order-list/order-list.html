@@ -12,7 +12,7 @@
   <app-data-table
     [columns]="columns"
     [data]="orders()"
-    [actions]="actions"
+    [actions]="actions()"
     [loading]="loading()"
     emptyMessage="No hay órdenes registradas"
     (actionClick)="onTableAction($event)">
@@ -45,5 +45,14 @@
       [showAddNotification]="false"
       (close)="onTrackingModalClose()">
     </app-container-tracking-modal>
+  }
+
+  <!-- Modal de notificaciones -->
+  @if (showNotificationModal() && selectedNotificationOrderId()) {
+    <app-notification-modal
+      [orderId]="selectedNotificationOrderId()!"
+      [orderNumber]="selectedNotificationOrderNumber()"
+      (close)="onNotificationModalClose()">
+    </app-notification-modal>
   }
 </div>

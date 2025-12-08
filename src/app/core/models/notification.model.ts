@@ -8,12 +8,39 @@ export interface Notification {
     name: string;
     email: string;
   };
+  order_id?: number;
+  order?: {
+    id: number;
+    status: string;
+  };
   type: NotificationType;
   message: string;
   read_at?: string;
   created_at: string;
   updated_at: string;
   deleted_at?: string;
+}
+
+/**
+ * Note - Nota asociada a un contenedor
+ */
+export interface Note {
+  id: number;
+  container_id: number;
+  user_name: string;
+  type: 'note';
+  message: string;
+  read_at?: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at?: string;
+}
+
+/**
+ * Data para crear una nota
+ */
+export interface NoteCreateData {
+  message: string;
 }
 
 export interface NotificationResponse {
@@ -25,4 +52,15 @@ export interface NotificationSendRequest {
   user_id: number;
   type: NotificationType;
   message: string;
+}
+
+export interface NotificationCreateData {
+  order_id: number;
+  type: NotificationType;
+  message: string;
+}
+
+export interface NotificationUpdateData {
+  type?: NotificationType;
+  message?: string;
 }
