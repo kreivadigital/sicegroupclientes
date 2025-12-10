@@ -30,12 +30,12 @@
 
       <!-- Descripción y Dirección de entrega -->
       <div class="col-md-6 mb-3">
-        <label class="form-label">Descripción@if (auth.isAdmin()) { (opcional)}</label>
+        <label class="form-label">Descripción @if (auth.isAdmin()) {(opcional)}</label>
         <textarea
           class="form-control"
           rows="3"
           formControlName="description"
-          placeholder="Descripción"
+          placeholder="Ej: 50 cajas de electrónicos"
         ></textarea>
       </div>
 
@@ -45,7 +45,7 @@
           class="form-control"
           rows="3"
           formControlName="delivery_address"
-          placeholder="Agregar dirección"
+          placeholder="Ej: Av. Agraciada 456, Bodega 1"
         ></textarea>
         @if (form.get('delivery_address')?.invalid && form.get('delivery_address')?.touched) {
           <div class="text-danger small mt-1">Este campo es requerido</div>
@@ -55,14 +55,14 @@
       <!-- Cantidad de bultos y Packin list -->
       <div class="col-md-6 mb-3">
         <label class="form-label">Cantidad de bultos</label>
-        <input type="number" class="form-control" formControlName="package_count" placeholder="0" min="0" />
+        <input type="number" class="form-control" formControlName="package_count" placeholder="0" min="1" />
         @if (form.get('package_count')?.invalid && form.get('package_count')?.touched) {
           <div class="text-danger small mt-1">Este campo es requerido (mínimo 1)</div>
         }
       </div>
 
       <div class="col-md-6 mb-3">
-        <label class="form-label">Picking list@if (auth.isAdmin()) { (opcional)}</label>
+        <label class="form-label">Picking list @if (auth.isAdmin()) {(opcional)}</label>
         @if (mode === 'view') {
           @if (order()?.picking_list_path) {
             <div class="file-display" (click)="downloadFile('picking-list')">
@@ -100,7 +100,7 @@
 
       <!-- PDF Proforma y Factura -->
       <div class="col-md-6 mb-3">
-        <label class="form-label">PDF Proforma@if (auth.isAdmin()) { (opcional)}</label>
+        <label class="form-label">PDF Proforma @if (auth.isAdmin()) {(opcional)}</label>
         @if (mode === 'view') {
           @if (order()?.performa_pdf_path) {
             <div class="file-display" (click)="downloadFile('performa-pdf')">
@@ -136,7 +136,7 @@
       </div>
 
       <div class="col-md-6 mb-3">
-        <label class="form-label">Factura@if (auth.isAdmin()) { (opcional)}</label>
+        <label class="form-label">Factura @if (auth.isAdmin()) {(opcional)}</label>
         @if (mode === 'view') {
           @if (order()?.invoice_path) {
             <div class="file-display" (click)="downloadFile('invoice')">
@@ -188,7 +188,7 @@
       </div>
 
       <div class="col-md-6 mb-3">
-        <label class="form-label">Contenedor@if (auth.isAdmin()) { (opcional)}</label>
+        <label class="form-label">Contenedor @if (auth.isAdmin()) {(opcional)}</label>
         @if (mode === 'view') {
           @if (order()?.container) {
             <input
@@ -220,6 +220,44 @@
       </div>
     </div>
   </form>
+
+  <!-- Sección de Notas (solo visible para Admin en modo view) -->
+  @if (mode === 'view' && auth.isAdmin()) {
+  <div class="notes-section mt-4">
+    <h6 class="mb-3"><i class="bi bi-sticky me-2"></i>Notas</h6>
+
+    @if (notesLoading()) {
+    <div class="text-center py-3">
+      <div class="spinner-border spinner-border-sm text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+    } @else if (notes().length === 0) {
+    <div class="text-muted text-center py-3">
+      <i class="bi bi-sticky me-2"></i>No hay notas registradas
+    </div>
+    } @else {
+    <div class="table-responsive notes-table">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th style="width: 170px">Fecha</th>
+            <th>Detalle</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (note of notes(); track note.id) {
+          <tr>
+            <td>{{ formatDateTime(note.created_at) }}</td>
+            <td class="note-detail">{{ note.message }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </div>
+  }
   }
 
   <!-- Footer -->

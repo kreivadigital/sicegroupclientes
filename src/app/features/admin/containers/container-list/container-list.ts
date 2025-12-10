@@ -1,10 +1,11 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContainerService } from '../../../../core/services/container.service';
+import { DashboardService } from '../../../../core/services/dashboard.service';
 import { Container } from '../../../../core/models/container.model';
 import { ContainerStatusLabels, ContainerStatusColors } from '../../../../core/models/enums';
 import { TableColumn, TableAction } from '../../../../shared/interfaces/table.interface';
-import { PageToolbar } from '../../../../shared/components/page-toolbar/page-toolbar';
+import { StatCard } from '../../../../shared/components/stat-card/stat-card';
 import { DataTable } from '../../../../shared/components/data-table/data-table';
 import { Pagination } from '../../../../shared/components/pagination/pagination';
 import { SearchBar } from '../../../../shared/components/search-bar/search-bar';
@@ -13,12 +14,13 @@ import { ContainerTrackingModal } from '../../../../shared/components/container-
 
 @Component({
   selector: 'app-container-list',
-  imports: [CommonModule, DataTable, Pagination, SearchBar, ContainerModal, ContainerTrackingModal],
+  imports: [CommonModule, StatCard, DataTable, Pagination, SearchBar, ContainerModal, ContainerTrackingModal],
   templateUrl: './container-list.html',
   styleUrl: './container-list.scss',
 })
 export class ContainerList implements OnInit {
   private containerService = inject(ContainerService);
+  private dashboardService = inject(DashboardService);
 
   // State management con signals
   containers = signal<Container[]>([]);
@@ -39,6 +41,11 @@ export class ContainerList implements OnInit {
 
   // Import state
   importing = signal<boolean>(false);
+
+  // Dashboard stats
+  totalClients = signal<number>(0);
+  activeOrders = signal<number>(0);
+  totalContainers = signal<number>(0);
 
   // Configuración de columnas
   columns: TableColumn[] = [
@@ -92,11 +99,25 @@ export class ContainerList implements OnInit {
   // Configuración de acciones (botones en última columna)
   actions: TableAction[] = [
     { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-primary' },
-    { icon: 'bi-pencil', tooltip: 'Editar', action: 'edit', class: 'btn-outline-secondary' }
+    { icon: 'bi-trash', tooltip: 'Eliminar', action: 'delete', class: 'btn-outline-danger' }
   ];
 
   ngOnInit() {
+    this.loadStats();
     this.loadContainers();
+  }
+
+  loadStats() {
+    this.dashboardService.getStats().subscribe({
+      next: (response) => {
+        this.totalClients.set(response.data.total_clients);
+        this.activeOrders.set(response.data.active_orders);
+        this.totalContainers.set(response.data.total_containers);
+      },
+      error: (error) => {
+        console.error('Error cargando estadísticas:', error);
+      }
+    });
   }
 
   loadContainers(page: number = 1, search?: string) {
@@ -142,12 +163,30 @@ export class ContainerList implements OnInit {
         this.selectedContainerId.set(row.id);
         this.showTrackingModal.set(true);
         break;
-      case 'edit':
-        this.modalMode.set('edit');
-        this.selectedContainerId.set(row.id);
-        this.showModal.set(true);
+      case 'delete':
+        this.onDeleteContainer(row);
         break;
     }
+  }
+
+  onDeleteContainer(container: Container) {
+    const confirmMessage = `¿Está seguro de eliminar el contenedor "${container.container_number}"?`;
+
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    this.containerService.deleteContainer(container.id).subscribe({
+      next: () => {
+        // Recargar la lista después de eliminar
+        this.loadContainers(this.currentPage(), this.currentSearch());
+        this.loadStats();
+      },
+      error: (error) => {
+        console.error('Error eliminando contenedor:', error);
+        alert('Error al eliminar el contenedor');
+      }
+    });
   }
 
   onModalClose() {

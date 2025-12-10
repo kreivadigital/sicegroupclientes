@@ -88,7 +88,7 @@ export class OrderList implements OnInit {
   actions = computed<TableAction[]>(() => {
     const baseActions: TableAction[] = [
       { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-primary' },
-      { icon: 'bi-pencil', tooltip: 'Editar', action: 'edit', class: 'btn-outline-secondary' }
+      { icon: 'bi-pencil-square', tooltip: 'Editar', action: 'edit', class: 'btn-outline-secondary' }
     ];
 
     if (this.auth.isAdmin()) {

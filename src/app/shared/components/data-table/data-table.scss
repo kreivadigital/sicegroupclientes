@@ -302,10 +302,20 @@
   // ==========================================
   // Responsive
   // ==========================================
-  @media (max-width: 768px) {
+  @media (max-width: 767.98px) {
+    padding: 1rem;
+    margin-top: 1rem;
+
     .table-header {
       flex-direction: column;
       align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .header-left {
+      .table-title {
+        font-size: 1.1rem;
+      }
     }
 
     .header-right {
@@ -320,12 +330,39 @@
     .filter-dropdown {
       right: auto;
       left: 0;
+      width: calc(100vw - 2rem);
+      max-width: 320px;
     }
   }
 
   .table-responsive {
     border-radius: $radius-md;
-    overflow: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  // Móvil: asegurar scroll horizontal
+  @media (max-width: 767.98px) {
+    .table-responsive {
+      margin: 0 -1rem;
+      padding: 0 1rem;
+      width: calc(100% + 2rem);
+    }
+
+    .table {
+      min-width: 600px;
+
+      thead th {
+        font-size: 0.8rem;
+        padding: 0.75rem 0.5rem;
+        white-space: nowrap;
+      }
+
+      tbody td {
+        font-size: 0.85rem;
+        padding: 0.75rem 0.5rem;
+      }
+    }
   }
 
   .table {

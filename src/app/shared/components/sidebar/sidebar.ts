@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, HostListener, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Auth } from '../../../core/services/auth';
 import { UserRole } from '../../../core/models/enums';
@@ -15,11 +15,17 @@ interface MenuItem {
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
 })
-export class Sidebar {
+export class Sidebar implements OnInit {
   private authService = inject(Auth);
 
-  // Signal para controlar el estado colapsado
+  // Signal para controlar el estado colapsado (desktop)
   isCollapsed = signal(false);
+
+  // Signal para controlar el menú móvil
+  isMobileMenuOpen = signal(false);
+
+  // Signal para detectar si estamos en móvil
+  isMobile = signal(false);
 
   // Computed para obtener los items del menú según el rol del usuario
   menuItems = computed(() => {
@@ -30,9 +36,8 @@ export class Sidebar {
 
     if (isAdmin) {
       return [
-        { label: 'Dashboard', icon: 'bi-columns-gap', route: '/admin/dashboard' },
-        { label: 'Contenedores', icon: 'bi-grid-3x3', route: '/admin/contenedores' },
-        { label: 'Ordenes', icon: 'bi-box-seam', route: '/admin/ordenes' },
+        { label: 'Dashboard', icon: 'bi-columns-gap', route: '/admin/contenedores' },
+        { label: 'Órdenes', icon: 'bi-archive', route: '/admin/ordenes' },
         { label: 'Clientes', icon: 'bi-people', route: '/admin/clientes' },
       ];
     } else {
@@ -42,11 +47,47 @@ export class Sidebar {
     }
   });
 
+  ngOnInit(): void {
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.checkScreenSize();
+  }
+
   /**
-   * Alternar el estado del sidebar (expandido/colapsado)
+   * Verificar tamaño de pantalla
+   */
+  private checkScreenSize(): void {
+    this.isMobile.set(window.innerWidth < 768);
+    // Cerrar menú móvil si cambiamos a desktop
+    if (!this.isMobile()) {
+      this.isMobileMenuOpen.set(false);
+    }
+  }
+
+  /**
+   * Alternar el estado del sidebar (expandido/colapsado) - Desktop
    */
   toggleSidebar(): void {
     this.isCollapsed.update(value => !value);
+  }
+
+  /**
+   * Alternar menú móvil
+   */
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen.update(value => !value);
+  }
+
+  /**
+   * Cerrar menú móvil (al hacer click en un item)
+   */
+  closeMobileMenu(): void {
+    if (this.isMobile()) {
+      this.isMobileMenuOpen.set(false);
+    }
   }
 
   /**

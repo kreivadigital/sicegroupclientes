@@ -111,3 +111,64 @@
     margin-top: 0.5rem;
   }
 }
+
+// ==========================================
+// RESPONSIVE - MÓVIL
+// ==========================================
+@media (max-width: 767.98px) {
+  .section-title {
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .notifications-table-section {
+    .table-responsive {
+      max-height: 200px;
+    }
+
+    .table {
+      min-width: 400px;
+
+      thead th {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+      }
+
+      tbody td {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    .detail-cell {
+      max-width: 150px;
+    }
+  }
+
+  .empty-state {
+    padding: 1.5rem;
+
+    i {
+      font-size: 2rem;
+    }
+
+    p {
+      font-size: 0.85rem;
+    }
+  }
+
+  .add-notification-section {
+    .form-label {
+      font-size: 0.8rem;
+    }
+
+    textarea {
+      min-height: 60px;
+      font-size: 0.875rem;
+    }
+
+    .form-actions .btn {
+      width: 100%;
+    }
+  }
+}

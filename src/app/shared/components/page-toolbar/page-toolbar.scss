@@ -1,6 +1,42 @@
+@use '../../../../assets/styles/variables' as *;
+
 .page-toolbar {
-  background-color: #ffffff;
+  background-color: $bg-white;
   padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+}
+
+// ==========================================
+// RESPONSIVE - MÓVIL
+// ==========================================
+@media (max-width: 767.98px) {
+  .page-toolbar {
+    padding: 1rem;
+
+    .row {
+      flex-direction: column;
+      gap: 0.75rem !important;
+    }
+
+    // Search bar full width
+    .col-md-3 {
+      width: 100%;
+    }
+
+    // Spacer no necesario en móvil
+    .col:empty {
+      display: none;
+    }
+
+    // Botón full width
+    .col-auto {
+      width: 100%;
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
 }

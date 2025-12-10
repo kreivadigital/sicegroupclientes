@@ -57,17 +57,43 @@
   }
 }
 
-// Responsive
-@media (max-width: 768px) {
+// ==========================================
+// RESPONSIVE
+// ==========================================
+@media (max-width: 767.98px) {
   .stat-card {
-    padding: 16px;
+    padding: 14px;
+    gap: 8px;
+  }
+
+  .stat-card-title {
+    font-size: 12px;
   }
 
   .stat-card-value {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .stat-card-icon i {
-    font-size: 28px;
+    font-size: 24px;
+  }
+}
+
+// Extra pequeño (< 400px)
+@media (max-width: 399.98px) {
+  .stat-card {
+    padding: 12px;
+  }
+
+  .stat-card-title {
+    font-size: 11px;
+  }
+
+  .stat-card-value {
+    font-size: 20px;
+  }
+
+  .stat-card-icon i {
+    font-size: 20px;
   }
 }

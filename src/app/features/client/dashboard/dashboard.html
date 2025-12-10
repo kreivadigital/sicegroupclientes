@@ -7,9 +7,9 @@
     </div>
   } @else {
     <!-- Tarjetas de estadísticas -->
-    <div class="row g-4 mb-4">
+    <div class="row g-3 mb-4">
       <!-- Pedidos Totales -->
-      <div class="col-md-3">
+      <div class="col-6 col-md-3">
         <app-stat-card
           title="Pedidos Totales"
           [value]="stats().total"
@@ -19,7 +19,7 @@
       </div>
 
       <!-- En Tránsito -->
-      <div class="col-md-3">
+      <div class="col-6 col-md-3">
         <app-stat-card
           title="En Tránsito"
           [value]="stats().in_transit"
@@ -29,7 +29,7 @@
       </div>
 
       <!-- Entregados -->
-      <div class="col-md-3">
+      <div class="col-6 col-md-3">
         <app-stat-card
           title="Entregados"
           [value]="stats().delivered"
@@ -39,7 +39,7 @@
       </div>
 
       <!-- Retrasados -->
-      <div class="col-md-3">
+      <div class="col-6 col-md-3">
         <app-stat-card
           title="Retrasados"
           [value]="stats().delayed"
@@ -53,7 +53,7 @@
     <div class="row">
       <div class="col">
         <app-data-table
-          title="Ordenes de Compra"
+          title="Órdenes de Compra"
           [showFilters]="true"
           [showSearch]="true"
           [columns]="columns"

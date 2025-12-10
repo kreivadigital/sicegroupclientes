@@ -31,6 +31,6 @@ export const clientGuard: CanActivateFn = () => {
   }
 
   // Si no es cliente, redirigir al dashboard de admin
-  router.navigate(['/admin/dashboard']);
+  router.navigate(['/admin/contenedores']);
   return false;
 };

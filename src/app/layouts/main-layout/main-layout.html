@@ -4,7 +4,7 @@
 <!-- Área de contenido con Header + Router Outlet -->
 <div class="content-area">
   <!-- Header dinámico (cambia según rol y ruta) -->
-  <app-header></app-header>
+  <app-header (menuClick)="openMobileMenu()"></app-header>
 
   <!-- Contenido principal que cambia según la ruta -->
   <main class="main-content">

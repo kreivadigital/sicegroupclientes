@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { Dashboard } from './dashboard/dashboard';
 import { ClientList } from './clients/client-list/client-list';
 import { ClientForm } from './clients/client-form/client-form';
 import { ClientDetail } from './clients/client-detail/client-detail';
@@ -13,13 +12,8 @@ import { ContainerDetail } from './containers/container-detail/container-detail'
 export const adminRoutes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: 'contenedores',
     pathMatch: 'full'
-  },
-  {
-    path: 'dashboard',
-    component: Dashboard,
-    title: 'Dashboard - Admin - Sice Group'
   },
   // Clients Routes
   {
@@ -63,11 +57,11 @@ export const adminRoutes: Routes = [
     component: OrderForm,
     title: 'Editar Orden - Admin - Sice Group'
   },
-  // Containers Routes
+  // Containers Routes (Dashboard)
   {
     path: 'contenedores',
     component: ContainerList,
-    title: 'Contenedores - Admin - Sice Group'
+    title: 'Dashboard - Admin - Sice Group'
   },
   {
     path: 'contenedores/new',

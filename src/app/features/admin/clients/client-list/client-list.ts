@@ -25,6 +25,9 @@ export class ClientList implements OnInit {
   totalItems = signal(0);
   perPage = signal(15);
 
+  // Búsqueda actual
+  currentSearch = signal<string>('');
+
   showModal = signal(false);
   modalMode = signal<'view' | 'edit' | 'create'>('view');
   selectedClientId = signal<number | undefined>(undefined);
@@ -39,7 +42,7 @@ export class ClientList implements OnInit {
 
   actions: TableAction[] = [
     { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-primary' },
-    { icon: 'bi-pencil', tooltip: 'Editar', action: 'edit', class: 'btn-outline-secondary' }
+    { icon: 'bi-pencil-square', tooltip: 'Editar', action: 'edit', class: 'btn-outline-secondary' }
   ];
 
   ngOnInit() {
@@ -69,6 +72,7 @@ export class ClientList implements OnInit {
   }
 
   onSearch(searchTerm: string) {
+    this.currentSearch.set(searchTerm);
     this.loadClients(1, searchTerm);
   }
 
@@ -88,7 +92,7 @@ export class ClientList implements OnInit {
 
   onClientSaved(client: Client) {
     this.showModal.set(false);
-    this.loadClients(this.currentPage());
+    this.loadClients(this.currentPage(), this.currentSearch());
   }
 
   onCloseModal() {
@@ -97,6 +101,6 @@ export class ClientList implements OnInit {
   }
 
   onPageChange(page: number) {
-    this.loadClients(page);
+    this.loadClients(page, this.currentSearch());
   }
 }

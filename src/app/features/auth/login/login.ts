@@ -96,7 +96,7 @@ export class Login {
         } else {
           // Redirigir según rol
           if (response.user.role === UserRole.Administrator) {
-            this.router.navigate(['/admin/dashboard']);
+            this.router.navigate(['/admin/contenedores']);
           } else {
             this.router.navigate(['/client/dashboard']);
           }

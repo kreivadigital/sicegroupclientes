@@ -137,12 +137,9 @@
 
 // Logo y Header
 .login-header {
-  .brand-name {
-    font-size: 2rem;
-    font-weight: 800;
-    color: $primary;
-    letter-spacing: 1px;
-    margin-bottom: 0.5rem;
+  .brand-logo {
+    max-width: 200px;
+    height: auto;
   }
 
   .brand-subtitle {
@@ -305,15 +302,61 @@ app-loading-spinner {
   margin-right: 0.5rem;
 }
 
-// Responsivo: En móvil, columnas apiladas
-@media (max-width: 991px) {
+// ==========================================
+// RESPONSIVE
+// ==========================================
+
+// Tablet: columnas apiladas
+@media (max-width: 991.98px) {
   .login-container {
     .left-panel {
-      min-height: 300px;
+      min-height: 280px;
     }
 
     .right-panel {
-      min-height: calc(100vh - 300px);
+      min-height: calc(100vh - 280px);
     }
+  }
+}
+
+// Móvil: solo formulario, ocultar panel izquierdo
+@media (max-width: 767.98px) {
+  .login-container {
+    .left-panel {
+      display: none !important;
+    }
+
+    .right-panel {
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+    }
+  }
+
+  .login-header {
+    .brand-logo {
+      max-width: 160px;
+    }
+
+    .brand-subtitle {
+      font-size: 0.85rem;
+    }
+  }
+
+  .form-label {
+    font-size: 0.85rem;
+  }
+
+  .form-control {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  .btn-primary {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+  }
+
+  .password-reset-link {
+    font-size: 0.85rem;
   }
 }

@@ -13,17 +13,12 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <!-- Nombre de la empresa -->
       <div class="mb-3">
-        <label class="form-label">
-          Nombre de la empresa
-          @if (mode === 'create') {
-            <span class="text-danger">(*)</span>
-          }
-        </label>
+        <label class="form-label">Nombre de la empresa</label>
         <input
           type="text"
           class="form-control"
           formControlName="company_name"
-          placeholder="Nombre de la empresa"
+          placeholder="Ej: Importadora ABC S.A."
           (blur)="capitalizeCompanyName()">
         @if (form.get('company_name')?.invalid && form.get('company_name')?.touched) {
           <div class="text-danger small mt-1">Este campo es requerido</div>
@@ -32,17 +27,12 @@
 
       <!-- Contacto -->
       <div class="mb-3">
-        <label class="form-label">
-          Contacto
-          @if (mode === 'create') {
-            <span class="text-danger">(*)</span>
-          }
-        </label>
+        <label class="form-label">Contacto</label>
         <input
           type="text"
           class="form-control"
           formControlName="name"
-          placeholder="Nombre de contacto"
+          placeholder="Ej: Juan Pérez"
           (blur)="capitalizeName()">
         @if (form.get('name')?.invalid && form.get('name')?.touched) {
           <div class="text-danger small mt-1">Este campo es requerido</div>
@@ -51,17 +41,12 @@
 
       <!-- Correo electrónico -->
       <div class="mb-3">
-        <label class="form-label">
-          Correo electrónico
-          @if (mode === 'create') {
-            <span class="text-danger">(*)</span>
-          }
-        </label>
+        <label class="form-label">Correo electrónico</label>
         <input
           type="email"
           class="form-control"
           formControlName="email"
-          placeholder="Correo electrónico"
+          placeholder="Ej: juan@empresa.com"
           (blur)="lowercaseEmail()">
         @if (form.get('email')?.invalid && form.get('email')?.touched) {
           <div class="text-danger small mt-1">
@@ -77,17 +62,12 @@
 
       <!-- Teléfono -->
       <div class="mb-3">
-        <label class="form-label">
-          Teléfono
-          @if (mode === 'create') {
-            <span class="text-danger">(*)</span>
-          }
-        </label>
+        <label class="form-label">Teléfono</label>
         <input
           type="tel"
           class="form-control"
           formControlName="phone"
-          placeholder="Número de Teléfono">
+          placeholder="Ej: +598 99 123 456">
         @if (form.get('phone')?.invalid && form.get('phone')?.touched) {
           <div class="text-danger small mt-1">Este campo es requerido</div>
         }
@@ -95,17 +75,12 @@
 
       <!-- RUT -->
       <div class="mb-3">
-        <label class="form-label">
-          RUT
-          @if (mode === 'create') {
-            <span class="text-danger">(*)</span>
-          }
-        </label>
+        <label class="form-label">RUT</label>
         <input
           type="text"
           class="form-control"
           formControlName="rut"
-          placeholder="Número de RUT">
+          placeholder="Ej: 123456789">
         @if (form.get('rut')?.invalid && form.get('rut')?.touched) {
           <div class="text-danger small mt-1">Este campo es requerido</div>
         }
@@ -113,17 +88,12 @@
 
       <!-- Dirección -->
       <div class="mb-3">
-        <label class="form-label">
-          Dirección
-          @if (mode === 'create') {
-            <span class="text-danger">(*)</span>
-          }
-        </label>
+        <label class="form-label">Dirección</label>
         <input
           type="text"
           class="form-control"
           formControlName="address"
-          placeholder="Dirección">
+          placeholder="Ej: Av. Principal 123, Of. 45">
         @if (form.get('address')?.invalid && form.get('address')?.touched) {
           <div class="text-danger small mt-1">Este campo es requerido</div>
         }
@@ -131,17 +101,12 @@
 
       <!-- Ciudad -->
       <div class="mb-3">
-        <label class="form-label">
-          Ciudad
-          @if (mode === 'create') {
-            <span class="text-danger">(*)</span>
-          }
-        </label>
+        <label class="form-label">Ciudad</label>
         <input
           type="text"
           class="form-control"
           formControlName="city"
-          placeholder="Ciudad">
+          placeholder="Ej: Montevideo">
         @if (form.get('city')?.invalid && form.get('city')?.touched) {
           <div class="text-danger small mt-1">Este campo es requerido</div>
         }
@@ -149,17 +114,12 @@
 
       <!-- País -->
       <div class="mb-3">
-        <label class="form-label">
-          País
-          @if (mode === 'create') {
-            <span class="text-danger">(*)</span>
-          }
-        </label>
+        <label class="form-label">País</label>
         <input
           type="text"
           class="form-control"
           formControlName="country"
-          placeholder="País">
+          placeholder="Ej: Uruguay">
         @if (form.get('country')?.invalid && form.get('country')?.touched) {
           <div class="text-danger small mt-1">Este campo es requerido</div>
         }
@@ -168,24 +128,24 @@
       <!-- Contraseña (solo en create) -->
       @if (mode === 'create') {
         <div class="mb-3">
-          <label class="form-label">Contraseña <span class="text-danger">(*)</span></label>
+          <label class="form-label">Contraseña</label>
           <input
             type="password"
             class="form-control"
             formControlName="password"
-            placeholder="Contraseña">
+            placeholder="Mínimo 6 caracteres">
           @if (form.get('password')?.invalid && form.get('password')?.touched) {
             <div class="text-danger small mt-1">Mínimo 6 caracteres</div>
           }
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Confirmar Contraseña <span class="text-danger">(*)</span></label>
+          <label class="form-label">Confirmar Contraseña</label>
           <input
             type="password"
             class="form-control"
             formControlName="password_confirmation"
-            placeholder="Confirmar contraseña">
+            placeholder="Repite la contraseña">
         </div>
       }
 
@@ -205,12 +165,12 @@
             type="password" 
             class="form-control mb-2" 
             formControlName="current_password"
-            placeholder="Contraseña actual">
+            placeholder="Ingresa tu contraseña actual">
           <input 
             type="password" 
             class="form-control" 
             formControlName="new_password"
-            placeholder="Nueva contraseña">
+            placeholder="Mínimo 6 caracteres">
         </div>
       }
     </form>

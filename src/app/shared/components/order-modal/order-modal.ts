@@ -9,6 +9,7 @@ import { Auth } from '../../../core/services/auth';
 import { Order, OrderFormData } from '../../../core/models/order.model';
 import { Client } from '../../../core/models/client.model';
 import { Container } from '../../../core/models/container.model';
+import { Note } from '../../../core/models/notification.model';
 
 @Component({
   selector: 'app-order-modal',
@@ -40,6 +41,10 @@ export class OrderModal implements OnInit {
   performaPdfFile: File | null = null;
   packinListFile: File | null = null;
   invoiceFile: File | null = null;
+
+  // Notas (solo para Admin en modo view)
+  notes = signal<Note[]>([]);
+  notesLoading = signal(false);
 
   ngOnInit() {
     this.initForm();
@@ -106,6 +111,11 @@ export class OrderModal implements OnInit {
         });
 
         this.loading.set(false);
+
+        // Cargar notas solo para Admin en modo view
+        if (this.mode === 'view' && this.auth.isAdmin()) {
+          this.loadNotes();
+        }
       },
       error: (error) => {
         console.error('Error cargando orden:', error);
@@ -152,6 +162,34 @@ export class OrderModal implements OnInit {
   downloadFile(type: 'picking-list' | 'invoice' | 'performa-pdf') {
     if (!this.orderId) return;
     this.orderService.downloadFile(this.orderId, type);
+  }
+
+  loadNotes() {
+    if (!this.orderId) return;
+
+    this.notesLoading.set(true);
+    this.orderService.getOrderNotes(this.orderId).subscribe({
+      next: (response) => {
+        this.notes.set(response.data || []);
+        this.notesLoading.set(false);
+      },
+      error: (error) => {
+        console.error('Error cargando notas:', error);
+        this.notesLoading.set(false);
+      }
+    });
+  }
+
+  formatDateTime(dateString: string): string {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 
   onClose() {

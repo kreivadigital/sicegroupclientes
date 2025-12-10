@@ -20,13 +20,27 @@
   flex: 1;
   background-color: $bg-lightest;
   padding: 24px;
-
-  @media (max-width: 768px) {
-    padding: 16px;
-  }
 }
 
-// Cuando el sidebar está colapsado
+// Cuando el sidebar está colapsado (desktop)
 :host.sidebar-collapsed .content-area {
   margin-left: 64px;
+}
+
+// ==========================================
+// RESPONSIVE - MÓVIL
+// ==========================================
+@media (max-width: 767.98px) {
+  .content-area {
+    margin-left: 0;
+  }
+
+  .main-content {
+    padding: 16px;
+  }
+
+  // Ignorar estado colapsado en móvil
+  :host.sidebar-collapsed .content-area {
+    margin-left: 0;
+  }
 }

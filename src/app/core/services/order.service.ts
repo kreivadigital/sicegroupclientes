@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Order, OrderFormData } from '../models/order.model';
+import { Note } from '../models/notification.model';
 import { ApiResponse, PaginatedResponse } from '../interfaces/api-response.interface';
 
 export interface OrderFilters {
@@ -142,6 +143,13 @@ export class OrderService {
   }
 
   /**
+   * Obtiene las notas/notificaciones de una orden
+   */
+  getOrderNotes(orderId: number): Observable<OrderNotesResponse> {
+    return this.http.get<OrderNotesResponse>(`${this.apiUrl}/${orderId}/notes`);
+  }
+
+  /**
    * Descarga un archivo desde el servidor.
    * @param orderId Número de orden que se relaciona con el archivo.
    * @param type Tipo de archivo que se desea descargar. Puede ser 'picking-list', 'invoice' o 'performa-pdf'.
@@ -233,4 +241,8 @@ export interface OrderStats {
   in_transit: number;
   delivered: number;
   delayed: number;
+}
+
+export interface OrderNotesResponse {
+  data: Note[];
 }

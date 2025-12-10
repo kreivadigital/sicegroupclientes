@@ -1,10 +1,24 @@
-<aside class="sidebar" [class.collapsed]="isCollapsed()">
+<!-- Overlay para móvil (cierra el menú al hacer click fuera) -->
+@if (isMobile() && isMobileMenuOpen()) {
+  <div class="sidebar-overlay" (click)="closeMobileMenu()"></div>
+}
+
+<aside class="sidebar" [class.collapsed]="isCollapsed()" [class.mobile-open]="isMobileMenuOpen()">
   <!-- Header con Logo y Toggle -->
   <div class="sidebar-header">
-    <h1 class="logo" [class.hidden]="isCollapsed()">SICE GROUP</h1>
-    <button class="toggle-btn" (click)="toggleSidebar()" type="button" aria-label="Toggle sidebar">
-      <i class="bi" [class.bi-chevron-left]="!isCollapsed()" [class.bi-chevron-right]="isCollapsed()"></i>
-    </button>
+    <img src="assets/images/logo-sg.svg" alt="SICE GROUP" class="sidebar-logo" [class.hidden]="isCollapsed()" />
+    <!-- Toggle desktop -->
+    @if (!isMobile()) {
+      <button class="toggle-btn" (click)="toggleSidebar()" type="button" aria-label="Toggle sidebar">
+        <i class="bi" [class.bi-chevron-left]="!isCollapsed()" [class.bi-chevron-right]="isCollapsed()"></i>
+      </button>
+    }
+    <!-- Cerrar móvil -->
+    @if (isMobile()) {
+      <button class="toggle-btn" (click)="closeMobileMenu()" type="button" aria-label="Cerrar menú">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    }
   </div>
 
   <!-- Navegación Principal -->
@@ -14,9 +28,10 @@
         class="nav-item"
         [routerLink]="item.route"
         routerLinkActive="active"
-        [title]="isCollapsed() ? item.label : ''">
+        [title]="isCollapsed() ? item.label : ''"
+        (click)="closeMobileMenu()">
         <i class="bi {{ item.icon }}"></i>
-        @if (!isCollapsed()) {
+        @if (!isCollapsed() || isMobile()) {
           <span class="nav-label">{{ item.label }}</span>
         }
       </a>
@@ -31,7 +46,7 @@
       type="button"
       [title]="isCollapsed() ? 'Cerrar Sesión' : ''">
       <i class="bi bi-box-arrow-right"></i>
-      @if (!isCollapsed()) {
+      @if (!isCollapsed() || isMobile()) {
         <span>Cerrar Sesión</span>
       }
     </button>

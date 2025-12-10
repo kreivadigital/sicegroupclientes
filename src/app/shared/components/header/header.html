@@ -9,22 +9,29 @@
 -->
 <header class="page-header" [class.admin]="headerData().isAdmin" [class.client]="!headerData().isAdmin">
 
-  <!-- Lado Izquierdo: Título y Subtítulo -->
+  <!-- Lado Izquierdo: Botón Menú (móvil) + Título y Subtítulo -->
   <div class="header-left">
-    <h1 class="header-title">{{ headerData().title }}</h1>
+    <!-- Botón hamburguesa para móvil -->
+    <button class="menu-toggle" type="button" aria-label="Abrir menú" (click)="menuClick.emit()">
+      <i class="bi bi-list"></i>
+    </button>
 
-    <!--
-      @if: Control flow de Angular 17+
-      Muestra el subtítulo SOLO si existe
+    <div class="header-titles">
+      <h1 class="header-title">{{ headerData().title }}</h1>
 
-      ¿Por qué no usar *ngIf?
-      - @if es la nueva sintaxis (más moderna y limpia)
-      - Mejor performance que *ngIf
-      - Más legible
-    -->
-    @if (headerData().subtitle) {
-      <p class="header-subtitle">{{ headerData().subtitle }}</p>
-    }
+      <!--
+        @if: Control flow de Angular 17+
+        Muestra el subtítulo SOLO si existe
+
+        ¿Por qué no usar *ngIf?
+        - @if es la nueva sintaxis (más moderna y limpia)
+        - Mejor performance que *ngIf
+        - Más legible
+      -->
+      @if (headerData().subtitle) {
+        <p class="header-subtitle">{{ headerData().subtitle }}</p>
+      }
+    </div>
   </div>
 
   <!-- Lado Derecho: Perfil del Usuario -->

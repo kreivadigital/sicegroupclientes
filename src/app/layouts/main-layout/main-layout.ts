@@ -20,4 +20,11 @@ import { Header } from '../../shared/components/header/header';
 export class MainLayout {
   // Referencia al sidebar para leer su estado
   sidebar = viewChild(Sidebar);
+
+  /**
+   * Abrir menú móvil
+   */
+  openMobileMenu(): void {
+    this.sidebar()?.toggleMobileMenu();
+  }
 }

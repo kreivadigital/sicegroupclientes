@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, Output, EventEmitter } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs/operators';
@@ -21,6 +21,7 @@ import { UserRole } from '../../../core/models/enums';
   styleUrl: './header.scss',
 })
 export class Header {
+  @Output() menuClick = new EventEmitter<void>();
   private authService = inject(Auth);
   private router = inject(Router);
 
@@ -89,23 +90,16 @@ export class Header {
 
     // Para ADMIN
     if (isAdmin) {
-      if (url.includes('/admin/dashboard')) {
+      if (url.includes('/admin/contenedores')) {
         return {
           title: `Hola, ${user.name}`,
           subtitle: 'Gestiona clientes, pedidos y contenedores',
           isAdmin: true,
           profileText: 'Perfil del Administrador'
         };
-      } else if (url.includes('/admin/contenedores')) {
-        return {
-          title: 'Gestión de Contenedores',
-          subtitle: '',
-          isAdmin: true,
-          profileText: 'Perfil del Administrador'
-        };
       } else if (url.includes('/admin/ordenes')) {
         return {
-          title: 'Gestión de Ordenes',
+          title: 'Gestión de Órdenes',
           subtitle: '',
           isAdmin: true,
           profileText: 'Perfil del Administrador'
@@ -130,7 +124,7 @@ export class Header {
       };
     } else if (url.includes('/client/ordenes')) {
       return {
-        title: 'Mis Ordenes',
+        title: 'Mis Órdenes',
         subtitle: '',
         isAdmin: false,
         profileText: 'Perfil del Cliente'

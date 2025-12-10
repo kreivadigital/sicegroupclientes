@@ -217,7 +217,7 @@ export const MovementEventIcons: Record<MovementEventType, string> = {
   'DISC': 'bi-box-arrow-up',
   'GTOT': 'bi-door-closed',
   'EMRT': 'bi-arrow-return-left',
-  'NOTI': 'bi-pencil'
+  'NOTI': 'bi-pencil-square'
 };
 
 /**

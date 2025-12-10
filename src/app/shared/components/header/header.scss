@@ -13,16 +13,28 @@
   padding: 24px 32px;
   border-bottom: 1px solid $border-base;
   min-height: 110px;
+}
 
-  /**
-   * =� Responsive:
-   * En pantallas peque�as, reduce el padding
-   */
-  @media (max-width: 768px) {
-    padding: 16px 20px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+// Botón hamburguesa (oculto en desktop)
+.menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: background-color $transition-fast;
+
+  i {
+    font-size: 1.5rem;
+  }
+
+  &:hover {
+    background-color: rgba($text-black, 0.05);
   }
 }
 
@@ -96,6 +108,12 @@
 .header-left {
   color: $text-white;
   display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-titles {
+  display: flex;
   flex-direction: column;
   gap: 4px;
 }
@@ -140,5 +158,65 @@
     i, span {
       color: $text-white;
     }
+  }
+}
+
+// ==========================================
+// RESPONSIVE - MÓVIL
+// ==========================================
+@media (max-width: 767.98px) {
+  .page-header {
+    padding: 16px;
+    min-height: auto;
+  }
+
+  // Mostrar botón hamburguesa
+  .menu-toggle {
+    display: flex;
+  }
+
+  // Color del icono según tipo de header
+  .page-header.client .menu-toggle i {
+    color: $text-black;
+  }
+
+  .page-header.admin .menu-toggle i {
+    color: $text-white;
+  }
+
+  // Títulos más pequeños
+  .page-header.client,
+  .page-header.admin {
+    .header-title {
+      font-size: 18px;
+    }
+
+    .header-subtitle {
+      font-size: 12px;
+    }
+  }
+
+  // Perfil simplificado en móvil: solo icono
+  .profile-info {
+    padding: 8px;
+    border: none;
+    background: transparent;
+
+    span {
+      display: none;
+    }
+
+    i {
+      font-size: 24px;
+    }
+  }
+
+  // Color del icono según tipo de header
+  .page-header.client .profile-info {
+    color: $text-black;
+  }
+
+  .page-header.admin .profile-info {
+    color: $text-white;
   }
 }

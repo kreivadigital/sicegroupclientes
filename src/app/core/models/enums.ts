@@ -125,7 +125,7 @@ export const ContainerStatusColors: Record<ContainerStatus, string> = {
 };
 
 export const ContainerStatusIcons: Record<ContainerStatus, string> = {
-  [ContainerStatus.New]: 'bi-plus-circle',
+  [ContainerStatus.New]: 'bi-plus-lg',
   [ContainerStatus.InProgress]: 'bi-hourglass-split',
   [ContainerStatus.Booked]: 'bi-calendar-check',
   [ContainerStatus.Loaded]: 'bi-box-seam',
@@ -169,8 +169,8 @@ export const NotificationTypeColors: Record<NotificationType, string> = {
 };
 
 export const NotificationTypeIcons: Record<NotificationType, string> = {
-  [NotificationType.OrderCreated]: 'bi-plus-circle',
-  [NotificationType.OrderUpdated]: 'bi-pencil',
+  [NotificationType.OrderCreated]: 'bi-plus-lg',
+  [NotificationType.OrderUpdated]: 'bi-pencil-square',
   [NotificationType.OrderStatusChanged]: 'bi-arrow-repeat',
   [NotificationType.ContainerArrived]: 'bi-geo-alt',
   [NotificationType.ContainerDeparted]: 'bi-send',

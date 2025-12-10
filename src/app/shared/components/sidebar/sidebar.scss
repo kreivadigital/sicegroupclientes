@@ -3,6 +3,11 @@
 // ==========================================
 @use '../../../../assets/styles/variables' as *;
 
+// Overlay para móvil
+.sidebar-overlay {
+  display: none;
+}
+
 .sidebar {
   position: fixed;
   top: 0;
@@ -13,14 +18,14 @@
   border-right: 1px solid $border-base;
   display: flex;
   flex-direction: column;
-  transition: width $transition-base;
-  z-index: $z-dropdown;
+  transition: width $transition-base, transform $transition-base;
+  z-index: $z-modal;
 
-  // Estado colapsado
+  // Estado colapsado (desktop)
   &.collapsed {
     width: 64px;
 
-    .logo {
+    .sidebar-logo {
       opacity: 0;
       width: 0;
     }
@@ -38,6 +43,59 @@
 }
 
 // ==========================================
+// RESPONSIVE - MÓVIL
+// ==========================================
+@media (max-width: 767.98px) {
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba($text-black, 0.5);
+    z-index: $z-modal - 1;
+    animation: fadeIn $transition-base;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+    width: 280px;
+    box-shadow: $shadow-lg;
+
+    // Estado abierto en móvil
+    &.mobile-open {
+      transform: translateX(0);
+    }
+
+    // Resetear estado colapsado en móvil
+    &.collapsed {
+      width: 280px;
+
+      .sidebar-logo {
+        opacity: 1;
+        width: auto;
+      }
+
+      .nav-label {
+        opacity: 1;
+        width: auto;
+      }
+
+      .logout-btn span {
+        opacity: 1;
+        width: auto;
+      }
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
+
+// ==========================================
 // HEADER (Logo + Toggle)
 // ==========================================
 .sidebar-header {
@@ -47,13 +105,9 @@
   padding: 16px 12px;
   min-height: 64px;
 
-  .logo {
-    font-size: 18px;
-    font-weight: 700;
-    color: $primary;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
+  .sidebar-logo {
+    max-width: 140px;
+    height: auto;
     transition: opacity $transition-base, width $transition-base;
 
     &.hidden {
@@ -67,7 +121,6 @@
     color: $text-black;
     font-size: 20px;
     cursor: pointer;
-    padding: 4px 8px;
     border: 1px solid $border-base;
     border-radius: $radius-full;
     display: flex;

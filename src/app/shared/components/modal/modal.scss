@@ -176,9 +176,14 @@
   }
 }
 
-// Responsive
-@media (max-width: 768px) {
+// ==========================================
+// RESPONSIVE - MÓVIL (Fullscreen)
+// ==========================================
+@media (max-width: 767.98px) {
   .modal-container {
+    padding: 0;
+    align-items: stretch;
+
     &[data-size='sm'] .modal-content,
     &[data-size='md'] .modal-content,
     &[data-size='lg'] .modal-content,
@@ -188,7 +193,35 @@
   }
 
   .modal-content {
-    border-radius: 1rem 1rem 0 0;
-    max-height: 95vh;
+    border-radius: 0;
+    max-height: 100vh;
+    height: 100vh;
+  }
+
+  .modal-header {
+    padding: 1rem;
+
+    .modal-title {
+      font-size: 1.25rem;
+    }
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .modal-footer {
+    padding: 1rem;
+  }
+
+  // Botones en footer ocupan todo el ancho
+  ::ng-deep .modal-footer > [footer] {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+
+    .btn {
+      width: 100%;
+    }
   }
 }

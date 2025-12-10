@@ -279,11 +279,18 @@
     font-size: 0.95rem;
   }
 }
-// Seccion de Actividades y Notas - tabla scrolleable
+// Seccion de Actividades y Notificaciones - tabla scrolleable
 .activities-section .scrolleable-table,
 .notes-section .scrolleable-table {
   max-height: 300px;
   overflow-y: auto;
+}
+
+.notification-detail {
+  max-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 // Sección de Agregar Actividad
@@ -382,25 +389,184 @@
   }
 }
 
-// Responsive
-@media (max-width: 768px) {
+// ==========================================
+// RESPONSIVE - MÓVIL
+// ==========================================
+@media (max-width: 767.98px) {
+  // Info section
+  .info-section {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
   .info-numbers {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 1rem;
+    margin-bottom: 1rem;
   }
 
   .info-ports {
-    grid-template-columns: 1fr;
     gap: 0.5rem;
 
     .info-arrow {
-      transform: rotate(90deg);
       padding: 0.5rem 0;
+      height: 30px;
     }
+  }
+
+  .info-label {
+    font-size: 0.75rem;
+  }
+
+  .info-value {
+    font-size: 0.875rem;
+  }
+
+  .info-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+
+  // Progress section
+  .progress-section {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .progress-title {
+    font-size: 0.9rem;
   }
 
   .progress-percentage {
     position: static;
     text-align: center;
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+  }
+
+  .progress-tracker {
+    margin-top: 1rem;
+  }
+
+  .progress-line {
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    height: 3px;
+  }
+
+  .step-icon {
+    width: 32px;
+    height: 32px;
+
+    i {
+      font-size: 1rem;
+    }
+  }
+
+  .step-label {
+    font-size: 0.7rem;
+  }
+
+  // Maps section
+  .maps-section {
     margin-bottom: 1rem;
+  }
+
+  .maps-header {
+    padding: 0.75rem 0.75rem 0;
+
+    h6 {
+      font-size: 0.9rem;
+    }
+  }
+
+  .maps-loading,
+  .maps-placeholder {
+    height: 200px;
+
+    i {
+      font-size: 2rem;
+    }
+
+    p {
+      font-size: 0.85rem;
+    }
+  }
+
+  // Secciones de actividades y notas
+  .activities-section,
+  .notes-section {
+    margin-bottom: 1rem;
+
+    h6 {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .scrolleable-table {
+      max-height: 200px;
+    }
+
+    .table {
+      font-size: 0.8rem;
+
+      thead th {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+      }
+
+      tbody td {
+        padding: 0.5rem;
+      }
+    }
+  }
+
+  // Add activity section
+  .add-activity-section {
+    margin-bottom: 1rem;
+
+    h6 {
+      font-size: 0.9rem;
+    }
+
+    textarea {
+      min-height: 60px;
+      font-size: 0.875rem;
+    }
+
+    .btn-add-activity {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+// Extra pequeño
+@media (max-width: 399.98px) {
+  .info-numbers {
+    grid-template-columns: 1fr;
+  }
+
+  .step-icon {
+    width: 28px;
+    height: 28px;
+
+    i {
+      font-size: 0.875rem;
+    }
+  }
+
+  .step-label {
+    font-size: 0.65rem;
+  }
+
+  .progress-line {
+    top: 14px;
+    left: 14px;
+    right: 14px;
   }
 }
