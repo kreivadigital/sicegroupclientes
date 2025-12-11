@@ -46,6 +46,14 @@
         </div>
       }
 
+      <!-- Mensaje de error -->
+      @if (updateError()) {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <i class="bi bi-exclamation-circle me-2"></i>
+          {{ updateError() }}
+        </div>
+      }
+
       <!-- Subsección: Información personal -->
       <div class="detail-section">
         <h6 class="section-title">Información personal</h6>
@@ -59,7 +67,13 @@
                 type="text"
                 class="form-control"
                 formControlName="name"
-                placeholder="Global">
+                placeholder="Nombre completo"
+                [class.is-invalid]="personalInfoForm.get('name')?.invalid && personalInfoForm.get('name')?.touched">
+              @if (personalInfoForm.get('name')?.invalid && personalInfoForm.get('name')?.touched) {
+                <div class="invalid-feedback">
+                  El nombre es requerido
+                </div>
+              }
             </div>
             <div class="col-md-4 mb-3">
               <label class="form-label">Correo Electrónico</label>
@@ -67,7 +81,17 @@
                 type="email"
                 class="form-control"
                 formControlName="email"
-                placeholder="maria.gonzalez@empresa.com">
+                placeholder="correo@ejemplo.com"
+                [class.is-invalid]="personalInfoForm.get('email')?.invalid && personalInfoForm.get('email')?.touched">
+              @if (personalInfoForm.get('email')?.hasError('required') && personalInfoForm.get('email')?.touched) {
+                <div class="invalid-feedback">
+                  El correo es requerido
+                </div>
+              } @else if (personalInfoForm.get('email')?.hasError('email') && personalInfoForm.get('email')?.touched) {
+                <div class="invalid-feedback">
+                  Ingresa un correo válido
+                </div>
+              }
             </div>
             <div class="col-md-4 mb-3">
               <label class="form-label">Teléfono</label>
@@ -75,7 +99,13 @@
                 type="text"
                 class="form-control"
                 formControlName="phone"
-                placeholder="+598 678 345">
+                placeholder="+598 678 345"
+                [class.is-invalid]="personalInfoForm.get('phone')?.invalid && personalInfoForm.get('phone')?.touched">
+              @if (personalInfoForm.get('phone')?.invalid && personalInfoForm.get('phone')?.touched) {
+                <div class="invalid-feedback">
+                  El teléfono es requerido
+                </div>
+              }
             </div>
           </div>
         </form>
@@ -84,7 +114,7 @@
       <!-- Subsección: Datos de la empresa -->
       <div class="detail-section">
         <h6 class="section-title">Datos de la empresa</h6>
-        <p class="section-subtitle">Actualiza tus datos personales y de contacto</p>
+        <p class="section-subtitle">Información de tu empresa</p>
 
         <form [formGroup]="companyInfoForm" class="section-form">
           <div class="row">
@@ -94,7 +124,13 @@
                 type="text"
                 class="form-control"
                 formControlName="address"
-                placeholder="Montevideo, Uruguay">
+                placeholder="Dirección completa"
+                [class.is-invalid]="companyInfoForm.get('address')?.invalid && companyInfoForm.get('address')?.touched">
+              @if (companyInfoForm.get('address')?.invalid && companyInfoForm.get('address')?.touched) {
+                <div class="invalid-feedback">
+                  La dirección es requerida
+                </div>
+              }
             </div>
             <div class="col-md-4 mb-3">
               <label class="form-label">RUT</label>
@@ -102,7 +138,13 @@
                 type="text"
                 class="form-control"
                 formControlName="rut"
-                placeholder="12345">
+                placeholder="12345678-9"
+                [class.is-invalid]="companyInfoForm.get('rut')?.invalid && companyInfoForm.get('rut')?.touched">
+              @if (companyInfoForm.get('rut')?.invalid && companyInfoForm.get('rut')?.touched) {
+                <div class="invalid-feedback">
+                  El RUT es requerido
+                </div>
+              }
             </div>
           </div>
         </form>
@@ -116,7 +158,7 @@
               type="button"
               class="btn btn-primary"
               (click)="onUpdateProfile()"
-              [disabled]="personalInfoForm.invalid || companyInfoForm.invalid || loading()">
+              [disabled]="loading()">
               @if (loading()) {
                 <span class="spinner-border spinner-border-sm me-2"></span>
               }
@@ -138,38 +180,64 @@
           </div>
         }
 
+        @if (passwordError()) {
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            {{ passwordError() }}
+          </div>
+        }
+
         <form [formGroup]="securityForm" class="section-form">
           <div class="row">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
               <label class="form-label">Contraseña actual</label>
               <input
                 type="password"
                 class="form-control"
                 formControlName="current_password"
-                placeholder="Contraseña actual">
+                placeholder="Contraseña actual"
+                [class.is-invalid]="securityForm.get('current_password')?.invalid && securityForm.get('current_password')?.touched">
+              @if (securityForm.get('current_password')?.invalid && securityForm.get('current_password')?.touched) {
+                <div class="invalid-feedback">
+                  La contraseña actual es requerida
+                </div>
+              }
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
               <label class="form-label">Nueva contraseña</label>
               <input
                 type="password"
                 class="form-control"
                 formControlName="password"
                 placeholder="Nueva contraseña"
-                [class.is-invalid]="securityForm.hasError('passwordMismatch') && securityForm.get('password_confirmation')?.touched">
-              @if (securityForm.hasError('passwordMismatch') && securityForm.get('password_confirmation')?.touched) {
+                [class.is-invalid]="securityForm.get('password')?.invalid && securityForm.get('password')?.touched">
+              @if (securityForm.get('password')?.hasError('required') && securityForm.get('password')?.touched) {
                 <div class="invalid-feedback">
-                  Las contraseñas no coinciden
+                  La nueva contraseña es requerida
+                </div>
+              } @else if (securityForm.get('password')?.hasError('minlength') && securityForm.get('password')?.touched) {
+                <div class="invalid-feedback">
+                  Mínimo 6 caracteres
                 </div>
               }
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Confirmar contraseña</label>
               <input
                 type="password"
                 class="form-control"
                 formControlName="password_confirmation"
                 placeholder="Confirmar nueva contraseña"
-                [class.is-invalid]="securityForm.hasError('passwordMismatch') && securityForm.get('password_confirmation')?.touched"
-                style="visibility: hidden; position: absolute;">
+                [class.is-invalid]="(securityForm.get('password_confirmation')?.invalid || securityForm.hasError('passwordMismatch')) && securityForm.get('password_confirmation')?.touched">
+              @if (securityForm.get('password_confirmation')?.hasError('required') && securityForm.get('password_confirmation')?.touched) {
+                <div class="invalid-feedback">
+                  Confirma tu contraseña
+                </div>
+              } @else if (securityForm.hasError('passwordMismatch') && securityForm.get('password_confirmation')?.touched) {
+                <div class="invalid-feedback">
+                  Las contraseñas no coinciden
+                </div>
+              }
             </div>
           </div>
 

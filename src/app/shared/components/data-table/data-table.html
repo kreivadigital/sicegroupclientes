@@ -140,77 +140,95 @@
     <p class="text-muted mt-3">No se encontraron resultados para "{{ searchTerm }}"</p>
   </div>
   } @else {
-  <div class="table-responsive">
-    <table class="table table-hover align-middle">
-      <thead class="table-light">
-        <tr>
-          @for (column of columns; track column.key) {
-          <th>{{ column.label }}</th>
-          } @if (actions.length > 0) {
-          <th class="text-center" style="width: 120px">Acciones</th>
-          }
-        </tr>
-      </thead>
-      <tbody>
+    <!-- Vista móvil: Cards (si hay template) -->
+    @if (isMobile() && cardTemplate) {
+      <div class="cards-container">
         @for (row of filteredData; track row.id || $index) {
-        <tr>
-          @for (column of columns; track column.key) {
-          <td>
-            @if (!column.type || column.type === 'text') {
-            <span>{{ getCellValue(row, column) }}</span>
-            } @if (column.type === 'badge') {
-            <span [class]="'badge ' + getBadgeClass(column, getCellValue(row, column))">
-              {{ getBadgeLabel(column, getCellValue(row, column)) }}
-            </span>
-            } @if (column.type === 'date') {
-            <span>{{ getCellValue(row, column) | date : 'dd/MM/yyyy' }}</span>
-            } @if (column.type === 'percentage') {
-            <span>{{ getCellValue(row, column) }}%</span>
-            } @if (column.type === 'port-with-date') {
-            <div class="port-info">
-              <div class="fw-semibold">
-                {{ getPortLocation(row, column) }}, {{ getPortCountry(row, column) }}
-              </div>
-              <div class="text-muted small">
-                {{ getPortDate(row, column) | date : 'dd/MM/yyyy' }}
-              </div>
-            </div>
-            } @if (column.type === 'progress') {
-            <div class="progress-container">
-              <div class="progress" style="height: 8px">
-                <div
-                  class="progress-bar bg-success"
-                  role="progressbar"
-                  [style.width.%]="getCellValue(row, column)"
-                  [attr.aria-valuenow]="getCellValue(row, column)"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                ></div>
-              </div>
-              <small class="text-muted ms-2">{{ getCellValue(row, column) }}%</small>
-            </div>
-            }
-          </td>
-          } @if (actions.length > 0) {
-          <td class="text-center">
-            <div class="btn-group btn-group-sm" role="group">
-              @for (action of actions; track action.action) {
-              <button
-                type="button"
-                [class]="'btn ' + (action.class || 'btn-outline-secondary')"
-                [title]="action.tooltip"
-                (click)="onActionClick(action, row)"
-              >
-                <i [class]="action.icon"></i>
-              </button>
-              }
-            </div>
-          </td>
-          }
-        </tr>
+          <ng-container
+            [ngTemplateOutlet]="cardTemplate"
+            [ngTemplateOutletContext]="{
+              $implicit: row,
+              row: row,
+              actions: actions,
+              onAction: handleCardAction
+            }">
+          </ng-container>
         }
-      </tbody>
-    </table>
-  </div>
+      </div>
+    } @else {
+      <!-- Vista desktop: Tabla -->
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              @for (column of columns; track column.key) {
+              <th>{{ column.label }}</th>
+              } @if (actions.length > 0) {
+              <th class="text-center" style="width: 120px">Acciones</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of filteredData; track row.id || $index) {
+            <tr>
+              @for (column of columns; track column.key) {
+              <td>
+                @if (!column.type || column.type === 'text') {
+                <span>{{ getCellValue(row, column) }}</span>
+                } @if (column.type === 'badge') {
+                <span [class]="'badge ' + getBadgeClass(column, getCellValue(row, column))">
+                  {{ getBadgeLabel(column, getCellValue(row, column)) }}
+                </span>
+                } @if (column.type === 'date') {
+                <span>{{ getCellValue(row, column) | date : 'dd/MM/yyyy' }}</span>
+                } @if (column.type === 'percentage') {
+                <span>{{ getCellValue(row, column) }}%</span>
+                } @if (column.type === 'port-with-date') {
+                <div class="port-info">
+                  <div class="fw-semibold">
+                    {{ getPortLocation(row, column) }}, {{ getPortCountry(row, column) }}
+                  </div>
+                  <div class="text-muted small">
+                    {{ getPortDate(row, column) | date : 'dd/MM/yyyy' }}
+                  </div>
+                </div>
+                } @if (column.type === 'progress') {
+                <div class="progress-container">
+                  <div class="progress" style="height: 8px">
+                    <div
+                      class="progress-bar bg-success"
+                      role="progressbar"
+                      [style.width.%]="getCellValue(row, column)"
+                      [attr.aria-valuenow]="getCellValue(row, column)"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                  <small class="text-muted ms-2">{{ getCellValue(row, column) }}%</small>
+                </div>
+                }
+              </td>
+              } @if (actions.length > 0) {
+              <td class="text-center">
+                <div class="btn-group btn-group-sm" role="group">
+                  @for (action of actions; track action.action) {
+                  <button
+                    type="button"
+                    [class]="'btn ' + (action.class || 'btn-outline-secondary')"
+                    [title]="action.tooltip"
+                    (click)="onActionClick(action, row)"
+                  >
+                    <i [class]="action.icon"></i>
+                  </button>
+                  }
+                </div>
+              </td>
+              }
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
   }
 </div>

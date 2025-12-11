@@ -21,7 +21,9 @@ export class Profile implements OnInit {
   loading = signal<boolean>(false);
   isEditMode = signal<boolean>(false);
   updateSuccess = signal<boolean>(false);
+  updateError = signal<string>('');
   passwordChangeSuccess = signal<boolean>(false);
+  passwordError = signal<string>('');
 
   // Forms
   personalInfoForm: FormGroup;
@@ -116,6 +118,9 @@ export class Profile implements OnInit {
 
   onUpdateProfile() {
     if (this.personalInfoForm.invalid || this.companyInfoForm.invalid) {
+      // Marcar todos los campos como touched para mostrar errores
+      this.personalInfoForm.markAllAsTouched();
+      this.companyInfoForm.markAllAsTouched();
       return;
     }
 
@@ -123,6 +128,7 @@ export class Profile implements OnInit {
     if (!clientData) return;
 
     this.loading.set(true);
+    this.updateError.set('');
 
     const updateData = {
       name: this.personalInfoForm.value.name,
@@ -152,19 +158,37 @@ export class Profile implements OnInit {
       error: (error) => {
         console.error('Error actualizando perfil:', error);
         this.loading.set(false);
+
+        // Mostrar mensaje de error al usuario
+        if (error.status === 422) {
+          const errors = error.error?.errors;
+          if (errors) {
+            const firstError = Object.values(errors)[0];
+            this.updateError.set(Array.isArray(firstError) ? firstError[0] : String(firstError));
+          } else {
+            this.updateError.set('Error de validación');
+          }
+        } else {
+          this.updateError.set('Error al actualizar el perfil. Intenta nuevamente.');
+        }
+
+        setTimeout(() => this.updateError.set(''), 5000);
       }
     });
   }
 
   onChangePassword() {
     if (this.securityForm.invalid) {
+      // Marcar todos los campos como touched para mostrar errores
+      this.securityForm.markAllAsTouched();
       return;
     }
 
     this.loading.set(true);
+    this.passwordError.set('');
 
     this.auth.changePassword(this.securityForm.value).subscribe({
-      next: (response) => {
+      next: () => {
         this.passwordChangeSuccess.set(true);
         this.securityForm.reset();
         this.loading.set(false);
@@ -174,7 +198,24 @@ export class Profile implements OnInit {
       error: (error) => {
         console.error('Error cambiando contraseña:', error);
         this.loading.set(false);
-        // Aquí podrías mostrar un mensaje de error al usuario
+
+        // Mostrar mensaje de error al usuario
+        if (error.status === 400) {
+          this.passwordError.set(error.error?.message || 'La contraseña actual es incorrecta');
+        } else if (error.status === 422) {
+          // Errores de validación
+          const errors = error.error?.errors;
+          if (errors) {
+            const firstError = Object.values(errors)[0];
+            this.passwordError.set(Array.isArray(firstError) ? firstError[0] : String(firstError));
+          } else {
+            this.passwordError.set('Error de validación');
+          }
+        } else {
+          this.passwordError.set('Error al cambiar la contraseña. Intenta nuevamente.');
+        }
+
+        setTimeout(() => this.passwordError.set(''), 5000);
       }
     });
   }

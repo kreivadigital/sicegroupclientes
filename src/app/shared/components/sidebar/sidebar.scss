@@ -61,7 +61,10 @@
   .sidebar {
     transform: translateX(-100%);
     width: 280px;
+    height: 100dvh;  // Dynamic viewport height para móvil
+    max-height: -webkit-fill-available; // Fallback para Safari
     box-shadow: $shadow-lg;
+    overflow: hidden;
 
     // Estado abierto en móvil
     &.mobile-open {
@@ -87,6 +90,18 @@
         width: auto;
       }
     }
+  }
+
+  // Nav debe tomar el espacio restante y hacer scroll si es necesario
+  .sidebar-nav {
+    flex: 1;
+    min-height: 0; // Importante para que flex funcione con overflow
+    overflow-y: auto;
+  }
+
+  // Footer siempre visible al fondo
+  .sidebar-footer {
+    flex-shrink: 0;
   }
 
   @keyframes fadeIn {

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ContentChild, TemplateRef, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableColumn, TableAction } from '../../interfaces/table.interface';
@@ -23,6 +23,18 @@ export interface FilterChangeEvent {
   styleUrl: './data-table.scss',
 })
 export class DataTable implements OnInit, OnDestroy {
+  // Template para vista de cards en móvil (opcional)
+  @ContentChild('cardTemplate') cardTemplate?: TemplateRef<any>;
+
+  // Signal para detectar si es móvil
+  isMobile = signal(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
+
+  // Listener para cambios de tamaño de ventana
+  @HostListener('window:resize')
+  onResize() {
+    this.isMobile.set(window.innerWidth < 768);
+  }
+
   @Input() columns: TableColumn[] = [];
   @Input() set data(value: any[]) {
     this._data = Array.isArray(value) ? value : [];
@@ -301,4 +313,9 @@ export class DataTable implements OnInit, OnDestroy {
   onActionClick(action: TableAction, row: any) {
     this.actionClick.emit({ action: action.action, row });
   }
+
+  // Handler para cards - acepta objeto directamente
+  handleCardAction = (event: { action: string; row: any }) => {
+    this.actionClick.emit(event);
+  };
 }

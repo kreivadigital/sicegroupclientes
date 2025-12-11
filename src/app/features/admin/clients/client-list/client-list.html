@@ -16,6 +16,53 @@
     [loading]="loading()"
     emptyMessage="No hay clientes registrados"
     (actionClick)="onTableAction($event)">
+
+    <!-- Template para cards en móvil -->
+    <ng-template #cardTemplate let-client let-onAction="onAction">
+      <div class="client-card">
+        <!-- Nombre de la empresa -->
+        <div class="card-field">
+          <span class="field-label">Nombre de la empresa</span>
+          <span class="field-value">{{ client.company_name || '-' }}</span>
+        </div>
+
+        <!-- Contacto -->
+        <div class="card-field">
+          <span class="field-label">Contacto</span>
+          <span class="field-value">{{ client.user?.name || '-' }}</span>
+        </div>
+
+        <!-- Correo Electrónico -->
+        <div class="card-field">
+          <span class="field-label">Correo Electrónico</span>
+          <span class="field-value">{{ client.user?.email || '-' }}</span>
+        </div>
+
+        <!-- Teléfono y RUT en la misma fila -->
+        <div class="card-row">
+          <div class="card-field">
+            <span class="field-label">Teléfono</span>
+            <span class="field-value">{{ client.phone || '-' }}</span>
+          </div>
+          <div class="card-field">
+            <span class="field-label">RUT</span>
+            <span class="field-value">{{ client.rut || '-' }}</span>
+          </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="card-actions">
+          <button class="btn-view" (click)="onAction({ action: 'view', row: client })">
+            <i class="bi bi-eye"></i>
+            <span>Ver detalles</span>
+          </button>
+          <button class="btn-edit" (click)="onAction({ action: 'edit', row: client })">
+            <i class="bi bi-pencil-square"></i>
+            <span>Editar</span>
+          </button>
+        </div>
+      </div>
+    </ng-template>
   </app-data-table>
 
   <!-- Pagination -->

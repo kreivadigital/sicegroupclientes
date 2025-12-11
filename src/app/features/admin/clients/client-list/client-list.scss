@@ -1,0 +1,99 @@
+// ==========================================
+// CLIENT LIST
+// ==========================================
+@use '../../../../../assets/styles/variables' as *;
+
+// ==========================================
+// CLIENT CARDS (Mobile)
+// ==========================================
+.client-card {
+  background-color: $bg-white;
+  border: 1px solid $border-base;
+  border-radius: $radius-lg;
+  padding: 1rem;
+  box-shadow: $shadow-sm;
+}
+
+// Campo individual
+.card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 12px;
+
+  .field-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: $text-muted;
+  }
+
+  .field-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: $text-darkest;
+  }
+}
+
+// Fila con 2 campos (Teléfono y RUT)
+.card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  .card-field {
+    padding-bottom: 0;
+  }
+}
+
+// Acciones
+.card-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 1rem;
+}
+
+.btn-view,
+.btn-edit {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 8px 16px;
+  height: 32px;
+  background-color: $bg-white;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  i {
+    font-size: 1rem;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.btn-view {
+  border: 1.5px solid #212529;
+  color: #212529;
+
+  &:hover {
+    background-color: #02661E;
+    border-color: #02661E;
+    color: $text-white;
+  }
+}
+
+.btn-edit {
+  border: 1.5px solid #6c757d;
+  color: #6c757d;
+
+  &:hover {
+    background-color: #6c757d;
+    color: $text-white;
+  }
+}

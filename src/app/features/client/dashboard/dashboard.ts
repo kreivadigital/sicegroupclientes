@@ -95,8 +95,8 @@ export class Dashboard implements OnInit {
 
   // Acciones de la tabla
   actions: TableAction[] = [
-    { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-primary' },
-    { icon: 'bi-geo-alt', tooltip: 'Rastrear', action: 'track', class: 'btn-outline-success' }
+    { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-dark' },
+    { icon: 'bi-geo-alt', tooltip: 'Rastrear', action: 'track', class: 'btn-outline-primary' }
   ];
 
   ngOnInit() {
@@ -175,5 +175,28 @@ export class Dashboard implements OnInit {
 
   onPageChange(page: number) {
     this.loadOrders(page);
+  }
+
+  // Helpers para el template de cards
+  getStatusColor(status: string): string {
+    const colorMap: Record<string, string> = {
+      'pending': 'warning',
+      'processing': 'info',
+      'shipped': 'warning',
+      'delivered': 'success',
+      'cancelled': 'danger'
+    };
+    return colorMap[status] || 'secondary';
+  }
+
+  getStatusLabel(status: string): string {
+    const labelMap: Record<string, string> = {
+      'pending': 'Pendiente',
+      'processing': 'En Proceso',
+      'shipped': 'En tránsito',
+      'delivered': 'Entregada',
+      'cancelled': 'Cancelada'
+    };
+    return labelMap[status] || status;
   }
 }

@@ -81,7 +81,7 @@ export class Auth {
    * Refrescar información del usuario actual
    */
   refreshUser(): Observable<User> {
-    return this.http.get<User>(`${environment.apiBase}/auth/user`).pipe(
+    return this.http.get<User>(`${environment.apiBase}/user`).pipe(
       tap(user => {
         this.setUser(user);
         this.currentUser.set(user);
@@ -94,6 +94,13 @@ export class Auth {
    */
   changePassword(data: { current_password: string; password: string; password_confirmation: string }): Observable<any> {
     return this.http.post(`${environment.apiBase}/auth/password/change`, data);
+  }
+
+  /**
+   * Solicitar reset de contraseña (envía nueva clave por email)
+   */
+  requestPasswordReset(email: string): Observable<any> {
+    return this.http.post(`${environment.apiBase}/auth/password/reset-request`, { email });
   }
 
   // ==========================================

@@ -98,7 +98,7 @@ export class ContainerList implements OnInit {
 
   // Configuración de acciones (botones en última columna)
   actions: TableAction[] = [
-    { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-primary' },
+    { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-dark' },
     { icon: 'bi-trash', tooltip: 'Eliminar', action: 'delete', class: 'btn-outline-danger' }
   ];
 
@@ -205,6 +205,25 @@ export class ContainerList implements OnInit {
 
   onPageChange(page: number) {
     this.loadContainers(page, this.currentSearch());
+  }
+
+  // Helpers para el template de cards
+  getStatusColor(status: string): string {
+    const colorMap: Record<string, string> = {
+      'NEW': 'secondary',
+      'INPROGRESS': 'info',
+      'BOOKED': 'primary',
+      'LOADED': 'warning',
+      'SAILING': 'primary',
+      'ARRIVED': 'success',
+      'DISCHARGED': 'success',
+      'UNTRACKED': 'danger'
+    };
+    return colorMap[status] || 'secondary';
+  }
+
+  getStatusLabel(status: string): string {
+    return ContainerStatusLabels[status as keyof typeof ContainerStatusLabels] || status;
   }
 
   onImportFromShipsGo() {

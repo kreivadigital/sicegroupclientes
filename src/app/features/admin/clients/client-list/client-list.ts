@@ -41,7 +41,7 @@ export class ClientList implements OnInit {
   ];
 
   actions: TableAction[] = [
-    { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-primary' },
+    { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-dark' },
     { icon: 'bi-pencil-square', tooltip: 'Editar', action: 'edit', class: 'btn-outline-secondary' }
   ];
 

@@ -1,7 +1,7 @@
 <div class="container-list-page">
   <!-- Stats Section -->
   <div class="row g-4 mb-4">
-    <div class="col-md-4">
+    <div class="col-md-4 mt-0">
       <app-stat-card
         title="Total de Clientes"
         [value]="totalClients()"
@@ -9,7 +9,7 @@
         iconColor="#155DFC">
       </app-stat-card>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 mt-0">
       <app-stat-card
         title="Pedidos Activos"
         [value]="activeOrders()"
@@ -17,7 +17,7 @@
         iconColor="#02661E">
       </app-stat-card>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 mt-0">
       <app-stat-card
         title="Contenedores"
         [value]="totalContainers()"
@@ -68,6 +68,69 @@
     [loading]="loading()"
     emptyMessage="No hay contenedores registrados"
     (actionClick)="onTableAction($event)">
+
+    <!-- Template para cards en móvil -->
+    <ng-template #cardTemplate let-container let-actions="actions" let-onAction="onAction">
+      <div class="container-card">
+        <!-- Header: Contenedor y Status -->
+        <div class="card-header">
+          <span class="container-number">Contenedor {{ container.container_number }}</span>
+          <span [class]="'badge bg-' + getStatusColor(container.status)">
+            {{ getStatusLabel(container.status) }}
+          </span>
+        </div>
+
+        <!-- Referencia -->
+        <div class="card-reference">
+          <span class="reference-value">{{ container.shipment_reference || '-' }}</span>
+        </div>
+
+        <!-- Puertos -->
+        <div class="card-ports">
+          <div class="port-item">
+            <span class="port-label">Puerto de Origen</span>
+            <span class="port-location">
+              {{ container.port_of_loading_name || '-' }}
+              <span class="port-country">{{ container.port_of_loading_country || '-' }}</span>
+            </span>
+            <span class="port-date">{{ container.created_at | date:'dd/MM/yyyy' }}</span>
+          </div>
+
+          <div class="port-connector">
+            <div class="connector-line"></div>
+            <div class="connector-dot"></div>
+          </div>
+
+          <div class="port-item">
+            <span class="port-label">Puerto de Destino</span>
+            <span class="port-location">
+              {{ container.destination_port_name || '-' }}
+              <span class="port-country">{{ container.destination_port_country || '-' }}</span>
+            </span>
+            <span class="port-date">{{ container.date_of_discharge | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+
+        <!-- Progreso de Tránsito -->
+        <div class="card-transit">
+          <span class="transit-label">{{ container.transit_percentage || 0 }}% de Tránsito</span>
+          <div class="transit-progress">
+            <div class="progress-bar" [style.width.%]="container.transit_percentage || 0"></div>
+          </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="card-actions">
+          <button class="btn-view" (click)="onAction({ action: 'view', row: container })">
+            <i class="bi bi-eye"></i>
+            <span>Ver Detalles</span>
+          </button>
+          <button class="btn-delete" (click)="onAction({ action: 'delete', row: container })">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+    </ng-template>
   </app-data-table>
 
   <!-- Pagination -->

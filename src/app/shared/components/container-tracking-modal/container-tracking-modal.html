@@ -49,7 +49,7 @@
         <div class="info-label">Puerto de Origen</div>
         <div class="info-value fw-bold">
           {{ container()!.port_of_loading_name || '-' }},
-          {{ container()!.port_of_loading_country || '-' }}
+          <span class="info-country">{{ container()!.port_of_loading_country || '-' }}</span>
         </div>
         <div class="info-date">{{ formatDate(container()!.date_of_loading) }}</div>
       </div>
@@ -63,7 +63,7 @@
         <div class="info-label">Puerto de Destino</div>
         <div class="info-value fw-bold">
           {{ container()!.destination_port_name || '-' }},
-          {{ container()!.destination_port_country || '-' }}
+          <span class="info-country">{{ container()!.destination_port_country || '-' }}</span>
         </div>
         <div class="info-date">{{ formatDate(container()!.date_of_discharge) }}</div>
       </div>

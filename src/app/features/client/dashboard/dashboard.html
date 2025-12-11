@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="client-dashboard-page">
   @if (loading()) {
     <div class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
@@ -62,6 +62,71 @@
           [loading]="loadingOrders()"
           emptyMessage="No tienes órdenes registradas"
           (actionClick)="onTableAction($event)">
+
+          <!-- Template para cards en móvil -->
+          <ng-template #cardTemplate let-order let-actions="actions" let-onAction="onAction">
+            <div class="order-card">
+              <!-- Header: Orden # y Status -->
+              <div class="card-header">
+                <span class="order-number">Orden #{{ order.id }}</span>
+                <span [class]="'badge bg-' + getStatusColor(order.status)">
+                  {{ getStatusLabel(order.status) }}
+                </span>
+              </div>
+
+              <!-- Referencia -->
+              <div class="card-reference">
+                <span class="reference-value">{{ order.container?.shipment_reference || '-' }}</span>
+              </div>
+
+              <!-- Puertos -->
+              <div class="card-ports">
+                <!-- Puerto de Origen -->
+                <div class="port-item">
+                  <span class="port-label">Puerto de Origen</span>
+                  <span class="port-location">
+                    {{ order.container?.port_of_loading_name || '-' }}
+                    <span class="port-country">{{ order.container?.port_of_loading_country || '-' }}</span>
+                  </span>
+                  <span class="port-date">{{ order.created_at | date:'dd/MM/yyyy' }}</span>
+                </div>
+
+                <!-- Conector -->
+                <div class="port-connector">
+                  <div class="connector-line"></div>
+                  <div class="connector-dot"></div>
+                </div>
+
+                <!-- Puerto de Destino -->
+                <div class="port-item">
+                  <span class="port-label">Puerto de Destino</span>
+                  <span class="port-location">
+                    {{ order.container?.destination_port_name || '-' }}
+                    <span class="port-country">{{ order.container?.destination_port_country || '-' }}</span>
+                  </span>
+                  <span class="port-date">{{ order.container?.date_of_discharge | date:'dd/MM/yyyy' }}</span>
+                </div>
+              </div>
+
+              <!-- Acciones -->
+              <div class="card-actions">
+                <button
+                  class="btn-view"
+                  (click)="onAction({ action: 'view', row: order })">
+                  <i class="bi bi-eye"></i>
+                  <span>Ver Detalles</span>
+                </button>
+                @if (order.container_id) {
+                  <button
+                    class="btn-track"
+                    (click)="onAction({ action: 'track', row: order })">
+                    <i class="bi bi-geo-alt"></i>
+                  </button>
+                }
+              </div>
+            </div>
+          </ng-template>
+
         </app-data-table>
 
         <!-- Pagination -->

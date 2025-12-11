@@ -103,6 +103,9 @@
           "defaultConfiguration": "production"
         },
         "serve": {
+          "options": {
+            "allowedHosts": ["subcompensational-rohan-impenetrably.ngrok-free.dev"]
+          },
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {

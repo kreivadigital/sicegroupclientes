@@ -406,12 +406,15 @@
   }
 
   .info-ports {
-    gap: 0.5rem;
+    gap: 1.5rem;
 
     .info-arrow {
       padding: 0.5rem 0;
       height: 30px;
     }
+  }
+  .info-item .info-country {
+    display: block;
   }
 
   .info-label {

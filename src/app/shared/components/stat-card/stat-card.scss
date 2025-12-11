@@ -3,6 +3,10 @@
 // ==========================================
 @use '../../../../assets/styles/variables' as *;
 
+:host {
+  display: block;
+}
+
 .stat-card {
   background-color: $bg-white;
   border-radius: $radius-lg;
