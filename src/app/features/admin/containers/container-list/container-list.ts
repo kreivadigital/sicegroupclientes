@@ -64,7 +64,8 @@ export class ContainerList implements OnInit {
           'SAILING': 'primary',        // Azul - Navegando
           'ARRIVED': 'success',        // Verde - Arribado
           'DISCHARGED': 'success',     // Verde - Descargado
-          'UNTRACKED': 'danger'        // Rojo - Sin Rastreo
+          'UNTRACKED': 'danger',       // Rojo - Sin Rastreo
+          'CANCELLED': 'secondary'     // Gris - Cancelado
         },
         labelMap: ContainerStatusLabels as Record<string, string>
       }

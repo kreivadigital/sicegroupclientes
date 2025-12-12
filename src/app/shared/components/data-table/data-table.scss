@@ -465,4 +465,15 @@
     flex-direction: column;
     gap: 1rem;
   }
+
+  // ==========================================
+  // Row Classes (Conditional Styles)
+  // ==========================================
+  .table tbody tr.row-inactive {
+    background-color: #ebebeb;
+
+    &:hover {
+      background-color: #e0e0e0;
+    }
+  }
 }

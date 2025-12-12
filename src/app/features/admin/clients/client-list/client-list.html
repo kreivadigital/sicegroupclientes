@@ -14,16 +14,19 @@
     [data]="clients()"
     [actions]="actions"
     [loading]="loading()"
+    [rowClassFn]="getClientRowClass"
     emptyMessage="No hay clientes registrados"
     (actionClick)="onTableAction($event)">
 
     <!-- Template para cards en móvil -->
-    <ng-template #cardTemplate let-client let-onAction="onAction">
-      <div class="client-card">
-        <!-- Nombre de la empresa -->
-        <div class="card-field">
-          <span class="field-label">Nombre de la empresa</span>
-          <span class="field-value">{{ client.company_name || '-' }}</span>
+    <ng-template #cardTemplate let-client let-onAction="onAction" let-rowClass="rowClass">
+      <div class="client-card" [class.card-inactive]="client.user?.status === 'inactive'">
+        <!-- Header: Empresa y Estado -->
+        <div class="card-header-row">
+          <span class="field-value company-name">{{ client.company_name || '-' }}</span>
+          <span [class]="'status-badge ' + (client.user?.status === 'active' ? 'badge-active' : 'badge-inactive')">
+            {{ client.user?.status === 'active' ? 'Activo' : 'Inactivo' }}
+          </span>
         </div>
 
         <!-- Contacto -->

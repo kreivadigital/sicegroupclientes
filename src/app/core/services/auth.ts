@@ -97,6 +97,18 @@ export class Auth {
   }
 
   /**
+   * Actualizar perfil del usuario actual (name, email)
+   */
+  updateProfile(data: { name: string; email: string }): Observable<User> {
+    return this.http.put<User>(`${environment.apiBase}/user`, data).pipe(
+      tap(user => {
+        this.setUser(user);
+        this.currentUser.set(user);
+      })
+    );
+  }
+
+  /**
    * Solicitar reset de contraseña (envía nueva clave por email)
    */
   requestPasswordReset(email: string): Observable<any> {

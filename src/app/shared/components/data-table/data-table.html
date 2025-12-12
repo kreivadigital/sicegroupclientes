@@ -150,7 +150,8 @@
               $implicit: row,
               row: row,
               actions: actions,
-              onAction: handleCardAction
+              onAction: handleCardAction,
+              rowClass: getRowClass(row)
             }">
           </ng-container>
         }
@@ -170,7 +171,7 @@
           </thead>
           <tbody>
             @for (row of filteredData; track row.id || $index) {
-            <tr>
+            <tr [class]="getRowClass(row)">
               @for (column of columns; track column.key) {
               <td>
                 @if (!column.type || column.type === 'text') {

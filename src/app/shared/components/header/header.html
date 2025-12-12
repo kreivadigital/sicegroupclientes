@@ -36,17 +36,10 @@
 
   <!-- Lado Derecho: Perfil del Usuario -->
   <div class="header-right">
-    @if (!headerData().isAdmin) {
-      <button class="profile-info profile-btn" (click)="goToProfile()">
-        <i class="bi bi-person"></i>
-        <span>{{ headerData().profileText }}</span>
-      </button>
-    } @else {
-      <div class="profile-info">
-        <i class="bi bi-person"></i>
-        <span>{{ headerData().profileText }}</span>
-      </div>
-    }
+    <button class="profile-info profile-btn" (click)="goToProfile()">
+      <i class="bi bi-person"></i>
+      <span>{{ headerData().profileText }}</span>
+    </button>
   </div>
 
 </header>

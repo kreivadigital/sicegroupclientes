@@ -26,6 +26,8 @@ export class ClientModal implements OnInit {
   loading = signal(false);
   client = signal<Client | null>(null);
   formChanged = signal(false);
+  rutExists = signal(false);
+  checkingRut = signal(false);
   private originalFormValue: any = null;
 
   ngOnInit() {
@@ -187,12 +189,34 @@ export class ClientModal implements OnInit {
     }
   }
 
+  checkRutExists() {
+    const rutControl = this.form.get('rut');
+    if (!rutControl || !rutControl.value || rutControl.value.trim() === '') {
+      this.rutExists.set(false);
+      return;
+    }
+
+    this.checkingRut.set(true);
+    const excludeId = this.mode === 'edit' ? this.clientId : undefined;
+
+    this.clientService.checkRut(rutControl.value, excludeId).subscribe({
+      next: (response) => {
+        this.rutExists.set(response.exists);
+        this.checkingRut.set(false);
+      },
+      error: () => {
+        this.rutExists.set(false);
+        this.checkingRut.set(false);
+      }
+    });
+  }
+
   onClose() {
     this.close.emit();
   }
 
   onSubmit() {
-    if (this.form.invalid || this.mode === 'view') return;
+    if (this.form.invalid || this.mode === 'view' || this.rutExists()) return;
 
     this.loading.set(true);
     const formData: ClientFormData = this.form.value;

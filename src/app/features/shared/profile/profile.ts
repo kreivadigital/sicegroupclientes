@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Auth } from '../../../core/services/auth';
@@ -25,6 +25,9 @@ export class Profile implements OnInit {
   passwordChangeSuccess = signal<boolean>(false);
   passwordError = signal<string>('');
 
+  // Computed para verificar rol
+  isAdmin = computed(() => this.auth.isAdmin());
+
   // Forms
   personalInfoForm: FormGroup;
   companyInfoForm: FormGroup;
@@ -35,10 +38,11 @@ export class Profile implements OnInit {
     this.personalInfoForm = this.fb.group({
       name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required]]
+      phone: [''] // Será requerido solo para clientes
     });
 
     this.companyInfoForm = this.fb.group({
+      company_name: ['', [Validators.required]],
       address: ['', [Validators.required]],
       rut: ['', [Validators.required]]
     });
@@ -55,12 +59,22 @@ export class Profile implements OnInit {
   }
 
   ngOnInit() {
-    this.loadClientData();
+    this.loadUserData();
   }
 
-  loadClientData() {
+  loadUserData() {
     const user = this.auth.currentUser();
     if (!user || !user.id) return;
+
+    // Si es admin, solo cargar datos del usuario
+    if (this.isAdmin()) {
+      this.populateAdminForms(user);
+      return;
+    }
+
+    // Para clientes, agregar validador required al phone
+    this.personalInfoForm.get('phone')?.setValidators([Validators.required]);
+    this.personalInfoForm.get('phone')?.updateValueAndValidity();
 
     this.loading.set(true);
 
@@ -73,7 +87,7 @@ export class Profile implements OnInit {
 
         if (userClient) {
           this.client.set(userClient);
-          this.populateForms(userClient, user);
+          this.populateClientForms(userClient, user);
         }
         this.loading.set(false);
       },
@@ -84,7 +98,14 @@ export class Profile implements OnInit {
     });
   }
 
-  populateForms(client: Client, user: any) {
+  populateAdminForms(user: any) {
+    this.personalInfoForm.patchValue({
+      name: user.name,
+      email: user.email
+    });
+  }
+
+  populateClientForms(client: Client, user: any) {
     this.personalInfoForm.patchValue({
       name: user.name,
       email: user.email,
@@ -92,6 +113,7 @@ export class Profile implements OnInit {
     });
 
     this.companyInfoForm.patchValue({
+      company_name: client.company_name,
       address: client.address,
       rut: client.rut
     });
@@ -102,23 +124,77 @@ export class Profile implements OnInit {
     this.isEditMode.set(newMode);
 
     if (newMode) {
-      this.personalInfoForm.enable();
-      this.companyInfoForm.enable();
+      if (this.isAdmin()) {
+        // Admin solo puede editar name y email
+        this.personalInfoForm.get('name')?.enable();
+        this.personalInfoForm.get('email')?.enable();
+      } else {
+        // Cliente puede editar todo
+        this.personalInfoForm.enable();
+        this.companyInfoForm.enable();
+      }
     } else {
       this.personalInfoForm.disable();
       this.companyInfoForm.disable();
       // Restaurar valores originales
       const user = this.auth.currentUser();
-      const clientData = this.client();
-      if (user && clientData) {
-        this.populateForms(clientData, user);
+      if (this.isAdmin()) {
+        if (user) {
+          this.populateAdminForms(user);
+        }
+      } else {
+        const clientData = this.client();
+        if (user && clientData) {
+          this.populateClientForms(clientData, user);
+        }
       }
     }
   }
 
   onUpdateProfile() {
+    // Si es admin, usar endpoint de usuario
+    if (this.isAdmin()) {
+      this.updateAdminProfile();
+      return;
+    }
+
+    // Si es cliente, usar endpoint de cliente
+    this.updateClientProfile();
+  }
+
+  private updateAdminProfile() {
+    if (this.personalInfoForm.get('name')?.invalid || this.personalInfoForm.get('email')?.invalid) {
+      this.personalInfoForm.markAllAsTouched();
+      return;
+    }
+
+    this.loading.set(true);
+    this.updateError.set('');
+
+    const updateData = {
+      name: this.personalInfoForm.value.name,
+      email: this.personalInfoForm.value.email
+    };
+
+    this.auth.updateProfile(updateData).subscribe({
+      next: () => {
+        this.updateSuccess.set(true);
+        this.isEditMode.set(false);
+        this.personalInfoForm.disable();
+        this.loading.set(false);
+
+        setTimeout(() => this.updateSuccess.set(false), 3000);
+      },
+      error: (error) => {
+        console.error('Error actualizando perfil:', error);
+        this.loading.set(false);
+        this.handleUpdateError(error);
+      }
+    });
+  }
+
+  private updateClientProfile() {
     if (this.personalInfoForm.invalid || this.companyInfoForm.invalid) {
-      // Marcar todos los campos como touched para mostrar errores
       this.personalInfoForm.markAllAsTouched();
       this.companyInfoForm.markAllAsTouched();
       return;
@@ -134,9 +210,9 @@ export class Profile implements OnInit {
       name: this.personalInfoForm.value.name,
       email: this.personalInfoForm.value.email,
       phone: this.personalInfoForm.value.phone,
+      company_name: this.companyInfoForm.value.company_name,
       address: this.companyInfoForm.value.address,
       rut: this.companyInfoForm.value.rut,
-      company_name: clientData.company_name,
       city: clientData.city,
       country: clientData.country
     };
@@ -158,28 +234,29 @@ export class Profile implements OnInit {
       error: (error) => {
         console.error('Error actualizando perfil:', error);
         this.loading.set(false);
-
-        // Mostrar mensaje de error al usuario
-        if (error.status === 422) {
-          const errors = error.error?.errors;
-          if (errors) {
-            const firstError = Object.values(errors)[0];
-            this.updateError.set(Array.isArray(firstError) ? firstError[0] : String(firstError));
-          } else {
-            this.updateError.set('Error de validación');
-          }
-        } else {
-          this.updateError.set('Error al actualizar el perfil. Intenta nuevamente.');
-        }
-
-        setTimeout(() => this.updateError.set(''), 5000);
+        this.handleUpdateError(error);
       }
     });
   }
 
+  private handleUpdateError(error: any) {
+    if (error.status === 422) {
+      const errors = error.error?.errors;
+      if (errors) {
+        const firstError = Object.values(errors)[0];
+        this.updateError.set(Array.isArray(firstError) ? firstError[0] : String(firstError));
+      } else {
+        this.updateError.set('Error de validación');
+      }
+    } else {
+      this.updateError.set('Error al actualizar el perfil. Intenta nuevamente.');
+    }
+
+    setTimeout(() => this.updateError.set(''), 5000);
+  }
+
   onChangePassword() {
     if (this.securityForm.invalid) {
-      // Marcar todos los campos como touched para mostrar errores
       this.securityForm.markAllAsTouched();
       return;
     }
@@ -199,11 +276,9 @@ export class Profile implements OnInit {
         console.error('Error cambiando contraseña:', error);
         this.loading.set(false);
 
-        // Mostrar mensaje de error al usuario
         if (error.status === 400) {
           this.passwordError.set(error.error?.message || 'La contraseña actual es incorrecta');
         } else if (error.status === 422) {
-          // Errores de validación
           const errors = error.error?.errors;
           if (errors) {
             const firstError = Object.values(errors)[0];
@@ -221,6 +296,17 @@ export class Profile implements OnInit {
   }
 
   getInitials(): string {
+    if (this.isAdmin()) {
+      const user = this.auth.currentUser();
+      if (!user || !user.name) return 'A';
+
+      const words = user.name.split(' ');
+      if (words.length >= 2) {
+        return (words[0][0] + words[1][0]).toUpperCase();
+      }
+      return user.name.substring(0, 2).toUpperCase();
+    }
+
     const clientData = this.client();
     if (!clientData || !clientData.company_name) return '?';
 
@@ -231,8 +317,14 @@ export class Profile implements OnInit {
     return clientData.company_name.substring(0, 2).toUpperCase();
   }
 
+  getDisplayName(): string {
+    return this.auth.currentUser()?.name || '';
+  }
+
   getUserRole(): string {
-    // Por ahora retornamos un rol fijo, podría venir del backend
+    if (this.isAdmin()) {
+      return 'Administrador';
+    }
     return 'Gerente de Compras';
   }
 

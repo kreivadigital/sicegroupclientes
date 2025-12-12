@@ -5,7 +5,7 @@
         <span class="visually-hidden">Cargando...</span>
       </div>
     </div>
-  } @else if (client()) {
+  } @else if (client() || isAdmin()) {
     <!-- Sección corta: Información del perfil -->
     <div class="profile-summary">
       <div class="profile-avatar">
@@ -13,18 +13,19 @@
       </div>
 
       <div class="profile-info">
-        <h2 class="profile-name">{{ client()!.company_name }}</h2>
-        <p class="profile-role">{{ getUserRole() }}</p>
+        <h2 class="profile-name">{{ getDisplayName() }}</h2>
 
         <div class="profile-contact">
           <div class="contact-item">
             <i class="bi bi-envelope"></i>
             <span>{{ personalInfoForm.value.email }}</span>
           </div>
-          <div class="contact-item">
-            <i class="bi bi-telephone"></i>
-            <span>{{ personalInfoForm.value.phone }}</span>
-          </div>
+          @if (!isAdmin()) {
+            <div class="contact-item">
+              <i class="bi bi-telephone"></i>
+              <span>{{ personalInfoForm.value.phone }}</span>
+            </div>
+          }
         </div>
       </div>
 
@@ -57,11 +58,11 @@
       <!-- Subsección: Información personal -->
       <div class="detail-section">
         <h6 class="section-title">Información personal</h6>
-        <p class="section-subtitle">Actualiza tus datos personales y de contacto</p>
+        <p class="section-subtitle">{{ isAdmin() ? 'Actualiza tu nombre de usuario y correo electrónico' : 'Actualiza tus datos personales y de contacto' }}</p>
 
         <form [formGroup]="personalInfoForm" class="section-form">
           <div class="row">
-            <div class="col-md-4 mb-3">
+            <div [class]="isAdmin() ? 'col-md-6 mb-3' : 'col-md-4 mb-3'">
               <label class="form-label">Nombre</label>
               <input
                 type="text"
@@ -75,7 +76,7 @@
                 </div>
               }
             </div>
-            <div class="col-md-4 mb-3">
+            <div [class]="isAdmin() ? 'col-md-6 mb-3' : 'col-md-4 mb-3'">
               <label class="form-label">Correo Electrónico</label>
               <input
                 type="email"
@@ -93,63 +94,27 @@
                 </div>
               }
             </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Teléfono</label>
-              <input
-                type="text"
-                class="form-control"
-                formControlName="phone"
-                placeholder="+598 678 345"
-                [class.is-invalid]="personalInfoForm.get('phone')?.invalid && personalInfoForm.get('phone')?.touched">
-              @if (personalInfoForm.get('phone')?.invalid && personalInfoForm.get('phone')?.touched) {
-                <div class="invalid-feedback">
-                  El teléfono es requerido
-                </div>
-              }
-            </div>
-          </div>
-        </form>
-      </div>
-
-      <!-- Subsección: Datos de la empresa -->
-      <div class="detail-section">
-        <h6 class="section-title">Datos de la empresa</h6>
-        <p class="section-subtitle">Información de tu empresa</p>
-
-        <form [formGroup]="companyInfoForm" class="section-form">
-          <div class="row">
-            <div class="col-md-8 mb-3">
-              <label class="form-label">Dirección</label>
-              <input
-                type="text"
-                class="form-control"
-                formControlName="address"
-                placeholder="Dirección completa"
-                [class.is-invalid]="companyInfoForm.get('address')?.invalid && companyInfoForm.get('address')?.touched">
-              @if (companyInfoForm.get('address')?.invalid && companyInfoForm.get('address')?.touched) {
-                <div class="invalid-feedback">
-                  La dirección es requerida
-                </div>
-              }
-            </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label">RUT</label>
-              <input
-                type="text"
-                class="form-control"
-                formControlName="rut"
-                placeholder="12345678-9"
-                [class.is-invalid]="companyInfoForm.get('rut')?.invalid && companyInfoForm.get('rut')?.touched">
-              @if (companyInfoForm.get('rut')?.invalid && companyInfoForm.get('rut')?.touched) {
-                <div class="invalid-feedback">
-                  El RUT es requerido
-                </div>
-              }
-            </div>
+            @if (!isAdmin()) {
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Teléfono</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="phone"
+                  placeholder="+598 678 345"
+                  [class.is-invalid]="personalInfoForm.get('phone')?.invalid && personalInfoForm.get('phone')?.touched">
+                @if (personalInfoForm.get('phone')?.invalid && personalInfoForm.get('phone')?.touched) {
+                  <div class="invalid-feedback">
+                    El teléfono es requerido
+                  </div>
+                }
+              </div>
+            }
           </div>
         </form>
 
-        @if (isEditMode()) {
+        <!-- Botones para admin -->
+        @if (isAdmin() && isEditMode()) {
           <div class="section-actions">
             <button type="button" class="btn btn-secondary" (click)="toggleEditMode()">
               Cancelar
@@ -167,6 +132,79 @@
           </div>
         }
       </div>
+
+      <!-- Subsección: Datos de la empresa (solo para clientes) -->
+      @if (!isAdmin()) {
+        <div class="detail-section">
+          <h6 class="section-title">Datos de la empresa</h6>
+          <p class="section-subtitle">Información de tu empresa</p>
+
+          <form [formGroup]="companyInfoForm" class="section-form">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Nombre de la empresa</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="company_name"
+                  placeholder="Nombre de la empresa"
+                  [class.is-invalid]="companyInfoForm.get('company_name')?.invalid && companyInfoForm.get('company_name')?.touched">
+                @if (companyInfoForm.get('company_name')?.invalid && companyInfoForm.get('company_name')?.touched) {
+                  <div class="invalid-feedback">
+                    El nombre de la empresa es requerido
+                  </div>
+                }
+              </div>
+              <div class="col-md-5 mb-3">
+                <label class="form-label">Dirección</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="address"
+                  placeholder="Dirección completa"
+                  [class.is-invalid]="companyInfoForm.get('address')?.invalid && companyInfoForm.get('address')?.touched">
+                @if (companyInfoForm.get('address')?.invalid && companyInfoForm.get('address')?.touched) {
+                  <div class="invalid-feedback">
+                    La dirección es requerida
+                  </div>
+                }
+              </div>
+              <div class="col-md-3 mb-3">
+                <label class="form-label">RUT</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="rut"
+                  placeholder="12345678-9"
+                  [class.is-invalid]="companyInfoForm.get('rut')?.invalid && companyInfoForm.get('rut')?.touched">
+                @if (companyInfoForm.get('rut')?.invalid && companyInfoForm.get('rut')?.touched) {
+                  <div class="invalid-feedback">
+                    El RUT es requerido
+                  </div>
+                }
+              </div>
+            </div>
+          </form>
+
+          @if (isEditMode()) {
+            <div class="section-actions">
+              <button type="button" class="btn btn-secondary" (click)="toggleEditMode()">
+                Cancelar
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="onUpdateProfile()"
+                [disabled]="loading()">
+                @if (loading()) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                }
+                Guardar cambios
+              </button>
+            </div>
+          }
+        </div>
+      }
 
       <!-- Subsección: Seguridad -->
       <div class="detail-section">

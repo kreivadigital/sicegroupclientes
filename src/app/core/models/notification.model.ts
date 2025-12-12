@@ -22,13 +22,13 @@ export interface Notification {
 }
 
 /**
- * Note - Nota asociada a un contenedor
+ * Note - Nota/Notificación asociada a una orden
  */
 export interface Note {
   id: number;
-  container_id: number;
+  order_id: number;
   user_name: string;
-  type: 'note';
+  type: string;
   message: string;
   read_at?: string;
   created_at: string;

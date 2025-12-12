@@ -99,7 +99,8 @@ export enum ContainerStatus {
   Sailing = 'SAILING',
   Arrived = 'ARRIVED',
   Discharged = 'DISCHARGED',
-  Untracked = 'UNTRACKED'
+  Untracked = 'UNTRACKED',
+  Cancelled = 'CANCELLED'
 }
 
 export const ContainerStatusLabels: Record<ContainerStatus, string> = {
@@ -110,7 +111,8 @@ export const ContainerStatusLabels: Record<ContainerStatus, string> = {
   [ContainerStatus.Sailing]: 'Navegando',
   [ContainerStatus.Arrived]: 'Arribado',
   [ContainerStatus.Discharged]: 'Descargado',
-  [ContainerStatus.Untracked]: 'Sin Rastreo'
+  [ContainerStatus.Untracked]: 'Sin Rastreo',
+  [ContainerStatus.Cancelled]: 'Cancelado'
 };
 
 export const ContainerStatusColors: Record<ContainerStatus, string> = {
@@ -121,7 +123,8 @@ export const ContainerStatusColors: Record<ContainerStatus, string> = {
   [ContainerStatus.Sailing]: 'primary',
   [ContainerStatus.Arrived]: 'success',
   [ContainerStatus.Discharged]: 'success',
-  [ContainerStatus.Untracked]: 'danger'
+  [ContainerStatus.Untracked]: 'danger',
+  [ContainerStatus.Cancelled]: 'secondary'
 };
 
 export const ContainerStatusIcons: Record<ContainerStatus, string> = {
@@ -132,7 +135,8 @@ export const ContainerStatusIcons: Record<ContainerStatus, string> = {
   [ContainerStatus.Sailing]: 'bi-water',
   [ContainerStatus.Arrived]: 'bi-geo-alt-fill',
   [ContainerStatus.Discharged]: 'bi-check-circle-fill',
-  [ContainerStatus.Untracked]: 'bi-question-circle'
+  [ContainerStatus.Untracked]: 'bi-question-circle',
+  [ContainerStatus.Cancelled]: 'bi-x-circle'
 };
 
 // ==========================================

@@ -108,6 +108,8 @@ export class Login {
         // Manejar diferentes tipos de error
         if (err.status === 401) {
           this.error.set('Credenciales incorrectas. Verifica tu email y contraseña.');
+        } else if (err.status === 403) {
+          this.error.set('Tu cuenta está inactiva. Contacta al administrador.');
         } else if (err.status === 422) {
           // Error de validación
           const validationErrors = err.error.errors;

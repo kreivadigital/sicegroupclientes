@@ -65,6 +65,8 @@ export class PasswordReset {
 
         if (err.status === 404) {
           this.error.set('No existe una cuenta con este correo electrónico.');
+        } else if (err.status === 403) {
+          this.error.set('Tu cuenta está inactiva. Contacta al administrador.');
         } else if (err.status === 422) {
           const validationErrors = err.error.errors;
           if (validationErrors) {

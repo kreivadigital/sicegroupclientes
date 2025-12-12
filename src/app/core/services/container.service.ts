@@ -3,17 +3,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Container, ContainerFormData, ContainerCreateData, ContainerCreateResponse, Movement, ContainerLiveStatus, VesselInfo, MovementCreateData, MovementUpdateData } from '../models/container.model';
-import { Note, NoteCreateData, Notification } from '../models/notification.model';
-
-export interface NotesResponse {
-  message: string;
-  data: Note[];
-}
-
-export interface NotificationsResponse {
-  message: string;
-  data: Notification[];
-}
 import { ApiResponse, PaginatedResponse } from '../interfaces/api-response.interface';
 
 export interface ContainerFilters {
@@ -135,41 +124,5 @@ export class ContainerService {
    */
   deleteMovement(containerId: number, movementId: number): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${containerId}/movements/${movementId}`);
-  }
-
-  // ==========================================
-  // NOTES CRUD (Notas de contenedor)
-  // ==========================================
-
-  /**
-   * Obtener notas de un contenedor
-   */
-  getNotes(containerId: number): Observable<NotesResponse> {
-    return this.http.get<NotesResponse>(`${this.apiUrl}/${containerId}/notes`);
-  }
-
-  /**
-   * Crear una nota para un contenedor
-   */
-  createNote(containerId: number, data: NoteCreateData): Observable<ApiResponse<Note>> {
-    return this.http.post<ApiResponse<Note>>(`${this.apiUrl}/${containerId}/notes`, data);
-  }
-
-  /**
-   * Eliminar una nota
-   */
-  deleteNote(containerId: number, noteId: number): Observable<ApiResponse<void>> {
-    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${containerId}/notes/${noteId}`);
-  }
-
-  // ==========================================
-  // NOTIFICATIONS (Notificaciones de contenedor)
-  // ==========================================
-
-  /**
-   * Obtener notificaciones de un contenedor (ordenadas cronológicamente, más reciente primero)
-   */
-  getNotifications(containerId: number): Observable<NotificationsResponse> {
-    return this.http.get<NotificationsResponse>(`${this.apiUrl}/${containerId}/notifications`);
   }
 }

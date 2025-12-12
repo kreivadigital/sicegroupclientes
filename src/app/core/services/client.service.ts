@@ -45,4 +45,12 @@ export class ClientService {
   restoreClient(id: number): Observable<ApiResponse<Client>> {
     return this.http.post<ApiResponse<Client>>(`${this.apiUrl}/${id}/restore`, {});
   }
+
+  checkRut(rut: string, excludeId?: number): Observable<{ exists: boolean; message: string }> {
+    let url = `${this.apiUrl}/check-rut/${encodeURIComponent(rut)}`;
+    if (excludeId) {
+      url += `?excludeId=${excludeId}`;
+    }
+    return this.http.get<{ exists: boolean; message: string }>(url);
+  }
 }

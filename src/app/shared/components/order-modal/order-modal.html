@@ -67,7 +67,7 @@
           @if (order()?.picking_list_path) {
             <div class="file-display" (click)="downloadFile('picking-list')">
               <i class="bi bi-file-earmark-spreadsheet me-2"></i>
-              <span>picking_list.xlsx</span>
+              <span>{{ getFileName(order()?.picking_list_path) }}</span>
               <button type="button" class="btn btn-sm btn-link" (click)="downloadFile('picking-list'); $event.stopPropagation()">
                 <i class="bi bi-download"></i>
               </button>
@@ -77,10 +77,31 @@
           }
         } @else {
           @if (auth.isAdmin()) {
-            <button type="button" class="btn btn-secondary w-100" (click)="packinInput.click()">
-              <i class="bi bi-upload me-2"></i>
-              Adjuntar Excel
-            </button>
+            @if (packinListFile) {
+              <!-- Archivo nuevo seleccionado -->
+              <div class="file-display file-selected">
+                <i class="bi bi-file-earmark-spreadsheet me-2"></i>
+                <span>{{ packinListFile.name }}</span>
+                <button type="button" class="btn btn-sm btn-link" (click)="packinInput.click()">
+                  <i class="bi bi-pencil"></i>
+                </button>
+              </div>
+            } @else if (order()?.picking_list_path) {
+              <!-- Archivo existente en servidor -->
+              <div class="file-display file-existing">
+                <i class="bi bi-file-earmark-spreadsheet me-2"></i>
+                <span>{{ getFileName(order()?.picking_list_path) }}</span>
+                <button type="button" class="btn btn-sm btn-link" (click)="packinInput.click()">
+                  <i class="bi bi-pencil"></i>
+                </button>
+              </div>
+            } @else {
+              <!-- Sin archivo -->
+              <button type="button" class="btn btn-secondary w-100" (click)="packinInput.click()">
+                <i class="bi bi-upload me-2"></i>
+                Adjuntar Excel
+              </button>
+            }
             <input
               #packinInput
               type="file"
@@ -88,9 +109,6 @@
               accept=".xlsx,.xls"
               (change)="onFileSelect($event, 'picking')"
             />
-            @if (packinListFile) {
-              <small class="text-muted d-block mt-1">{{ packinListFile.name }}</small>
-            }
           } @else {
             <input type="text" class="form-control" value="Solo visible en modo lectura" readonly />
           }
@@ -105,7 +123,7 @@
           @if (order()?.performa_pdf_path) {
             <div class="file-display" (click)="downloadFile('performa-pdf')">
               <i class="bi bi-file-earmark-pdf me-2"></i>
-              <span>proforma.pdf</span>
+              <span>{{ getFileName(order()?.performa_pdf_path) }}</span>
               <button type="button" class="btn btn-sm btn-link" (click)="downloadFile('performa-pdf'); $event.stopPropagation()">
                 <i class="bi bi-download"></i>
               </button>
@@ -115,10 +133,31 @@
           }
         } @else {
           @if (auth.isAdmin()) {
-            <button type="button" class="btn btn-secondary w-100" (click)="performaInput.click()">
-              <i class="bi bi-upload me-2"></i>
-              Adjuntar PDF
-            </button>
+            @if (performaPdfFile) {
+              <!-- Archivo nuevo seleccionado -->
+              <div class="file-display file-selected">
+                <i class="bi bi-file-earmark-pdf me-2"></i>
+                <span>{{ performaPdfFile.name }}</span>
+                <button type="button" class="btn btn-sm btn-link" (click)="performaInput.click()">
+                  <i class="bi bi-pencil"></i>
+                </button>
+              </div>
+            } @else if (order()?.performa_pdf_path) {
+              <!-- Archivo existente en servidor -->
+              <div class="file-display file-existing">
+                <i class="bi bi-file-earmark-pdf me-2"></i>
+                <span>{{ getFileName(order()?.performa_pdf_path) }}</span>
+                <button type="button" class="btn btn-sm btn-link" (click)="performaInput.click()">
+                  <i class="bi bi-pencil"></i>
+                </button>
+              </div>
+            } @else {
+              <!-- Sin archivo -->
+              <button type="button" class="btn btn-secondary w-100" (click)="performaInput.click()">
+                <i class="bi bi-upload me-2"></i>
+                Adjuntar PDF
+              </button>
+            }
             <input
               #performaInput
               type="file"
@@ -126,9 +165,6 @@
               accept=".pdf"
               (change)="onFileSelect($event, 'performa')"
             />
-            @if (performaPdfFile) {
-              <small class="text-muted d-block mt-1">{{ performaPdfFile.name }}</small>
-            }
           } @else {
             <input type="text" class="form-control" value="Solo visible en modo lectura" readonly />
           }
@@ -141,7 +177,7 @@
           @if (order()?.invoice_path) {
             <div class="file-display" (click)="downloadFile('invoice')">
               <i class="bi bi-file-earmark-pdf me-2"></i>
-              <span>invoice.pdf</span>
+              <span>{{ getFileName(order()?.invoice_path) }}</span>
               <button type="button" class="btn btn-sm btn-link" (click)="downloadFile('invoice'); $event.stopPropagation()">
                 <i class="bi bi-download"></i>
               </button>
@@ -151,10 +187,31 @@
           }
         } @else {
           @if (auth.isAdmin()) {
-            <button type="button" class="btn btn-secondary w-100" (click)="invoiceInput.click()">
-              <i class="bi bi-upload me-2"></i>
-              Adjuntar PDF
-            </button>
+            @if (invoiceFile) {
+              <!-- Archivo nuevo seleccionado -->
+              <div class="file-display file-selected">
+                <i class="bi bi-file-earmark-pdf me-2"></i>
+                <span>{{ invoiceFile.name }}</span>
+                <button type="button" class="btn btn-sm btn-link" (click)="invoiceInput.click()">
+                  <i class="bi bi-pencil"></i>
+                </button>
+              </div>
+            } @else if (order()?.invoice_path) {
+              <!-- Archivo existente en servidor -->
+              <div class="file-display file-existing">
+                <i class="bi bi-file-earmark-pdf me-2"></i>
+                <span>{{ getFileName(order()?.invoice_path) }}</span>
+                <button type="button" class="btn btn-sm btn-link" (click)="invoiceInput.click()">
+                  <i class="bi bi-pencil"></i>
+                </button>
+              </div>
+            } @else {
+              <!-- Sin archivo -->
+              <button type="button" class="btn btn-secondary w-100" (click)="invoiceInput.click()">
+                <i class="bi bi-upload me-2"></i>
+                Adjuntar PDF
+              </button>
+            }
             <input
               #invoiceInput
               type="file"
@@ -162,9 +219,6 @@
               accept=".pdf"
               (change)="onFileSelect($event, 'invoice')"
             />
-            @if (invoiceFile) {
-              <small class="text-muted d-block mt-1">{{ invoiceFile.name }}</small>
-            }
           } @else {
             <input type="text" class="form-control" value="Solo visible en modo lectura" readonly />
           }
@@ -220,44 +274,6 @@
       </div>
     </div>
   </form>
-
-  <!-- Sección de Notas (solo visible para Admin en modo view) -->
-  @if (mode === 'view' && auth.isAdmin()) {
-  <div class="notes-section mt-4">
-    <h6 class="mb-3"><i class="bi bi-sticky me-2"></i>Notas</h6>
-
-    @if (notesLoading()) {
-    <div class="text-center py-3">
-      <div class="spinner-border spinner-border-sm text-primary" role="status">
-        <span class="visually-hidden">Cargando...</span>
-      </div>
-    </div>
-    } @else if (notes().length === 0) {
-    <div class="text-muted text-center py-3">
-      <i class="bi bi-sticky me-2"></i>No hay notas registradas
-    </div>
-    } @else {
-    <div class="table-responsive notes-table">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th style="width: 170px">Fecha</th>
-            <th>Detalle</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (note of notes(); track note.id) {
-          <tr>
-            <td>{{ formatDateTime(note.created_at) }}</td>
-            <td class="note-detail">{{ note.message }}</td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-    }
-  </div>
-  }
   }
 
   <!-- Footer -->

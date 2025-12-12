@@ -33,12 +33,32 @@ export class ClientList implements OnInit {
   selectedClientId = signal<number | undefined>(undefined);
 
   columns: TableColumn[] = [
+    { key: 'rut', label: 'RUT', type: 'text' },
     { key: 'company_name', label: 'Nombre de la Empresa', type: 'text' },
     { key: 'user.name', label: 'Contacto', type: 'text' },
     { key: 'user.email', label: 'Correo Electrónico', type: 'text' },
     { key: 'phone', label: 'Teléfono', type: 'text' },
-    { key: 'city', label: 'Ciudad', type: 'text' }
+    {
+      key: 'user.status',
+      label: 'Estado',
+      type: 'badge',
+      badgeConfig: {
+        colorMap: {
+          'active': 'success',
+          'inactive': 'secondary'
+        },
+        labelMap: {
+          'active': 'Activo',
+          'inactive': 'Inactivo'
+        }
+      }
+    }
   ];
+
+  // Función para aplicar clase CSS a filas de clientes inactivos
+  getClientRowClass = (client: Client): string => {
+    return client.user?.status === 'inactive' ? 'row-inactive' : '';
+  };
 
   actions: TableAction[] = [
     { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-dark' },

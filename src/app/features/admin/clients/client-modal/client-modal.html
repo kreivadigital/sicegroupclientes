@@ -76,13 +76,25 @@
       <!-- RUT -->
       <div class="mb-3">
         <label class="form-label">RUT</label>
-        <input
-          type="text"
-          class="form-control"
-          formControlName="rut"
-          placeholder="Ej: 123456789">
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            [class.is-invalid]="rutExists()"
+            formControlName="rut"
+            placeholder="Ej: 123456789"
+            (blur)="checkRutExists()">
+          @if (checkingRut()) {
+            <span class="input-group-text">
+              <span class="spinner-border spinner-border-sm"></span>
+            </span>
+          }
+        </div>
         @if (form.get('rut')?.invalid && form.get('rut')?.touched) {
           <div class="text-danger small mt-1">Este campo es requerido</div>
+        }
+        @if (rutExists()) {
+          <div class="text-danger small mt-1">Este RUT ya está registrado</div>
         }
       </div>
 
@@ -197,7 +209,7 @@
         type="button"
         class="btn btn-primary"
         (click)="onSubmit()"
-        [disabled]="form.invalid || loading() || (mode === 'edit' && !formChanged())">
+        [disabled]="form.invalid || loading() || rutExists() || (mode === 'edit' && !formChanged())">
         @if (loading()) {
           <span class="spinner-border spinner-border-sm me-2"></span>
         }

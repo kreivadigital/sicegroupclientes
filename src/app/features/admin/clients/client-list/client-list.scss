@@ -12,6 +12,47 @@
   border-radius: $radius-lg;
   padding: 1rem;
   box-shadow: $shadow-sm;
+
+  // Estado inactivo
+  &.card-inactive {
+    background-color: #ebebeb;
+  }
+}
+
+// Header con empresa y estado
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid $border-light;
+  margin-bottom: 12px;
+
+  .company-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: $text-darkest;
+  }
+}
+
+// Badge de estado
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+
+  &.badge-active {
+    background-color: $success-bg;
+    color: $success-text;
+  }
+
+  &.badge-inactive {
+    background-color: $secondary-bg;
+    color: $secondary-text;
+  }
 }
 
 // Campo individual
@@ -34,7 +75,7 @@
   }
 }
 
-// Fila con 2 campos (Teléfono y RUT)
+// Fila con 2 campos (Telï¿½fono y RUT)
 .card-row {
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -6,7 +6,7 @@
 
 // Sección de Información de Orden y Contenedor
 .info-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
   padding: 1.5rem;
   border: 1.2px solid $border-base;
   border-radius: $radius-xl;
@@ -18,7 +18,7 @@
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 1rem 2rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
   align-items: center;
 }
 
@@ -118,7 +118,7 @@
 
 // Sección de Progreso del Envío
 .progress-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
   padding: 1.5rem;
   border: 1.2px solid rgba($primary, 0.4);
   border-radius: $radius-xl;
@@ -214,7 +214,7 @@
 
 // Sección de Maps
 .maps-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
   border: 1.2px solid $border-base;
   border-radius: $radius-xl;
   overflow: hidden;
@@ -298,7 +298,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
 
   h6 {
     font-weight: 400;
@@ -344,7 +344,7 @@
 // Sección de Actividades y Notas (estilos compartidos)
 .activities-section,
 .notes-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
   h6 {
     font-weight: 600;
     color: $text-darkest;

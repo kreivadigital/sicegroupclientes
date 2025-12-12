@@ -24,10 +24,13 @@
   // Estado colapsado (desktop)
   &.collapsed {
     width: 64px;
+    min-width: fit-content;
 
+    .sidebar-header{
+      justify-content: center;
+    }
     .sidebar-logo {
-      opacity: 0;
-      width: 0;
+      display: none;
     }
 
     .nav-label {
@@ -38,6 +41,12 @@
     .logout-btn span {
       opacity: 0;
       width: 0;
+    }
+    .sidebar-nav {
+      .bi {
+        text-align: center;
+        line-height: 1em;
+      }
     }
   }
 }
@@ -61,7 +70,7 @@
   .sidebar {
     transform: translateX(-100%);
     width: 280px;
-    height: 100dvh;  // Dynamic viewport height para móvil
+    height: 100dvh; // Dynamic viewport height para móvil
     max-height: -webkit-fill-available; // Fallback para Safari
     box-shadow: $shadow-lg;
     overflow: hidden;
@@ -105,8 +114,12 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 }
 
@@ -132,7 +145,7 @@
   }
 
   .toggle-btn {
-    background: transparent;
+    background: white;
     color: $text-black;
     font-size: 20px;
     cursor: pointer;

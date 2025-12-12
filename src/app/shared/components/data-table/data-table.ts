@@ -117,6 +117,9 @@ export class DataTable implements OnInit, OnDestroy {
   @Input() loading: boolean = false;
   @Input() emptyMessage: string = 'No hay datos para mostrar';
 
+  // Función para aplicar clases CSS condicionales a filas/cards
+  @Input() rowClassFn?: (row: any) => string;
+
   // Nuevos inputs para header
   @Input() title: string = '';
   @Input() showFilters: boolean = false;
@@ -318,4 +321,9 @@ export class DataTable implements OnInit, OnDestroy {
   handleCardAction = (event: { action: string; row: any }) => {
     this.actionClick.emit(event);
   };
+
+  // Obtiene la clase CSS para una fila basada en rowClassFn
+  getRowClass(row: any): string {
+    return this.rowClassFn ? this.rowClassFn(row) : '';
+  }
 }

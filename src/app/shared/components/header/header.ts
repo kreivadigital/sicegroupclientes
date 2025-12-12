@@ -61,10 +61,10 @@ export class Header {
    * - Cachea el resultado (mejor performance)
    */
   /**
-   * Navega al perfil del cliente
+   * Navega al perfil del usuario
    */
   goToProfile() {
-    this.router.navigate(['/client/perfil']);
+    this.router.navigate(['/perfil']);
   }
 
   headerData = computed(() => {
@@ -129,12 +129,15 @@ export class Header {
         isAdmin: false,
         profileText: 'Perfil del Cliente'
       };
-    } else if (url.includes('/client/perfil')) {
+    }
+
+    // Ruta compartida de perfil (para ambos roles)
+    if (url.includes('/perfil')) {
       return {
         title: 'Mi perfil',
         subtitle: 'Gestiona tu información personal y preferencias',
-        isAdmin: false,
-        profileText: 'Perfil del Cliente'
+        isAdmin: isAdmin,
+        profileText: isAdmin ? 'Perfil del Administrador' : 'Perfil del Cliente'
       };
     }
 

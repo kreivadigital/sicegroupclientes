@@ -4,8 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { Modal } from '../modal/modal';
 import { VesselMap } from '../vessel-map/vessel-map';
 import { ContainerService } from '../../../core/services/container.service';
+import { OrderService } from '../../../core/services/order.service';
 import { Container, VesselInfo, Movement, MovementEventLabels } from '../../../core/models/container.model';
-import { Notification } from '../../../core/models/notification.model';
+import { Note } from '../../../core/models/notification.model';
 
 @Component({
   selector: 'app-container-tracking-modal',
@@ -16,6 +17,7 @@ import { Notification } from '../../../core/models/notification.model';
 })
 export class ContainerTrackingModal implements OnInit {
   private containerService = inject(ContainerService);
+  private orderService = inject(OrderService);
 
   // Input requerido: ID del container
   @Input() containerId!: number;
@@ -55,9 +57,9 @@ export class ContainerTrackingModal implements OnInit {
   editingDetail = '';
   editingTimestamp = '';
 
-  // Notificaciones (mostradas en la sección de notas)
-  notifications = signal<Notification[]>([]);
-  notificationsLoading = signal(false);
+  // Notas de la orden (mostradas en la sección de notas)
+  notes = signal<Note[]>([]);
+  notesLoading = signal(false);
 
   ngOnInit() {
     this.loadContainer();
@@ -70,10 +72,10 @@ export class ContainerTrackingModal implements OnInit {
         this.container.set(response.data);
         this.loading.set(false);
 
-        // Cargar vessel info, movimientos y notificaciones
+        // Cargar vessel info, movimientos y notas
         this.loadVesselInfo(this.containerId);
         this.loadMovements();
-        this.loadNotifications();
+        this.loadNotes();
       },
       error: (error) => {
         console.error('Error cargando contenedor:', error);
@@ -279,19 +281,24 @@ export class ContainerTrackingModal implements OnInit {
   }
 
   // ==========================================
-  // NOTIFICACIONES
+  // NOTAS DE ORDEN
   // ==========================================
 
-  loadNotifications() {
-    this.notificationsLoading.set(true);
-    this.containerService.getNotifications(this.containerId).subscribe({
+  loadNotes() {
+    if (!this.orderNumber) {
+      this.notes.set([]);
+      return;
+    }
+
+    this.notesLoading.set(true);
+    this.orderService.getOrderNotes(this.orderNumber).subscribe({
       next: (response) => {
-        this.notifications.set(response.data || []);
-        this.notificationsLoading.set(false);
+        this.notes.set(response.data || []);
+        this.notesLoading.set(false);
       },
       error: (error) => {
-        console.error('Error cargando notificaciones:', error);
-        this.notificationsLoading.set(false);
+        console.error('Error cargando notas:', error);
+        this.notesLoading.set(false);
       }
     });
   }
