@@ -7,8 +7,8 @@
   background-color: $bg-white;
   border-radius: $radius-lg;
   box-shadow: $shadow-sm;
-  padding: 1.5rem;
   margin-top: 1.5rem;
+  padding: 1.5rem;
 
   // ==========================================
   // Header de la tabla
@@ -388,7 +388,7 @@
         border-bottom: 1px solid $border-light;
 
         &:last-child {
-          border-bottom: none;
+          border-bottom: transparent;
         }
 
         &:hover {

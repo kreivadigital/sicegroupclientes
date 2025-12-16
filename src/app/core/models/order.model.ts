@@ -1,4 +1,4 @@
-import { OrderStatus } from './enums';
+import { OrderStatus, ContainerStatus } from './enums';
 
 export interface Order {
   id: number;
@@ -17,7 +17,7 @@ export interface Order {
     name: string;
     container_number: string;
     shipment_reference: string;
-    status: string;
+    status: ContainerStatus;
     date_of_discharge?: string;
     port_of_loading_name?: string;
     port_of_loading_country?: string;

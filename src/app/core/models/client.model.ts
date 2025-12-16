@@ -1,3 +1,5 @@
+import { UserStatus } from './enums';
+
 export interface Client {
   id: number;
   user_id: number;
@@ -5,7 +7,7 @@ export interface Client {
     id: number;
     name: string;
     email: string;
-    status: string;
+    status: UserStatus;
   };
   company_name: string;
   rut: string;
@@ -26,7 +28,7 @@ export interface ClientFormData {
   password_confirmation?: string;
   current_password?: string;
   new_password?: string;
-  status?: string;
+  status?: UserStatus;
 
   // Client data
   company_name: string;

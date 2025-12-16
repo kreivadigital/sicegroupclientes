@@ -1,0 +1,161 @@
+// ==========================================
+// ORDER LIST
+// ==========================================
+@use '../../../../../assets/styles/variables' as *;
+
+// ==========================================
+// ORDER CARDS (Mobile)
+// ==========================================
+.order-card {
+  background-color: $bg-white;
+  border: 1px solid $border-base;
+  border-radius: $radius-lg;
+  padding: 1rem;
+  box-shadow: $shadow-sm;
+}
+
+// Header con nro de orden y estado
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+
+  .order-number {
+    font-size: 15px;
+    font-weight: 600;
+    color: $text-darkest;
+  }
+}
+
+// Badge de estado
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+
+  &.badge-warning {
+    background-color: $warning-bg;
+    color: $warning-text;
+  }
+
+  &.badge-info {
+    background-color: $info-bg;
+    color: $info-text;
+  }
+
+  &.badge-success {
+    background-color: $success-bg;
+    color: $success-text;
+  }
+
+  &.badge-danger {
+    background-color: $danger-bg;
+    color: $danger-text;
+  }
+
+  &.badge-secondary {
+    background-color: $secondary-bg;
+    color: $secondary-text;
+  }
+}
+
+// Campo individual
+.card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 12px;
+
+  .field-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: $text-muted;
+  }
+
+  .field-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: $text-darkest;
+  }
+}
+
+// Acciones
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding-top: 1rem;
+}
+
+.btn-view {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 8px 16px;
+  height: 36px;
+  background-color: $bg-white;
+  border: 1.5px solid #212529;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #212529;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  i {
+    font-size: 1rem;
+  }
+
+  &:hover {
+    background-color: #02661E;
+    border-color: #02661E;
+    color: $text-white;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  background-color: $bg-white;
+  border: 1.5px solid #6c757d;
+  border-radius: 8px;
+  color: #6c757d;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  i {
+    font-size: 1rem;
+  }
+
+  &:hover {
+    background-color: #6c757d;
+    color: $text-white;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &.btn-notify {
+    border-color: #198754;
+    color: #198754;
+
+    &:hover {
+      background-color: #198754;
+      color: $text-white;
+    }
+  }
+}

@@ -88,7 +88,7 @@
                     {{ order.container?.port_of_loading_name || '-' }}
                     <span class="port-country">{{ order.container?.port_of_loading_country || '-' }}</span>
                   </span>
-                  <span class="port-date">{{ order.created_at | date:'dd/MM/yyyy' }}</span>
+                  <span class="port-date">{{ order.container?.created_at_shipsgo | date:'dd/MM/yyyy' }}</span>
                 </div>
 
                 <!-- Conector -->

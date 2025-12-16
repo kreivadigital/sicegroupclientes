@@ -59,6 +59,30 @@ textarea.form-control {
   resize: vertical;
 }
 
+// Estado bloqueado por contenedor
+.form-select.status-locked {
+  background-color: $bg-light;
+  color: $text-muted;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.status-locked-message {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #e7f3ff;
+  border: 1px solid #b6d4fe;
+  border-radius: $radius-base;
+  font-size: 0.8rem;
+  color: #084298;
+
+  i {
+    flex-shrink: 0;
+  }
+}
+
 // Altura mínima para botones de upload de archivos
 .btn-secondary.w-100 {
   min-height: 50px;

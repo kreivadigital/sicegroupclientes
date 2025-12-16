@@ -77,7 +77,7 @@ export class ContainerList implements OnInit {
       portConfig: {
         locationKey: 'port_of_loading_name',
         countryKey: 'port_of_loading_country',
-        dateKey: 'created_at'
+        dateKey: 'created_at_shipsgo'
       }
     },
     {

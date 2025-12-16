@@ -9,6 +9,7 @@ import { Auth } from '../../../core/services/auth';
 import { Order, OrderFormData } from '../../../core/models/order.model';
 import { Client } from '../../../core/models/client.model';
 import { Container } from '../../../core/models/container.model';
+import { isOrderStatusLocked, getAutoOrderStatus, ContainerStatusLabels } from '../../../core/models/enums';
 
 @Component({
   selector: 'app-order-modal',
@@ -35,6 +36,10 @@ export class OrderModal implements OnInit {
   order = signal<Order | null>(null);
   clients = signal<Client[]>([]);
   containers = signal<Container[]>([]);
+
+  // Control de bloqueo de estado según contenedor
+  statusLocked = signal(false);
+  statusLockedMessage = signal('');
 
   // Archivos
   performaPdfFile: File | null = null;
@@ -63,6 +68,43 @@ export class OrderModal implements OnInit {
 
     if (this.mode === 'view') {
       this.form.disable();
+    }
+
+    // Suscribirse a cambios en el contenedor para actualizar el estado automáticamente
+    this.form.get('container_id')?.valueChanges.subscribe((containerId) => {
+      this.onContainerChange(containerId);
+    });
+  }
+
+  /**
+   * Maneja el cambio de contenedor y actualiza el estado de la orden si corresponde
+   */
+  onContainerChange(containerId: string | number | null) {
+    if (!containerId) {
+      // Sin contenedor, el estado es editable
+      this.statusLocked.set(false);
+      this.statusLockedMessage.set('');
+      return;
+    }
+
+    const container = this.containers().find(c => c.id === +containerId);
+    if (!container) {
+      this.statusLocked.set(false);
+      this.statusLockedMessage.set('');
+      return;
+    }
+
+    if (isOrderStatusLocked(container.status)) {
+      const autoStatus = getAutoOrderStatus(container.status);
+      if (autoStatus) {
+        this.form.get('status')?.setValue(autoStatus);
+        this.statusLocked.set(true);
+        const containerStatusLabel = ContainerStatusLabels[container.status as keyof typeof ContainerStatusLabels] || container.status;
+        this.statusLockedMessage.set(`Estado asignado automáticamente porque el contenedor está "${containerStatusLabel}"`);
+      }
+    } else {
+      this.statusLocked.set(false);
+      this.statusLockedMessage.set('');
     }
   }
 
@@ -104,6 +146,15 @@ export class OrderModal implements OnInit {
           status: order.status,
           container_id: order.container_id || '',
         });
+
+        // Verificar si el contenedor bloquea el estado (usando el container de la orden)
+        if (order.container && order.container.status) {
+          if (isOrderStatusLocked(order.container.status)) {
+            this.statusLocked.set(true);
+            const containerStatusLabel = ContainerStatusLabels[order.container.status as keyof typeof ContainerStatusLabels] || order.container.status;
+            this.statusLockedMessage.set(`Estado asignado automáticamente porque el contenedor está "${containerStatusLabel}"`);
+          }
+        }
 
         this.loading.set(false);
       },

@@ -16,6 +16,45 @@
     [loading]="loading()"
     emptyMessage="No hay órdenes registradas"
     (actionClick)="onTableAction($event)">
+
+    <!-- Template para cards en móvil -->
+    <ng-template #cardTemplate let-order let-onAction="onAction">
+      <div class="order-card">
+        <!-- Header: Nro de Orden y Estado -->
+        <div class="card-header-row">
+          <span class="field-value order-number">Orden #{{ order.id }}</span>
+          <span [class]="'status-badge badge-' + getStatusColor(order.status)">
+            {{ getStatusLabel(order.status) }}
+          </span>
+        </div>
+
+        <!-- Cliente -->
+        <div class="card-field">
+          <span class="field-label">Cliente</span>
+          <span class="field-value">{{ order.client?.company_name || '-' }}</span>
+        </div>
+
+        <!-- Llegada Estimada -->
+        <div class="card-field">
+          <span class="field-label">Llegada Estimada</span>
+          <span class="field-value">{{ (order.container?.date_of_discharge | date:'dd/MM/yyyy') || '-' }}</span>
+        </div>
+
+        <!-- Acciones -->
+        <div class="card-actions">
+          <button class="btn-view" (click)="onAction({ action: 'view', row: order })">
+            <i class="bi bi-eye"></i>
+            <span>Ver detalles</span>
+          </button>
+          <button class="btn-icon" (click)="onAction({ action: 'edit', row: order })">
+            <i class="bi bi-pencil-square"></i>
+          </button>
+          <button class="btn-icon btn-notify" (click)="onAction({ action: 'notify', row: order })">
+            <i class="bi bi-bell"></i>
+          </button>
+        </div>
+      </div>
+    </ng-template>
   </app-data-table>
 
   <!-- Pagination -->

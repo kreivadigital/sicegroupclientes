@@ -28,7 +28,7 @@ export interface Note {
   id: number;
   order_id: number;
   user_name: string;
-  type: string;
+  type: NotificationType;
   message: string;
   read_at?: string;
   created_at: string;

@@ -5,7 +5,8 @@ import { Modal } from '../modal/modal';
 import { VesselMap } from '../vessel-map/vessel-map';
 import { ContainerService } from '../../../core/services/container.service';
 import { OrderService } from '../../../core/services/order.service';
-import { Container, VesselInfo, Movement, MovementEventLabels } from '../../../core/models/container.model';
+import { Container, VesselInfo, Movement } from '../../../core/models/container.model';
+import { MovementEventLabels } from '../../../core/models/enums';
 import { Note } from '../../../core/models/notification.model';
 
 @Component({
@@ -158,14 +159,49 @@ export class ContainerTrackingModal implements OnInit {
   }
 
   getProgressPercentage(): number {
-    return this.container()?.transit_percentage || 0;
+    const container = this.container();
+    if (!container) return 0;
+
+    const transitPercentage = container.transit_percentage || 0;
+    const destinationPort = (container.destination_port_name || '').toLowerCase();
+    const movements = this.movements();
+
+    // Filtrar solo movimientos confirmados (ACT)
+    const confirmedMovements = movements.filter(m => m.event_status === 'ACT');
+
+    // Verificar DISC en puerto destino → mínimo 100%
+    const hasDischargedAtDestination = confirmedMovements.some(m =>
+      m.event === 'DISC' &&
+      (m.location_name || '').toLowerCase() === destinationPort
+    );
+    if (hasDischargedAtDestination) {
+      return Math.max(100, transitPercentage);
+    }
+
+    // Verificar ARRV en puerto destino → mínimo 66%
+    const hasArrivedAtDestination = confirmedMovements.some(m =>
+      m.event === 'ARRV' &&
+      (m.location_name || '').toLowerCase() === destinationPort
+    );
+    if (hasArrivedAtDestination) {
+      return Math.max(66, transitPercentage);
+    }
+
+    // Verificar DEPA (cualquier puerto) → mínimo 33%
+    const hasDeparted = confirmedMovements.some(m => m.event === 'DEPA');
+    if (hasDeparted) {
+      return Math.max(33, transitPercentage);
+    }
+
+    // Sin movimientos relevantes → máximo 15%
+    return Math.min(15, transitPercentage);
   }
 
   getProgressSteps() {
     const percentage = this.getProgressPercentage();
     return [
       { label: 'Inicio', icon: 'bi-box-seam', progress: 0, active: percentage >= 0 },
-      { label: 'Partió', icon: 'bi-truck', progress: 33, active: percentage >= 33 },
+      { label: 'Zarpó', icon: 'bi-truck', progress: 33, active: percentage >= 33 },
       { label: 'Llegada', icon: 'bi-flag', progress: 66, active: percentage >= 66 },
       { label: 'Entregado', icon: 'bi-check-circle', progress: 100, active: percentage >= 100 }
     ];

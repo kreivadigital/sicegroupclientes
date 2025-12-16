@@ -1,16 +1,8 @@
-import { ContainerStatus } from './enums';
-
-/**
- * Movement Event Types (from Shipsgo API + NOTI for manual movements)
- */
-export type MovementEventType = 'EMSH' | 'GTIN' | 'LOAD' | 'DEPA' | 'ARRV' | 'DISC' | 'GTOT' | 'EMRT' | 'NOTI';
-
-/**
- * Movement Status Types
- * EST = Estimated (fecha estimada)
- * ACT = Actual (fecha confirmada)
- */
-export type MovementStatusType = 'EST' | 'ACT';
+import {
+  ContainerStatus,
+  MovementEvent,
+  MovementStatus,
+} from './enums';
 
 /**
  * Container interface
@@ -66,6 +58,8 @@ export interface Container {
   // Vessel actual (calculado desde movements)
   current_vessel?: Movement | null;
 
+  // Timestamps
+  created_at_shipsgo?: string;
   created_at: string;
   updated_at: string;
   deleted_at?: string;
@@ -119,8 +113,8 @@ export interface Movement {
   container_id: number;
 
   // Evento
-  event: MovementEventType;
-  event_status: MovementStatusType | null;
+  event: MovementEvent;
+  event_status: MovementStatus | null;
   event_timestamp: string;
 
   // Detalle (para movimientos manuales NOTI)
@@ -175,55 +169,5 @@ export interface VesselInfo {
   source: 'database' | 'shipsgo' | 'not_available' | 'shipsgo_no_data' | 'shipsgo_no_vessel' | 'error';
 }
 
-/**
- * Movement event labels in Spanish
- */
-export const MovementEventLabels: Record<MovementEventType, string> = {
-  'EMSH': 'Vacío a Exportador',
-  'GTIN': 'Ingreso al Puerto',
-  'LOAD': 'Cargado',
-  'DEPA': 'Zarpó',
-  'ARRV': 'Arribó',
-  'DISC': 'Descargado',
-  'GTOT': 'Salida del Puerto',
-  'EMRT': 'Vacío Devuelto',
-  'NOTI': 'Actividad'
-};
-
-/**
- * Movement event colors for UI
- */
-export const MovementEventColors: Record<MovementEventType, string> = {
-  'EMSH': 'secondary',
-  'GTIN': 'info',
-  'LOAD': 'primary',
-  'DEPA': 'primary',
-  'ARRV': 'warning',
-  'DISC': 'success',
-  'GTOT': 'warning',
-  'EMRT': 'secondary',
-  'NOTI': 'purple'
-};
-
-/**
- * Movement event icons (Bootstrap Icons)
- */
-export const MovementEventIcons: Record<MovementEventType, string> = {
-  'EMSH': 'bi-box-seam',
-  'GTIN': 'bi-door-open',
-  'LOAD': 'bi-box-arrow-in-down',
-  'DEPA': 'bi-airplane-fill',
-  'ARRV': 'bi-geo-alt-fill',
-  'DISC': 'bi-box-arrow-up',
-  'GTOT': 'bi-door-closed',
-  'EMRT': 'bi-arrow-return-left',
-  'NOTI': 'bi-pencil-square'
-};
-
-/**
- * Movement status labels in Spanish
- */
-export const MovementStatusLabels: Record<MovementStatusType, string> = {
-  'EST': 'Estimado',
-  'ACT': 'Confirmado'
-};
+// Labels, Colors, Icons para Movement ahora vienen de enums.ts
+// Importar: MovementEventLabels, MovementEventColors, MovementEventIcons, MovementStatusLabels

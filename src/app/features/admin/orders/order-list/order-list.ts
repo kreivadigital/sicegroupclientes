@@ -192,4 +192,27 @@ export class OrderList implements OnInit {
   onPageChange(page: number) {
     this.loadOrders(page, this.currentSearch());
   }
+
+  // Helpers para el template de cards
+  getStatusColor(status: string): string {
+    const colorMap: Record<string, string> = {
+      'pending': 'warning',
+      'processing': 'info',
+      'shipped': 'warning',
+      'delivered': 'success',
+      'cancelled': 'danger'
+    };
+    return colorMap[status] || 'secondary';
+  }
+
+  getStatusLabel(status: string): string {
+    const labelMap: Record<string, string> = {
+      'pending': 'Pendiente',
+      'processing': 'En Proceso',
+      'shipped': 'En tránsito',
+      'delivered': 'Entregada',
+      'cancelled': 'Retrasado'
+    };
+    return labelMap[status] || status;
+  }
 }

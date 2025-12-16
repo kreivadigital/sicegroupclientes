@@ -11,7 +11,8 @@
     "test": "ng test",
     "serve:staging": "ng serve --configuration=staging",
     "serve:prod": "ng serve --configuration=production",
-    "serve:ssr:siceweb": "node dist/siceweb/server/server.mjs"
+    "serve:ssr:siceweb": "node dist/siceweb/server/server.mjs",
+    "sync:enums": "cd ../siceapi && php artisan enums:sync"
   },
   "prettier": {
     "printWidth": 100,

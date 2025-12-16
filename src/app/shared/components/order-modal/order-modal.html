@@ -231,13 +231,19 @@
         @if (mode === 'view' && order()) {
         <input type="text" class="form-control" [value]="getStatusLabel(order()?.status || '')" readonly />
         } @else {
-        <select class="form-select" formControlName="status">
+        <select class="form-select" formControlName="status" [class.status-locked]="statusLocked()">
           <option value="pending">Pendiente</option>
           <option value="processing">En Proceso</option>
           <option value="shipped">En tránsito</option>
           <option value="delivered">Entregada</option>
           <option value="cancelled">Cancelada</option>
         </select>
+        @if (statusLocked()) {
+          <div class="status-locked-message">
+            <i class="bi bi-info-circle me-1"></i>
+            {{ statusLockedMessage() }}
+          </div>
+        }
         }
       </div>
 

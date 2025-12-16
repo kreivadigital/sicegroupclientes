@@ -1,54 +1,70 @@
 /**
- * ENUMS SINCRONIZADOS CON LARAVEL BACKEND
- * Estos enums reflejan exactamente los valores definidos en el backend
- * Ubicación Laravel: C:\projects\kd\siceapi\app\Enums\
+ * ========================================
+ * ARCHIVO GENERADO AUTOMATICAMENTE
+ * ========================================
+ * No editar manualmente.
+ * Ejecutar: php artisan enums:sync
+ * Fecha: 2025-12-15 20:29:28
+ * Fuente: Laravel Enums (app/Enums/)
  */
 
 // ==========================================
-// USER ROLES (Roles de Usuario)
+// UserRole
 // ==========================================
 export enum UserRole {
   Administrator = 'administrator',
-  Client = 'client'
+  Client = 'client',
 }
 
 export const UserRoleLabels: Record<UserRole, string> = {
   [UserRole.Administrator]: 'Administrador',
-  [UserRole.Client]: 'Cliente'
+  [UserRole.Client]: 'Cliente',
 };
 
 export const UserRoleColors: Record<UserRole, string> = {
-  [UserRole.Administrator]: 'danger',
-  [UserRole.Client]: 'primary'
+  [UserRole.Administrator]: 'primary',
+  [UserRole.Client]: 'primary',
 };
 
+export const UserRoleIcons: Record<UserRole, string> = {
+  [UserRole.Administrator]: 'bi-shield-check',
+  [UserRole.Client]: 'bi-person',
+};
+
+
 // ==========================================
-// USER STATUS (Estados de Usuario)
+// UserStatus
 // ==========================================
 export enum UserStatus {
   Active = 'active',
-  Inactive = 'inactive'
+  Inactive = 'inactive',
 }
 
 export const UserStatusLabels: Record<UserStatus, string> = {
   [UserStatus.Active]: 'Activo',
-  [UserStatus.Inactive]: 'Inactivo'
+  [UserStatus.Inactive]: 'Inactivo',
 };
 
 export const UserStatusColors: Record<UserStatus, string> = {
   [UserStatus.Active]: 'success',
-  [UserStatus.Inactive]: 'secondary'
+  [UserStatus.Inactive]: 'secondary',
 };
 
+export const UserStatusIcons: Record<UserStatus, string> = {
+  [UserStatus.Active]: 'bi-check-circle',
+  [UserStatus.Inactive]: 'bi-slash-circle',
+};
+
+
 // ==========================================
-// ORDER STATUS (Estados de Orden)
+// OrderStatus
 // ==========================================
 export enum OrderStatus {
   Pending = 'pending',
   Processing = 'processing',
   Shipped = 'shipped',
   Delivered = 'delivered',
-  Cancelled = 'cancelled'
+  Cancelled = 'cancelled',
 }
 
 export const OrderStatusLabels: Record<OrderStatus, string> = {
@@ -56,15 +72,15 @@ export const OrderStatusLabels: Record<OrderStatus, string> = {
   [OrderStatus.Processing]: 'En Proceso',
   [OrderStatus.Shipped]: 'Enviado',
   [OrderStatus.Delivered]: 'Entregado',
-  [OrderStatus.Cancelled]: 'Cancelado'
+  [OrderStatus.Cancelled]: 'Cancelado',
 };
 
 export const OrderStatusColors: Record<OrderStatus, string> = {
   [OrderStatus.Pending]: 'warning',
-  [OrderStatus.Processing]: 'info',
+  [OrderStatus.Processing]: 'primary',
   [OrderStatus.Shipped]: 'primary',
   [OrderStatus.Delivered]: 'success',
-  [OrderStatus.Cancelled]: 'danger'
+  [OrderStatus.Cancelled]: 'danger',
 };
 
 export const OrderStatusIcons: Record<OrderStatus, string> = {
@@ -72,75 +88,64 @@ export const OrderStatusIcons: Record<OrderStatus, string> = {
   [OrderStatus.Processing]: 'bi-gear',
   [OrderStatus.Shipped]: 'bi-truck',
   [OrderStatus.Delivered]: 'bi-check-circle',
-  [OrderStatus.Cancelled]: 'bi-x-circle'
+  [OrderStatus.Cancelled]: 'bi-x-circle',
 };
 
-// Estados finales (no pueden cambiar)
-export const FinalOrderStatuses: OrderStatus[] = [
-  OrderStatus.Delivered,
-  OrderStatus.Cancelled
-];
-
-// Estados activos (pueden seguir cambiando)
-export const ActiveOrderStatuses: OrderStatus[] = [
-  OrderStatus.Pending,
-  OrderStatus.Processing,
-  OrderStatus.Shipped
-];
 
 // ==========================================
-// CONTAINER STATUS (Estados de Contenedor)
+// ContainerStatus
 // ==========================================
 export enum ContainerStatus {
-  New = 'NEW',
-  InProgress = 'INPROGRESS',
-  Booked = 'BOOKED',
-  Loaded = 'LOADED',
-  Sailing = 'SAILING',
-  Arrived = 'ARRIVED',
-  Discharged = 'DISCHARGED',
-  Untracked = 'UNTRACKED',
-  Cancelled = 'CANCELLED'
+  NEW = 'NEW',
+  INPROGRESS = 'INPROGRESS',
+  BOOKED = 'BOOKED',
+  LOADED = 'LOADED',
+  SAILING = 'SAILING',
+  ARRIVED = 'ARRIVED',
+  DISCHARGED = 'DISCHARGED',
+  UNTRACKED = 'UNTRACKED',
+  CANCELLED = 'CANCELLED',
 }
 
 export const ContainerStatusLabels: Record<ContainerStatus, string> = {
-  [ContainerStatus.New]: 'Nuevo',
-  [ContainerStatus.InProgress]: 'En Progreso',
-  [ContainerStatus.Booked]: 'Reservado',
-  [ContainerStatus.Loaded]: 'Cargado',
-  [ContainerStatus.Sailing]: 'Navegando',
-  [ContainerStatus.Arrived]: 'Arribado',
-  [ContainerStatus.Discharged]: 'Descargado',
-  [ContainerStatus.Untracked]: 'Sin Rastreo',
-  [ContainerStatus.Cancelled]: 'Cancelado'
+  [ContainerStatus.NEW]: 'Nuevo',
+  [ContainerStatus.INPROGRESS]: 'En Proceso',
+  [ContainerStatus.BOOKED]: 'Reservado',
+  [ContainerStatus.LOADED]: 'Cargado',
+  [ContainerStatus.SAILING]: 'Navegando',
+  [ContainerStatus.ARRIVED]: 'Arribado',
+  [ContainerStatus.DISCHARGED]: 'Descargado',
+  [ContainerStatus.UNTRACKED]: 'Sin Seguimiento',
+  [ContainerStatus.CANCELLED]: 'Cancelado',
 };
 
 export const ContainerStatusColors: Record<ContainerStatus, string> = {
-  [ContainerStatus.New]: 'secondary',
-  [ContainerStatus.InProgress]: 'info',
-  [ContainerStatus.Booked]: 'primary',
-  [ContainerStatus.Loaded]: 'warning',
-  [ContainerStatus.Sailing]: 'primary',
-  [ContainerStatus.Arrived]: 'success',
-  [ContainerStatus.Discharged]: 'success',
-  [ContainerStatus.Untracked]: 'danger',
-  [ContainerStatus.Cancelled]: 'secondary'
+  [ContainerStatus.NEW]: 'secondary',
+  [ContainerStatus.INPROGRESS]: 'primary',
+  [ContainerStatus.BOOKED]: 'info',
+  [ContainerStatus.LOADED]: 'info',
+  [ContainerStatus.SAILING]: 'success',
+  [ContainerStatus.ARRIVED]: 'warning',
+  [ContainerStatus.DISCHARGED]: 'warning',
+  [ContainerStatus.UNTRACKED]: 'danger',
+  [ContainerStatus.CANCELLED]: 'secondary',
 };
 
 export const ContainerStatusIcons: Record<ContainerStatus, string> = {
-  [ContainerStatus.New]: 'bi-plus-lg',
-  [ContainerStatus.InProgress]: 'bi-hourglass-split',
-  [ContainerStatus.Booked]: 'bi-calendar-check',
-  [ContainerStatus.Loaded]: 'bi-box-seam',
-  [ContainerStatus.Sailing]: 'bi-water',
-  [ContainerStatus.Arrived]: 'bi-geo-alt-fill',
-  [ContainerStatus.Discharged]: 'bi-check-circle-fill',
-  [ContainerStatus.Untracked]: 'bi-question-circle',
-  [ContainerStatus.Cancelled]: 'bi-x-circle'
+  [ContainerStatus.NEW]: 'bi-plus-lg',
+  [ContainerStatus.INPROGRESS]: 'bi-hourglass-split',
+  [ContainerStatus.BOOKED]: 'bi-calendar-check',
+  [ContainerStatus.LOADED]: 'bi-box-seam',
+  [ContainerStatus.SAILING]: 'bi-water',
+  [ContainerStatus.ARRIVED]: 'bi-geo-alt-fill',
+  [ContainerStatus.DISCHARGED]: 'bi-check-circle-fill',
+  [ContainerStatus.UNTRACKED]: 'bi-question-circle',
+  [ContainerStatus.CANCELLED]: 'bi-slash-circle',
 };
 
+
 // ==========================================
-// NOTIFICATION TYPE (Tipos de Notificación)
+// NotificationType
 // ==========================================
 export enum NotificationType {
   OrderCreated = 'order_created',
@@ -149,118 +154,213 @@ export enum NotificationType {
   ContainerArrived = 'container_arrived',
   ContainerDeparted = 'container_departed',
   SystemNotification = 'system',
-  Test = 'test'
+  Test = 'test',
+  Note = 'note',
 }
 
 export const NotificationTypeLabels: Record<NotificationType, string> = {
   [NotificationType.OrderCreated]: 'Orden Creada',
   [NotificationType.OrderUpdated]: 'Orden Actualizada',
   [NotificationType.OrderStatusChanged]: 'Estado de Orden Cambiado',
-  [NotificationType.ContainerArrived]: 'Contenedor Arribó',
+  [NotificationType.ContainerArrived]: 'Contenedor Llegó',
   [NotificationType.ContainerDeparted]: 'Contenedor Partió',
   [NotificationType.SystemNotification]: 'Notificación del Sistema',
-  [NotificationType.Test]: 'Prueba'
+  [NotificationType.Test]: 'Prueba',
+  [NotificationType.Note]: 'Nota',
 };
 
 export const NotificationTypeColors: Record<NotificationType, string> = {
-  [NotificationType.OrderCreated]: 'success',
-  [NotificationType.OrderUpdated]: 'info',
+  [NotificationType.OrderCreated]: 'primary',
+  [NotificationType.OrderUpdated]: 'warning',
   [NotificationType.OrderStatusChanged]: 'primary',
   [NotificationType.ContainerArrived]: 'success',
   [NotificationType.ContainerDeparted]: 'warning',
   [NotificationType.SystemNotification]: 'secondary',
-  [NotificationType.Test]: 'light'
+  [NotificationType.Test]: 'danger',
+  [NotificationType.Note]: 'info',
 };
 
 export const NotificationTypeIcons: Record<NotificationType, string> = {
   [NotificationType.OrderCreated]: 'bi-plus-lg',
   [NotificationType.OrderUpdated]: 'bi-pencil-square',
   [NotificationType.OrderStatusChanged]: 'bi-arrow-repeat',
-  [NotificationType.ContainerArrived]: 'bi-geo-alt',
-  [NotificationType.ContainerDeparted]: 'bi-send',
+  [NotificationType.ContainerArrived]: 'bi-water',
+  [NotificationType.ContainerDeparted]: 'bi-geo-alt',
   [NotificationType.SystemNotification]: 'bi-info-circle',
-  [NotificationType.Test]: 'bi-bug'
+  [NotificationType.Test]: 'bi-bug',
+  [NotificationType.Note]: 'bi-sticky',
 };
 
-// Prioridades (1=baja, 3=alta)
 export const NotificationTypePriority: Record<NotificationType, number> = {
   [NotificationType.OrderCreated]: 2,
-  [NotificationType.OrderUpdated]: 1,
-  [NotificationType.OrderStatusChanged]: 2,
+  [NotificationType.OrderUpdated]: 2,
+  [NotificationType.OrderStatusChanged]: 3,
   [NotificationType.ContainerArrived]: 3,
   [NotificationType.ContainerDeparted]: 2,
   [NotificationType.SystemNotification]: 1,
-  [NotificationType.Test]: 1
+  [NotificationType.Test]: 1,
+  [NotificationType.Note]: 1,
 };
 
+
 // ==========================================
-// NOTIFICATION STATUS (Estado de Notificación)
+// NotificationStatus
 // ==========================================
 export enum NotificationStatus {
-  Send = 'send',
-  Failed = 'failed'
+  SEND = 'send',
+  FAILED = 'failed',
 }
 
 export const NotificationStatusLabels: Record<NotificationStatus, string> = {
-  [NotificationStatus.Send]: 'Enviada',
-  [NotificationStatus.Failed]: 'Fallida'
+  [NotificationStatus.SEND]: 'Send',
+  [NotificationStatus.FAILED]: 'Failed',
 };
 
+
 // ==========================================
-// ACTIVITY LOG ACTIONS (Acciones de Auditoría)
+// MovementStatus
 // ==========================================
-export enum ActivityLogsAction {
-  // User actions
-  CreateUser = 'create_user',
-  UpdateUser = 'update_user',
-  DeleteUser = 'delete_user',
-
-  // Order actions
-  CreateOrder = 'create_order',
-  UpdateOrder = 'update_order',
-  DeleteOrder = 'delete_order',
-  AssignOrder = 'assign_order',
-
-  // Container actions
-  CreateContainer = 'create_container',
-  UpdateContainer = 'update_container',
-  DeleteContainer = 'delete_container',
-
-  // Notification actions
-  SendNotification = 'send_notification'
+export enum MovementStatus {
+  EST = 'EST',
+  ACT = 'ACT',
 }
 
-export const ActivityLogsActionLabels: Record<ActivityLogsAction, string> = {
-  [ActivityLogsAction.CreateUser]: 'Crear Usuario',
-  [ActivityLogsAction.UpdateUser]: 'Actualizar Usuario',
-  [ActivityLogsAction.DeleteUser]: 'Eliminar Usuario',
-  [ActivityLogsAction.CreateOrder]: 'Crear Orden',
-  [ActivityLogsAction.UpdateOrder]: 'Actualizar Orden',
-  [ActivityLogsAction.DeleteOrder]: 'Eliminar Orden',
-  [ActivityLogsAction.AssignOrder]: 'Asignar Orden',
-  [ActivityLogsAction.CreateContainer]: 'Crear Contenedor',
-  [ActivityLogsAction.UpdateContainer]: 'Actualizar Contenedor',
-  [ActivityLogsAction.DeleteContainer]: 'Eliminar Contenedor',
-  [ActivityLogsAction.SendNotification]: 'Enviar Notificación'
+export const MovementStatusLabels: Record<MovementStatus, string> = {
+  [MovementStatus.EST]: 'Estimado',
+  [MovementStatus.ACT]: 'Confirmado',
 };
 
-export const ActivityLogsActionIcons: Record<ActivityLogsAction, string> = {
-  [ActivityLogsAction.CreateUser]: 'bi-person-plus',
-  [ActivityLogsAction.UpdateUser]: 'bi-person-gear',
-  [ActivityLogsAction.DeleteUser]: 'bi-person-x',
-  [ActivityLogsAction.CreateOrder]: 'bi-plus-square',
-  [ActivityLogsAction.UpdateOrder]: 'bi-pencil-square',
-  [ActivityLogsAction.DeleteOrder]: 'bi-trash',
-  [ActivityLogsAction.AssignOrder]: 'bi-link-45deg',
-  [ActivityLogsAction.CreateContainer]: 'bi-box-seam',
-  [ActivityLogsAction.UpdateContainer]: 'bi-box-seam',
-  [ActivityLogsAction.DeleteContainer]: 'bi-box',
-  [ActivityLogsAction.SendNotification]: 'bi-bell'
+export const MovementStatusColors: Record<MovementStatus, string> = {
+  [MovementStatus.EST]: 'warning',
+  [MovementStatus.ACT]: 'success',
+};
+
+export const MovementStatusIcons: Record<MovementStatus, string> = {
+  [MovementStatus.EST]: 'bi-clock',
+  [MovementStatus.ACT]: 'bi-check-circle',
+};
+
+
+// ==========================================
+// MovementEvent
+// ==========================================
+export enum MovementEvent {
+  EMSH = 'EMSH',
+  GTIN = 'GTIN',
+  LOAD = 'LOAD',
+  DEPA = 'DEPA',
+  ARRV = 'ARRV',
+  DISC = 'DISC',
+  GTOT = 'GTOT',
+  EMRT = 'EMRT',
+  NOTI = 'NOTI',
+}
+
+export const MovementEventLabels: Record<MovementEvent, string> = {
+  [MovementEvent.EMSH]: 'Vacío a Exportador',
+  [MovementEvent.GTIN]: 'Ingreso al Puerto',
+  [MovementEvent.LOAD]: 'Cargado',
+  [MovementEvent.DEPA]: 'Zarpó',
+  [MovementEvent.ARRV]: 'Arribó',
+  [MovementEvent.DISC]: 'Descargado',
+  [MovementEvent.GTOT]: 'Salida del Puerto',
+  [MovementEvent.EMRT]: 'Vacío Devuelto',
+  [MovementEvent.NOTI]: 'Actividad',
+};
+
+export const MovementEventColors: Record<MovementEvent, string> = {
+  [MovementEvent.EMSH]: 'secondary',
+  [MovementEvent.GTIN]: 'primary',
+  [MovementEvent.LOAD]: 'info',
+  [MovementEvent.DEPA]: 'info',
+  [MovementEvent.ARRV]: 'warning',
+  [MovementEvent.DISC]: 'success',
+  [MovementEvent.GTOT]: 'warning',
+  [MovementEvent.EMRT]: 'secondary',
+  [MovementEvent.NOTI]: 'primary',
+};
+
+export const MovementEventIcons: Record<MovementEvent, string> = {
+  [MovementEvent.EMSH]: 'bi-box-seam',
+  [MovementEvent.GTIN]: 'bi-box-arrow-in-right',
+  [MovementEvent.LOAD]: 'bi-truck',
+  [MovementEvent.DEPA]: 'bi-water',
+  [MovementEvent.ARRV]: 'bi-geo-alt',
+  [MovementEvent.DISC]: 'bi-check-circle-fill',
+  [MovementEvent.GTOT]: 'bi-box-arrow-right',
+  [MovementEvent.EMRT]: 'bi-building',
+  [MovementEvent.NOTI]: 'bi-pencil',
+};
+
+
+// ==========================================
+// ActivityLogsAction
+// ==========================================
+export enum ActivityLogsAction {
+  CREATE_USER = 'create_user',
+  UPDATE_USER = 'update_user',
+  DELETE_USER = 'delete_user',
+  CRETE_ORDER = 'create_order',
+  UPDATE_ORDER = 'update_order',
+  DELETE_ORDER = 'delete_order',
+  ASSIGN_ORDER = 'assign_order',
+  CREATE_CONTAINER = 'create_container',
+  UPDATE_CONTAINER = 'update_container',
+  DELETE_CONTAINER = 'delete_container',
+  SEND_NOTIFICATION = 'send_notification',
+}
+
+
+// ==========================================
+// CONSTANTES ESPECIALES
+// ==========================================
+
+// Estados finales de orden (no pueden cambiar)
+export const FinalOrderStatuses: OrderStatus[] = [
+  OrderStatus.Delivered,
+  OrderStatus.Cancelled,
+];
+
+// Estados activos de orden (pueden seguir cambiando)
+export const ActiveOrderStatuses: OrderStatus[] = [
+  OrderStatus.Pending,
+  OrderStatus.Processing,
+  OrderStatus.Shipped,
+];
+
+// Estados de contenedor que bloquean edicion manual del estado de orden
+export const LockedContainerStatuses: ContainerStatus[] = [
+  ContainerStatus.LOADED,
+  ContainerStatus.SAILING,
+  ContainerStatus.ARRIVED,
+];
+
+// Mapeo de estado contenedor -> estado automatico de orden
+export const ContainerToOrderStatusMap: Partial<Record<ContainerStatus, OrderStatus>> = {
+  [ContainerStatus.LOADED]: OrderStatus.Processing,
+  [ContainerStatus.SAILING]: OrderStatus.Shipped,
+  [ContainerStatus.ARRIVED]: OrderStatus.Shipped,
 };
 
 // ==========================================
-// HELPER FUNCTIONS
+// FUNCIONES HELPER
 // ==========================================
+
+/**
+ * Verifica si el estado del contenedor bloquea la edicion manual del estado de orden
+ */
+export function isOrderStatusLocked(containerStatus: ContainerStatus | string | null | undefined): boolean {
+  if (!containerStatus) return false;
+  return LockedContainerStatuses.includes(containerStatus as ContainerStatus);
+}
+
+/**
+ * Obtiene el estado automatico de orden segun el estado del contenedor
+ */
+export function getAutoOrderStatus(containerStatus: ContainerStatus | string | null | undefined): OrderStatus | null {
+  if (!containerStatus) return null;
+  return ContainerToOrderStatusMap[containerStatus as ContainerStatus] || null;
+}
 
 /**
  * Obtiene el label de un enum
@@ -293,17 +393,7 @@ export function getEnumIcon<T extends string>(
 }
 
 /**
- * Convierte un enum en array para selects
- */
-export function enumToArray<T extends string>(enumObj: Record<string, T>): Array<{value: T, label: string}> {
-  return Object.values(enumObj).map(value => ({
-    value,
-    label: value
-  }));
-}
-
-/**
- * Convierte un enum en array con labels
+ * Convierte un enum en array con labels para selects
  */
 export function enumToArrayWithLabels<T extends string>(
   enumObj: Record<string, T>,

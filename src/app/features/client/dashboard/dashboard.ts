@@ -78,7 +78,7 @@ export class Dashboard implements OnInit {
       portConfig: {
         locationKey: 'container.port_of_loading_name',
         countryKey: 'container.port_of_loading_country',
-        dateKey: 'created_at'
+        dateKey: 'container.created_at_shipsgo'
       }
     },
     {
