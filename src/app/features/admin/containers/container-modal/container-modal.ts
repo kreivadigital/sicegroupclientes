@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Modal } from '../../../../shared/components/modal/modal';
 import { ContainerService } from '../../../../core/services/container.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { Container, ContainerCreateData } from '../../../../core/models/container.model';
 
 @Component({
@@ -15,6 +16,7 @@ import { Container, ContainerCreateData } from '../../../../core/models/containe
 export class ContainerModal implements OnInit {
   private fb = inject(FormBuilder);
   private containerService = inject(ContainerService);
+  private toast = inject(ToastService);
 
   @Input() mode: 'create' | 'edit' = 'create';
   @Input() containerId?: number;
@@ -93,19 +95,19 @@ export class ContainerModal implements OnInit {
         next: (response) => {
           this.loading.set(false);
 
-          // Mostrar mensaje según el resultado
+          // Mostrar toast y mensaje según el resultado
           if (response.already_existed) {
+            this.toast.info('Contenedor actualizado');
             this.showResultMessage(
               `El contenedor ya existía y fue actualizado. ${response.movements_imported} movements importados.`,
               'info'
             );
-            console.info('Container actualizado:', response);
           } else {
+            this.toast.success('Contenedor creado correctamente');
             this.showResultMessage(
               `Contenedor creado exitosamente. ${response.movements_imported} movements importados.`,
               'success'
             );
-            console.info('Container creado:', response);
           }
 
           // Emitir y cerrar después de un delay para mostrar el mensaje
@@ -119,6 +121,7 @@ export class ContainerModal implements OnInit {
           this.loading.set(false);
 
           const errorMessage = error.error?.message || 'Error al procesar el contenedor';
+          this.toast.error(errorMessage);
           this.showResultMessage(errorMessage, 'error');
         }
       });
@@ -126,6 +129,7 @@ export class ContainerModal implements OnInit {
       this.containerService.updateContainer(this.containerId, this.form.value).subscribe({
         next: (response) => {
           this.loading.set(false);
+          this.toast.success('Contenedor actualizado correctamente');
           this.save.emit(response.data);
           this.close.emit();
         },
@@ -134,6 +138,7 @@ export class ContainerModal implements OnInit {
           this.loading.set(false);
 
           const errorMessage = error.error?.message || 'Error al actualizar el contenedor';
+          this.toast.error(errorMessage);
           this.showResultMessage(errorMessage, 'error');
         }
       });

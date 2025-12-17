@@ -19,12 +19,12 @@
           readonly
         />
         } @else {
-        <select class="form-select" formControlName="client_id">
-          <option value="">Seleccionar cliente</option>
-          @for (client of clients(); track client.id) {
-          <option [value]="client.id">{{ client.company_name }}</option>
-          }
-        </select>
+        <app-searchable-select
+          formControlName="client_id"
+          [options]="clientOptions()"
+          placeholder="Seleccionar cliente"
+          searchPlaceholder="Buscar cliente..."
+        ></app-searchable-select>
         }
       </div>
 

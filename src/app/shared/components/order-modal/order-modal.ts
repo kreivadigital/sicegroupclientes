@@ -1,10 +1,12 @@
-import { Component, Input, Output, EventEmitter, OnInit, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Modal } from '../modal/modal';
+import { SearchableSelect, SelectOption } from '../searchable-select/searchable-select';
 import { OrderService } from '../../../core/services/order.service';
 import { ClientService } from '../../../core/services/client.service';
 import { ContainerService } from '../../../core/services/container.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Auth } from '../../../core/services/auth';
 import { Order, OrderFormData } from '../../../core/models/order.model';
 import { Client } from '../../../core/models/client.model';
@@ -14,7 +16,7 @@ import { isOrderStatusLocked, getAutoOrderStatus, ContainerStatusLabels } from '
 @Component({
   selector: 'app-order-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, Modal],
+  imports: [CommonModule, ReactiveFormsModule, Modal, SearchableSelect],
   templateUrl: './order-modal.html',
   styleUrl: './order-modal.scss',
 })
@@ -23,6 +25,7 @@ export class OrderModal implements OnInit {
   private orderService = inject(OrderService);
   private clientService = inject(ClientService);
   private containerService = inject(ContainerService);
+  private toast = inject(ToastService);
   public auth = inject(Auth);
 
   @Input() mode: 'create' | 'edit' | 'view' = 'create';
@@ -36,6 +39,14 @@ export class OrderModal implements OnInit {
   order = signal<Order | null>(null);
   clients = signal<Client[]>([]);
   containers = signal<Container[]>([]);
+
+  // Opciones para el searchable select de clientes
+  clientOptions = computed<SelectOption[]>(() =>
+    this.clients().map((client) => ({
+      value: client.id,
+      label: client.company_name,
+    }))
+  );
 
   // Control de bloqueo de estado según contenedor
   statusLocked = signal(false);
@@ -231,11 +242,13 @@ export class OrderModal implements OnInit {
       this.orderService.createOrder(formData).subscribe({
         next: (response) => {
           this.loading.set(false);
+          this.toast.success('Orden creada correctamente');
           this.save.emit(response.data);
           this.close.emit();
         },
         error: (error) => {
           console.error('Error creando orden:', error);
+          this.toast.error(error.error?.message || 'Error al crear la orden');
           this.loading.set(false);
         }
       });
@@ -243,11 +256,13 @@ export class OrderModal implements OnInit {
       this.orderService.updateOrder(this.orderId, formData).subscribe({
         next: (response) => {
           this.loading.set(false);
+          this.toast.success('Orden actualizada correctamente');
           this.save.emit(response.data);
           this.close.emit();
         },
         error: (error) => {
           console.error('Error actualizando orden:', error);
+          this.toast.error(error.error?.message || 'Error al actualizar la orden');
           this.loading.set(false);
         }
       });

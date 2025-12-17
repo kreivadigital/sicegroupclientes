@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Modal } from '../../../../shared/components/modal/modal';
 import { ClientService } from '../../../../core/services/client.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { Client, ClientFormData } from '../../../../core/models/client.model';
 
 @Component({
@@ -15,6 +16,7 @@ import { Client, ClientFormData } from '../../../../core/models/client.model';
 export class ClientModal implements OnInit {
   private fb = inject(FormBuilder);
   private clientService = inject(ClientService);
+  private toast = inject(ToastService);
 
   @Input() mode: 'create' | 'edit' | 'view' = 'create';
   @Input() clientId?: number;
@@ -225,11 +227,13 @@ export class ClientModal implements OnInit {
       this.clientService.createClient(formData).subscribe({
         next: (response) => {
           this.loading.set(false);
+          this.toast.success('Cliente creado correctamente');
           this.save.emit(response.data);
           this.close.emit();
         },
         error: (error) => {
           console.error('Error creando cliente:', error);
+          this.toast.error(error.error?.message || 'Error al crear el cliente');
           this.loading.set(false);
         }
       });
@@ -237,11 +241,13 @@ export class ClientModal implements OnInit {
       this.clientService.updateClient(this.clientId, formData).subscribe({
         next: (response) => {
           this.loading.set(false);
+          this.toast.success('Cliente actualizado correctamente');
           this.save.emit(response.data);
           this.close.emit();
         },
         error: (error) => {
           console.error('Error actualizando cliente:', error);
+          this.toast.error(error.error?.message || 'Error al actualizar el cliente');
           this.loading.set(false);
         }
       });

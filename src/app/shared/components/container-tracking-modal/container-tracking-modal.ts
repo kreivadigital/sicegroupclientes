@@ -5,6 +5,7 @@ import { Modal } from '../modal/modal';
 import { VesselMap } from '../vessel-map/vessel-map';
 import { ContainerService } from '../../../core/services/container.service';
 import { OrderService } from '../../../core/services/order.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Container, VesselInfo, Movement } from '../../../core/models/container.model';
 import { MovementEventLabels } from '../../../core/models/enums';
 import { Note } from '../../../core/models/notification.model';
@@ -19,6 +20,7 @@ import { Note } from '../../../core/models/notification.model';
 export class ContainerTrackingModal implements OnInit {
   private containerService = inject(ContainerService);
   private orderService = inject(OrderService);
+  private toast = inject(ToastService);
 
   // Input requerido: ID del container
   @Input() containerId!: number;
@@ -229,9 +231,11 @@ export class ContainerTrackingModal implements OnInit {
         this.movements.update(movements => [response.data, ...movements]);
         this.newNotification = '';
         this.savingNotification.set(false);
+        this.toast.success('Actividad agregada correctamente');
       },
       error: (error) => {
         console.error('Error creando actividad:', error);
+        this.toast.error(error.error?.message || 'Error al agregar actividad');
         this.savingNotification.set(false);
       }
     });
@@ -267,9 +271,11 @@ export class ContainerTrackingModal implements OnInit {
           movements.map(m => m.id === movement.id ? response.data : m)
         );
         this.cancelEdit();
+        this.toast.success('Actividad actualizada correctamente');
       },
       error: (error) => {
         console.error('Error actualizando actividad:', error);
+        this.toast.error(error.error?.message || 'Error al actualizar actividad');
       }
     });
   }
@@ -284,9 +290,11 @@ export class ContainerTrackingModal implements OnInit {
         this.movements.update(movements =>
           movements.filter(m => m.id !== movement.id)
         );
+        this.toast.success('Actividad eliminada correctamente');
       },
       error: (error) => {
         console.error('Error eliminando actividad:', error);
+        this.toast.error(error.error?.message || 'Error al eliminar actividad');
       }
     });
   }
