@@ -2,8 +2,9 @@ import {
   Component,
   Input,
   OnInit,
+  OnChanges,
+  SimpleChanges,
   signal,
-  computed
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -14,7 +15,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   imports: [CommonModule],
   template: `
     <div class="vessel-map-container">
-      @if (!imo) {
+      @if (!vesselImo) {
         <div class="map-no-data">
           <i class="bi bi-geo-alt"></i>
           <span>Sin datos de tracking disponibles</span>
@@ -62,10 +63,10 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
     }
   `]
 })
-export class VesselMap implements OnInit {
-  @Input() imo?: number;
+export class VesselMap implements OnInit, OnChanges {
+  @Input() vesselImo?: string;
   @Input() height: string = '300';
-  @Input() zoom: string = '3';
+  @Input() zoom: number = 6;
   @Input() showTrack: boolean = true;
 
   iframeSrc = signal<SafeResourceUrl>('');
@@ -73,33 +74,43 @@ export class VesselMap implements OnInit {
   constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit() {
-    if (this.imo) {
+    this.buildIframeSrc();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['vesselImo'] && !changes['vesselImo'].firstChange) {
       this.buildIframeSrc();
     }
   }
 
   private buildIframeSrc() {
-    // Construir URL del iframe de VesselFinder
+    if (!this.vesselImo) {
+      return;
+    }
+
+    // URL directa del embed de VesselFinder
     const params = new URLSearchParams({
+      imo: this.vesselImo,
+      zoom: this.zoom.toString(),
       width: '100%',
-      height: this.height,
-      latitude: '0',
-      longitude: '0',
-      zoom: this.zoom,
-      names: 'false',
-      imo: this.imo!.toString(),
-      track: this.showTrack ? 'true' : 'false'
+      height: '100%',
+      names: 'true',
+      track: this.showTrack ? 'true' : 'false',
     });
 
     const url = `https://www.vesselfinder.com/aismap?${params.toString()}`;
+
+    console.log('[VesselMap] Vessel IMO:', this.vesselImo);
+    console.log('[VesselMap] URL:', url);
+
     this.iframeSrc.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
   }
 
   onIframeLoad() {
-    // Iframe cargado correctamente
+    console.log('[VesselMap] Iframe loaded');
   }
 
   onIframeError() {
-    console.error('Error loading VesselFinder iframe');
+    console.error('[VesselMap] Error loading iframe');
   }
 }

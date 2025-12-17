@@ -101,20 +101,19 @@
       </div>
       <p class="mb-0 mt-2">Cargando ubicación del buque...</p>
     </div>
-    } @else if (vesselInfo()?.vessel_imo) {
+    } @else if (container()?.vesselfinder?.vessel_imo) {
     <!-- Mapa disponible -->
     <div class="maps-header mb-2">
       <h6 class="mb-0">
         <i class="bi bi-geo-alt me-2"></i>
-        Ubicación del Buque @if (vesselInfo()?.vessel_name) {
-        <span class="vessel-name">- {{ vesselInfo()!.vessel_name }}</span>
+        Ubicación del Buque @if (container()?.vesselfinder?.vessel_name) {
+        <span class="vessel-name">- {{ container()!.vesselfinder!.vessel_name }}</span>
         }
       </h6>
     </div>
     <app-vessel-map
-      [imo]="+vesselInfo()!.vessel_imo!"
+      [vesselImo]="container()!.vesselfinder!.vessel_imo"
       [height]="'300'"
-      [zoom]="'4'"
       [showTrack]="true"
     >
     </app-vessel-map>

@@ -58,6 +58,12 @@ export interface Container {
   // Vessel actual (calculado desde movements)
   current_vessel?: Movement | null;
 
+  // VesselFinder data (sin API key por seguridad)
+  vesselfinder?: {
+    vessel_imo: string;
+    vessel_name: string | null;
+  } | null;
+
   // Timestamps
   created_at_shipsgo?: string;
   created_at: string;
