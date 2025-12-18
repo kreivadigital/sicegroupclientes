@@ -44,7 +44,7 @@ export class ContainerModal implements OnInit {
   initForm() {
     this.form = this.fb.group({
       container_number: ['', [Validators.required, Validators.maxLength(50)]],
-      shipment_reference: ['', [Validators.maxLength(255)]], // Opcional
+      shipment_reference: ['', [Validators.required, Validators.maxLength(255)]],
     });
   }
 

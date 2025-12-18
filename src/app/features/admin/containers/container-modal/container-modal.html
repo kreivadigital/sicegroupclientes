@@ -43,19 +43,25 @@
         }
       </div>
 
-      <!-- Número de referencia (opcional) -->
+      <!-- Número de referencia -->
       <div class="mb-3">
-        <label class="form-label">Número de referencia <span class="text-muted">(opcional)</span></label>
+        <label class="form-label">Número de referencia</label>
         <input
           type="text"
           class="form-control"
           formControlName="shipment_reference"
           placeholder="Ej: SICE-2025-001"
           [class.is-invalid]="form.get('shipment_reference')?.invalid && form.get('shipment_reference')?.touched">
-        @if (form.get('shipment_reference')?.errors?.['maxlength']) {
-          <div class="invalid-feedback">Máximo 255 caracteres</div>
+        @if (form.get('shipment_reference')?.invalid && form.get('shipment_reference')?.touched) {
+          <div class="invalid-feedback">
+            @if (form.get('shipment_reference')?.errors?.['required']) {
+              Este campo es requerido
+            }
+            @if (form.get('shipment_reference')?.errors?.['maxlength']) {
+              Máximo 255 caracteres
+            }
+          </div>
         }
-        <div class="form-text">Si se proporciona, se usará para filtrar en la búsqueda.</div>
       </div>
     </form>
   }
