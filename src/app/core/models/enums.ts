@@ -12,21 +12,25 @@
 // UserRole
 // ==========================================
 export enum UserRole {
+  SuperAdmin = 'super_admin',
   Administrator = 'administrator',
   Client = 'client',
 }
 
 export const UserRoleLabels: Record<UserRole, string> = {
+  [UserRole.SuperAdmin]: 'Super Administrador',
   [UserRole.Administrator]: 'Administrador',
   [UserRole.Client]: 'Cliente',
 };
 
 export const UserRoleColors: Record<UserRole, string> = {
+  [UserRole.SuperAdmin]: 'danger',
   [UserRole.Administrator]: 'primary',
   [UserRole.Client]: 'primary',
 };
 
 export const UserRoleIcons: Record<UserRole, string> = {
+  [UserRole.SuperAdmin]: 'bi-shield-lock-fill',
   [UserRole.Administrator]: 'bi-shield-check',
   [UserRole.Client]: 'bi-person',
 };
