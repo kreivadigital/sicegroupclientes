@@ -32,14 +32,22 @@ export class Sidebar implements OnInit {
     const user = this.authService.currentUser();
     if (!user) return [];
 
-    const isAdmin = user.role === UserRole.Administrator;
+    const isSuperAdmin = user.role === UserRole.SuperAdmin;
+    const isAdmin = user.role === UserRole.Administrator || isSuperAdmin;
 
     if (isAdmin) {
-      return [
+      const items = [
         { label: 'Dashboard', icon: 'bi-columns-gap', route: '/admin/contenedores' },
-        { label: 'Órdenes', icon: 'bi-archive', route: '/admin/ordenes' },
+        { label: 'Ordenes', icon: 'bi-archive', route: '/admin/ordenes' },
         { label: 'Clientes', icon: 'bi-people', route: '/admin/clientes' },
       ];
+
+      // Solo super admin puede ver configuraciones
+      if (isSuperAdmin) {
+        items.push({ label: 'Configuraciones', icon: 'bi-gear', route: '/admin/configuraciones' });
+      }
+
+      return items;
     } else {
       return [
         { label: 'Dashboard', icon: 'bi-columns-gap', route: '/client/dashboard' },
