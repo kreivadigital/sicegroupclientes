@@ -3,6 +3,23 @@ import { Router, CanActivateFn } from '@angular/router';
 import { Auth } from '../services/auth';
 
 /**
+ * Guard para proteger rutas de super administrador
+ * Solo usuarios con rol super_admin pueden acceder
+ */
+export const superAdminGuard: CanActivateFn = () => {
+  const authService = inject(Auth);
+  const router = inject(Router);
+
+  if (authService.isSuperAdmin()) {
+    return true;
+  }
+
+  // Si no es super admin, redirigir al dashboard de admin
+  router.navigate(['/admin/contenedores']);
+  return false;
+};
+
+/**
  * Guard para proteger rutas de administrador
  */
 export const adminGuard: CanActivateFn = () => {
