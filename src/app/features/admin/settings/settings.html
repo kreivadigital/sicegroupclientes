@@ -1,0 +1,147 @@
+<div class="settings-page">
+  <!-- Header -->
+  <div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="mb-1">
+          <i class="bi bi-gear-fill me-2"></i>
+          Configuraciones del Sistema
+        </h2>
+        <p class="text-muted mb-0">Gestiona las credenciales y configuraciones de los servicios externos</p>
+      </div>
+      <button
+        class="btn btn-outline-secondary"
+        (click)="clearCache()"
+        [disabled]="clearingCache()">
+        @if (clearingCache()) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+        } @else {
+          <i class="bi bi-arrow-clockwise me-2"></i>
+        }
+        Limpiar Cache
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="mt-3 text-muted">Cargando configuraciones...</p>
+    </div>
+  } @else {
+    <!-- Settings Groups -->
+    <div class="settings-groups">
+      @for (group of settingGroups; track group) {
+        <div class="card settings-card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i [class]="'bi ' + getGroupIcon(group) + ' me-2'"></i>
+              {{ getGroupLabel(group) }}
+            </h5>
+          </div>
+          <div class="card-body p-0">
+            @if (getSettingsForGroup(group).length === 0) {
+              <div class="text-center py-4 text-muted">
+                <i class="bi bi-inbox-fill fs-1 d-block mb-2"></i>
+                No hay configuraciones en este grupo
+              </div>
+            } @else {
+              <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;" class="text-center">Seguridad</th>
+                      <th style="width: 200px;">Clave</th>
+                      <th>Valor</th>
+                      <th style="width: 100px;">Tipo</th>
+                      <th style="width: 100px;">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (setting of getSettingsForGroup(group); track setting.id) {
+                      <tr>
+                        <td class="text-center">
+                          @if (setting.is_encrypted) {
+                            <i class="bi bi-shield-lock-fill text-warning" title="Valor encriptado"></i>
+                          } @else {
+                            <i class="bi bi-check-circle-fill text-success" title="Valor publico"></i>
+                          }
+                        </td>
+                        <td>
+                          <div>
+                            <strong>{{ setting.key }}</strong>
+                            @if (setting.description) {
+                              <small class="d-block text-muted">{{ setting.description }}</small>
+                            }
+                          </div>
+                        </td>
+                        <td>
+                          @if (editingId() === setting.id) {
+                            <div class="d-flex align-items-center gap-2">
+                              <input
+                                type="text"
+                                class="form-control form-control-sm"
+                                [(ngModel)]="editValue"
+                                [placeholder]="setting.is_encrypted ? 'Ingrese nuevo valor (encriptado)' : 'Ingrese valor'"
+                                (keyup.enter)="saveSetting(setting)"
+                                (keyup.escape)="cancelEdit()">
+                              <button
+                                class="btn btn-sm btn-success"
+                                (click)="saveSetting(setting)"
+                                [disabled]="saving()">
+                                @if (saving()) {
+                                  <span class="spinner-border spinner-border-sm"></span>
+                                } @else {
+                                  <i class="bi bi-check"></i>
+                                }
+                              </button>
+                              <button
+                                class="btn btn-sm btn-outline-secondary"
+                                (click)="cancelEdit()"
+                                [disabled]="saving()">
+                                <i class="bi bi-x"></i>
+                              </button>
+                            </div>
+                          } @else {
+                            <code class="setting-value">{{ setting.masked_value || '(vacio)' }}</code>
+                          }
+                        </td>
+                        <td>
+                          <span class="badge bg-secondary">
+                            <i [class]="'bi ' + getTypeIcon(setting.type) + ' me-1'"></i>
+                            {{ setting.type }}
+                          </span>
+                        </td>
+                        <td>
+                          @if (editingId() !== setting.id) {
+                            <button
+                              class="btn btn-sm btn-outline-primary"
+                              (click)="startEdit(setting)"
+                              title="Editar valor">
+                              <i class="bi bi-pencil"></i>
+                            </button>
+                          }
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Info Card -->
+    <div class="alert alert-info mt-4">
+      <i class="bi bi-info-circle me-2"></i>
+      <strong>Leyenda:</strong>
+      <i class="bi bi-shield-lock-fill text-warning ms-2"></i> Valor encriptado (almacenado de forma segura)
+      <i class="bi bi-check-circle-fill text-success ms-3"></i> Valor publico (sin encriptacion)
+    </div>
+  }
+</div>
