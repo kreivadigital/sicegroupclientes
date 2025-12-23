@@ -35,7 +35,11 @@ export class Auth {
     }
   });
 
-  public isAdmin = computed(() => this.currentUser()?.role === UserRole.Administrator);
+  public isSuperAdmin = computed(() => this.currentUser()?.role === UserRole.SuperAdmin);
+  public isAdmin = computed(() =>
+    this.currentUser()?.role === UserRole.Administrator ||
+    this.currentUser()?.role === UserRole.SuperAdmin
+  );
   public isClient = computed(() => this.currentUser()?.role === UserRole.Client);
 
   constructor(
