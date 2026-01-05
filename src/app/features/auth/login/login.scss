@@ -1,6 +1,7 @@
 // ==========================================
 // LOGIN
 // ==========================================
+@use 'sass:color';
 @use '../../../../assets/styles/variables' as *;
 
 .login-container {
@@ -190,17 +191,31 @@
     background: $bg-white;
     color: $text-muted;
     transition: all $transition-slow;
-    border-radius: 0 $radius-md $radius-md 0;
+    border-top-right-radius: $radius-md !important;
+    border-bottom-right-radius: $radius-md !important;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 
     &:hover:not(:disabled) {
       background: $bg-lightest;
       color: $primary;
-      border-color: $border-base;
     }
 
     &:disabled {
       opacity: 0.6;
       cursor: not-allowed;
+    }
+
+    // Color verde cuando está activo (contraseña visible)
+    &.active {
+      color: $accent-emerald;
+      border-color: $accent-emerald;
+      background: rgba($accent-emerald, 0.05);
+
+      &:hover:not(:disabled) {
+        color: color.adjust($accent-emerald, $lightness: -10%);
+        border-color: color.adjust($accent-emerald, $lightness: -10%);
+      }
     }
   }
 
@@ -208,8 +223,50 @@
     border-right: none;
     border-radius: $radius-md 0 0 $radius-md;
 
+    &:focus {
+      border-color: $primary;
+      box-shadow: none;
+    }
+
+    // Cuando el input tiene error
+    &.is-invalid {
+      border-color: $danger-light;
+    }
+
+    // Focus: el eye también cambia a color primary
     &:focus ~ .btn-outline-secondary {
       border-color: $primary;
+    }
+
+    // Cuando el input tiene error, el eye también (incluso si está activo)
+    &.is-invalid ~ .btn-outline-secondary {
+      border-color: $danger-light;
+
+      // El error tiene prioridad sobre el estado activo
+      &.active {
+        border-color: $danger-light;
+      }
+    }
+
+    // Error + Focus: el color debe ser primary
+    &.is-invalid:focus ~ .btn-outline-secondary {
+      border-color: $primary;
+
+      &.active {
+        border-color: $primary;
+      }
+    }
+
+    // Cuando el input tiene focus y el botón está activo (solo sin error)
+    &:not(.is-invalid):focus ~ .btn-outline-secondary.active {
+      border-color: $accent-emerald;
+    }
+  }
+
+  // Cuando el eye está activo, el input también tiene borde verde (solo sin error)
+  &:has(.btn-outline-secondary.active):not(:has(.form-control.is-invalid)) {
+    .form-control {
+      border-color: $accent-emerald;
     }
   }
 }

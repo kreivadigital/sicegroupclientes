@@ -140,6 +140,9 @@ export class DataTable implements OnInit, OnDestroy {
   dateFrom: string = '';
   dateTo: string = '';
 
+  // Fecha máxima para inputs de fecha (hoy)
+  today: string = new Date().toISOString().split('T')[0];
+
   // Opciones de estado
   statusOptions = [
     { value: 'pending', label: 'Pendiente' },

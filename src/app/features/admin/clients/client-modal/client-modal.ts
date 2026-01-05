@@ -64,8 +64,8 @@ export class ClientModal implements OnInit {
     if (this.mode === 'edit') {
       this.form.addControl('status', this.fb.control('active'));
       // Contraseña opcional en edición
-      this.form.addControl('current_password', this.fb.control(''));
-      this.form.addControl('new_password', this.fb.control(''));
+      this.form.addControl('password', this.fb.control(''));
+      this.form.addControl('password_confirmation', this.fb.control(''));
     }
 
     // Deshabilitar formulario en modo view

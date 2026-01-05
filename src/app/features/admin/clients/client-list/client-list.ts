@@ -61,8 +61,8 @@ export class ClientList implements OnInit {
   };
 
   actions: TableAction[] = [
-    { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-dark' },
-    { icon: 'bi-pencil-square', tooltip: 'Editar', action: 'edit', class: 'btn-outline-secondary' }
+    { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-success' },
+    { icon: 'bi-pencil-square', tooltip: 'Editar', action: 'edit', class: 'btn-outline-success' }
   ];
 
   ngOnInit() {

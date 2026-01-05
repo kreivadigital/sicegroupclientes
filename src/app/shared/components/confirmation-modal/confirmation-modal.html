@@ -1,0 +1,30 @@
+<div class="modal-backdrop" (click)="onBackdropClick()"></div>
+
+<div class="modal-container">
+  <div class="modal-content confirmation-modal">
+    <!-- Icono -->
+    <div class="confirmation-icon" [class]="iconColorClass">
+      <i [class]="'bi ' + displayIcon"></i>
+    </div>
+
+    <!-- Título (opcional) -->
+    @if (displayTitle) {
+    <h5 class="confirmation-title">{{ displayTitle }}</h5>
+    }
+
+    <!-- Mensaje -->
+    <p class="confirmation-message">{{ message }}</p>
+
+    <!-- Botones -->
+    <div class="confirmation-actions">
+      @if (showCancel) {
+      <button type="button" class="btn btn-secondary" (click)="onCancel()">
+        {{ cancelText }}
+      </button>
+      }
+      <button type="button" class="btn" [class]="confirmButtonClass" (click)="onConfirm()">
+        {{ displayConfirmText }}
+      </button>
+    </div>
+  </div>
+</div>

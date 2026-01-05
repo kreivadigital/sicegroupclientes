@@ -3,20 +3,22 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Modal } from '../../../../shared/components/modal/modal';
 import { ContainerService } from '../../../../core/services/container.service';
-import { ToastService } from '../../../../core/services/toast.service';
 import { Container, ContainerCreateData } from '../../../../core/models/container.model';
+import { ConfirmationModal, ConfirmationType } from '../../../../shared/components/confirmation-modal/confirmation-modal';
+
+// Key para localStorage - guardar ID del contenedor creado/actualizado
+export const CONTAINER_AUTO_OPEN_KEY = 'container_auto_open_id';
 
 @Component({
   selector: 'app-container-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, Modal],
+  imports: [CommonModule, ReactiveFormsModule, Modal, ConfirmationModal],
   templateUrl: './container-modal.html',
   styleUrl: './container-modal.scss',
 })
 export class ContainerModal implements OnInit {
   private fb = inject(FormBuilder);
   private containerService = inject(ContainerService);
-  private toast = inject(ToastService);
 
   @Input() mode: 'create' | 'edit' = 'create';
   @Input() containerId?: number;
@@ -28,10 +30,15 @@ export class ContainerModal implements OnInit {
   loading = signal(false);
   container = signal<Container | null>(null);
 
-  // Estado del resultado
-  resultMessage = signal<string | null>(null);
-  resultType = signal<'success' | 'info' | 'error' | null>(null);
-  showResult = signal(false);
+  // Estado del modal de notificación
+  showNotification = signal(false);
+  notificationMessage = signal('');
+  notificationType = signal<ConfirmationType>('success');
+  private savedContainer: Container | null = null;
+
+  // Estado del modal de confirmación para contenedor nuevo
+  showNewContainerConfirm = signal(false);
+  newContainerMessage = signal('');
 
   ngOnInit() {
     this.initForm();
@@ -43,8 +50,11 @@ export class ContainerModal implements OnInit {
 
   initForm() {
     this.form = this.fb.group({
-      container_number: ['', [Validators.required, Validators.maxLength(50)]],
-      shipment_reference: ['', [Validators.required, Validators.maxLength(255)]],
+      container_number: ['', [
+        Validators.required,
+        Validators.pattern(/^[A-Z]{4}\d{7}$/)
+      ]],
+      shipment_reference: ['', [Validators.required]],
     });
   }
 
@@ -82,87 +92,140 @@ export class ContainerModal implements OnInit {
   onSubmit() {
     if (this.form.invalid) return;
 
-    this.loading.set(true);
-    this.resetResult();
-
     if (this.mode === 'create') {
-      const formData: ContainerCreateData = {
-        container_number: this.form.value.container_number,
-        shipment_reference: this.form.value.shipment_reference || undefined,
-      };
+      // En modo crear, primero verificamos si el contenedor existe
+      this.loading.set(true);
 
-      this.containerService.createContainer(formData).subscribe({
+      const containerNumber = this.form.value.container_number;
+      const shipmentReference = this.form.value.shipment_reference;
+
+      this.containerService.checkContainerExists(containerNumber, shipmentReference).subscribe({
         next: (response) => {
           this.loading.set(false);
 
-          // Mostrar toast y mensaje según el resultado
-          if (response.already_existed) {
-            this.toast.info('Contenedor actualizado');
-            this.showResultMessage(
-              `El contenedor ya existía y fue actualizado. ${response.movements_imported} movements importados.`,
-              'info'
-            );
+          if (response.data?.exists) {
+            // El contenedor existe en DB o API, proceder directamente
+            this.proceedWithCreate();
           } else {
-            this.toast.success('Contenedor creado correctamente');
-            this.showResultMessage(
-              `Contenedor creado exitosamente. ${response.movements_imported} movements importados.`,
-              'success'
+            // El contenedor NO existe, mostrar confirmación
+            this.newContainerMessage.set(
+              `El contenedor ${containerNumber} - ${shipmentReference} no existe en el sistema. ¿Desea crear un registro manual?`
             );
+            this.showNewContainerConfirm.set(true);
           }
-
-          // Emitir y cerrar después de un delay para mostrar el mensaje
-          setTimeout(() => {
-            this.save.emit(response.data);
-            this.close.emit();
-          }, 1500);
         },
         error: (error) => {
-          console.error('Error procesando contenedor:', error);
+          console.error('Error verificando contenedor:', error);
           this.loading.set(false);
-
-          const errorMessage = error.error?.message || 'Error al procesar el contenedor';
-          this.toast.error(errorMessage);
-          this.showResultMessage(errorMessage, 'error');
+          // Si falla la verificación, proceder de todas formas
+          this.proceedWithCreate();
         }
       });
     } else if (this.mode === 'edit' && this.containerId) {
-      this.containerService.updateContainer(this.containerId, this.form.value).subscribe({
-        next: (response) => {
-          this.loading.set(false);
-          this.toast.success('Contenedor actualizado correctamente');
-          this.save.emit(response.data);
-          this.close.emit();
-        },
-        error: (error) => {
-          console.error('Error actualizando contenedor:', error);
-          this.loading.set(false);
-
-          const errorMessage = error.error?.message || 'Error al actualizar el contenedor';
-          this.toast.error(errorMessage);
-          this.showResultMessage(errorMessage, 'error');
-        }
-      });
+      this.proceedWithUpdate();
     }
   }
 
-  private showResultMessage(message: string, type: 'success' | 'info' | 'error') {
-    this.resultMessage.set(message);
-    this.resultType.set(type);
-    this.showResult.set(true);
+  // Confirmar creación de contenedor nuevo
+  onConfirmNewContainer() {
+    this.showNewContainerConfirm.set(false);
+    this.proceedWithCreate();
   }
 
-  private resetResult() {
-    this.resultMessage.set(null);
-    this.resultType.set(null);
-    this.showResult.set(false);
+  // Cancelar creación de contenedor nuevo
+  onCancelNewContainer() {
+    this.showNewContainerConfirm.set(false);
   }
 
-  getResultClass(): string {
-    switch (this.resultType()) {
-      case 'success': return 'alert-success';
-      case 'info': return 'alert-info';
-      case 'error': return 'alert-danger';
-      default: return '';
+  // Proceder con la creación del contenedor
+  private proceedWithCreate() {
+    this.loading.set(true);
+
+    const formData: ContainerCreateData = {
+      container_number: this.form.value.container_number,
+      shipment_reference: this.form.value.shipment_reference || undefined,
+    };
+
+    this.containerService.createContainer(formData).subscribe({
+      next: (response) => {
+        this.loading.set(false);
+        this.savedContainer = response.data;
+
+        // Guardar ID en localStorage para auto-abrir tracking modal
+        localStorage.setItem(CONTAINER_AUTO_OPEN_KEY, response.data.id.toString());
+
+        const containerNum = response.data.container_number;
+        const reference = response.data.shipment_reference;
+
+        if (response.already_existed) {
+          this.notificationType.set('info');
+          this.notificationMessage.set(
+            `El contenedor ${containerNum} - ${reference} se actualizó correctamente. ${response.movements_imported} movimientos importados.`
+          );
+        } else {
+          this.notificationType.set('success');
+          this.notificationMessage.set(
+            `El contenedor ${containerNum} - ${reference} se creó correctamente.`
+          );
+        }
+
+        this.showNotification.set(true);
+      },
+      error: (error) => {
+        console.error('Error procesando contenedor:', error);
+        this.loading.set(false);
+
+        const errorMessage = error.error?.message || 'Error al procesar el contenedor';
+        this.notificationType.set('error');
+        this.notificationMessage.set(errorMessage);
+        this.showNotification.set(true);
+      }
+    });
+  }
+
+  // Proceder con la actualización del contenedor
+  private proceedWithUpdate() {
+    if (!this.containerId) return;
+
+    this.loading.set(true);
+
+    this.containerService.updateContainer(this.containerId, this.form.value).subscribe({
+      next: (response) => {
+        this.loading.set(false);
+        this.savedContainer = response.data;
+
+        // Guardar ID en localStorage para auto-abrir tracking modal
+        localStorage.setItem(CONTAINER_AUTO_OPEN_KEY, response.data.id.toString());
+
+        const containerNum = response.data.container_number;
+        const reference = response.data.shipment_reference;
+
+        this.notificationType.set('success');
+        this.notificationMessage.set(
+          `El contenedor ${containerNum} - ${reference} se actualizó correctamente.`
+        );
+        this.showNotification.set(true);
+      },
+      error: (error) => {
+        console.error('Error actualizando contenedor:', error);
+        this.loading.set(false);
+
+        const errorMessage = error.error?.message || 'Error al actualizar el contenedor';
+        this.notificationType.set('error');
+        this.notificationMessage.set(errorMessage);
+        this.showNotification.set(true);
+      }
+    });
+  }
+
+  onNotificationConfirm() {
+    this.showNotification.set(false);
+
+    // Si fue exitoso, recargar la página para que se abra automáticamente el tracking modal
+    if (this.savedContainer && this.notificationType() !== 'error') {
+      window.location.reload();
+    } else {
+      this.close.emit();
     }
   }
 }

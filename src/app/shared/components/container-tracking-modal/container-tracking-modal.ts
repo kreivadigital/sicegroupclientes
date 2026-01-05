@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Modal } from '../modal/modal';
 import { VesselMap } from '../vessel-map/vessel-map';
+import { ConfirmationModal } from '../confirmation-modal/confirmation-modal';
 import { ContainerService } from '../../../core/services/container.service';
 import { OrderService } from '../../../core/services/order.service';
 import { ToastService } from '../../../core/services/toast.service';
@@ -13,7 +14,7 @@ import { Note } from '../../../core/models/notification.model';
 @Component({
   selector: 'app-container-tracking-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, Modal, VesselMap],
+  imports: [CommonModule, FormsModule, Modal, VesselMap, ConfirmationModal],
   templateUrl: './container-tracking-modal.html',
   styleUrl: './container-tracking-modal.scss',
 })
@@ -44,25 +45,47 @@ export class ContainerTrackingModal implements OnInit {
   movements = signal<Movement[]>([]);
   movementsLoading = signal(false);
 
+  // Orden de eventos para desempate cuando timestamps son iguales (DESC)
+  private eventOrder: Record<string, number> = {
+    'ARRV': 1,
+    'DEPA': 2,
+    'NOTI': 3,
+    'LOAD': 4
+  };
+
   // Todos los movimientos ordenados por fecha (más reciente primero)
+  // Con desempate por orden lógico de eventos cuando timestamps son iguales
   allMovements = computed(() =>
-    [...this.movements()].sort((a, b) =>
-      new Date(b.event_timestamp).getTime() - new Date(a.event_timestamp).getTime()
-    )
+    [...this.movements()].sort((a, b) => {
+      const timeA = new Date(a.event_timestamp).getTime();
+      const timeB = new Date(b.event_timestamp).getTime();
+
+      // Primero ordenar por timestamp (descendente = más reciente primero)
+      if (timeA !== timeB) {
+        return timeB - timeA;
+      }
+
+      // Si timestamps iguales, ordenar por orden lógico de evento (LOAD antes de DEPA)
+      const orderA = this.eventOrder[a.event] ?? 99;
+      const orderB = this.eventOrder[b.event] ?? 99;
+      return orderA - orderB;
+    })
   );
 
   // Notificación nueva (para el textarea)
   newNotification = '';
   savingNotification = signal(false);
 
-  // Estado de edición
-  editingMovementId = signal<number | null>(null);
-  editingDetail = '';
-  editingTimestamp = '';
+  // Estado de edición (estilo notification-modal)
+  editingActivity = signal<Movement | null>(null);
 
   // Notas de la orden (mostradas en la sección de notas)
   notes = signal<Note[]>([]);
   notesLoading = signal(false);
+
+  // Modal de confirmación de eliminación
+  showDeleteConfirm = signal(false);
+  movementToDelete = signal<Movement | null>(null);
 
   ngOnInit() {
     this.loadContainer();
@@ -210,79 +233,91 @@ export class ContainerTrackingModal implements OnInit {
   }
 
   formatDate(dateString?: string): string {
-    if (!dateString) return '-';
+    if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
   }
 
-  onAddNotification() {
-    if (!this.newNotification.trim()) return;
-
-    this.savingNotification.set(true);
-
-    const data = {
-      event_timestamp: new Date().toISOString(),
-      detail: this.newNotification.trim()
-    };
-
-    this.containerService.createMovement(this.containerId, data).subscribe({
-      next: (response) => {
-        // Agregar el nuevo movimiento a la lista
-        this.movements.update(movements => [response.data, ...movements]);
-        this.newNotification = '';
-        this.savingNotification.set(false);
-        this.toast.success('Actividad agregada correctamente');
-      },
-      error: (error) => {
-        console.error('Error creando actividad:', error);
-        this.toast.error(error.error?.message || 'Error al agregar actividad');
-        this.savingNotification.set(false);
-      }
-    });
+  getOriginPortDate(): string {
+    const c = this.container();
+    if (!c) return 'N/A';
+    const dateToUse = c.date_of_loading || c.created_at_shipsgo;
+    return this.formatDate(dateToUse);
   }
 
-  // Iniciar edición de un movimiento
-  startEdit(movement: Movement) {
-    this.editingMovementId.set(movement.id);
-    this.editingDetail = movement.detail || '';
-    this.editingTimestamp = this.formatDateTimeForInput(movement.event_timestamp);
+  // Iniciar edición de una actividad (estilo notification-modal)
+  onEditActivity(movement: Movement) {
+    this.editingActivity.set(movement);
+    this.newNotification = movement.detail || '';
   }
 
   // Cancelar edición
-  cancelEdit() {
-    this.editingMovementId.set(null);
-    this.editingDetail = '';
-    this.editingTimestamp = '';
+  onCancelEdit() {
+    this.editingActivity.set(null);
+    this.newNotification = '';
   }
 
-  // Guardar edición
-  saveEdit(movement: Movement) {
-    if (!this.editingDetail.trim()) return;
+  // Agregar o actualizar actividad
+  onSubmitActivity() {
+    if (!this.newNotification.trim()) return;
 
-    const data = {
-      event_timestamp: this.editingTimestamp,
-      detail: this.editingDetail.trim()
-    };
+    this.savingNotification.set(true);
+    const editing = this.editingActivity();
 
-    this.containerService.updateMovement(this.containerId, movement.id, data).subscribe({
-      next: (response) => {
-        // Actualizar el movimiento en la lista
-        this.movements.update(movements =>
-          movements.map(m => m.id === movement.id ? response.data : m)
-        );
-        this.cancelEdit();
-        this.toast.success('Actividad actualizada correctamente');
-      },
-      error: (error) => {
-        console.error('Error actualizando actividad:', error);
-        this.toast.error(error.error?.message || 'Error al actualizar actividad');
-      }
-    });
+    if (editing) {
+      // Actualizar actividad existente
+      const data = {
+        event_timestamp: editing.event_timestamp,
+        detail: this.newNotification.trim()
+      };
+
+      this.containerService.updateMovement(this.containerId, editing.id, data).subscribe({
+        next: (response) => {
+          this.movements.update(movements =>
+            movements.map(m => m.id === editing.id ? response.data : m)
+          );
+          this.onCancelEdit();
+          this.savingNotification.set(false);
+          this.toast.success('Actividad actualizada correctamente');
+        },
+        error: (error) => {
+          console.error('Error actualizando actividad:', error);
+          this.toast.error(error.error?.message || 'Error al actualizar actividad');
+          this.savingNotification.set(false);
+        }
+      });
+    } else {
+      // Crear nueva actividad
+      const data = {
+        event_timestamp: new Date().toISOString(),
+        detail: this.newNotification.trim()
+      };
+
+      this.containerService.createMovement(this.containerId, data).subscribe({
+        next: (response) => {
+          this.movements.update(movements => [response.data, ...movements]);
+          this.newNotification = '';
+          this.savingNotification.set(false);
+          this.toast.success('Actividad agregada correctamente');
+        },
+        error: (error) => {
+          console.error('Error creando actividad:', error);
+          this.toast.error(error.error?.message || 'Error al agregar actividad');
+          this.savingNotification.set(false);
+        }
+      });
+    }
   }
 
   // Eliminar movimiento
   deleteMovement(movement: Movement) {
-    if (!confirm('¿Está seguro de eliminar esta actividad?')) return;
+    this.movementToDelete.set(movement);
+    this.showDeleteConfirm.set(true);
+  }
+
+  onConfirmDeleteMovement() {
+    const movement = this.movementToDelete();
+    if (!movement) return;
 
     this.containerService.deleteMovement(this.containerId, movement.id).subscribe({
       next: () => {
@@ -291,17 +326,26 @@ export class ContainerTrackingModal implements OnInit {
           movements.filter(m => m.id !== movement.id)
         );
         this.toast.success('Actividad eliminada correctamente');
+        this.showDeleteConfirm.set(false);
+        this.movementToDelete.set(null);
       },
       error: (error) => {
         console.error('Error eliminando actividad:', error);
         this.toast.error(error.error?.message || 'Error al eliminar actividad');
+        this.showDeleteConfirm.set(false);
+        this.movementToDelete.set(null);
       }
     });
   }
 
+  onCancelDeleteMovement() {
+    this.showDeleteConfirm.set(false);
+    this.movementToDelete.set(null);
+  }
+
   // Formatear fecha para mostrar en tabla
   formatDateTime(dateString: string): string {
-    if (!dateString) return '-';
+    if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleString('es-ES', {
       day: '2-digit',

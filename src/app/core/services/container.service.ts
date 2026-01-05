@@ -90,6 +90,24 @@ export class ContainerService {
     return this.http.post<ApiResponse<any>>(`${this.apiUrl}/import-from-shipsgo`, {});
   }
 
+  /**
+   * Verificar si un contenedor existe en la DB o en ShipsGo API
+   */
+  checkContainerExists(containerNumber: string, shipmentReference: string): Observable<ApiResponse<{
+    exists: boolean;
+    source: 'db' | 'api' | null;
+    message: string;
+  }>> {
+    return this.http.post<ApiResponse<{
+      exists: boolean;
+      source: 'db' | 'api' | null;
+      message: string;
+    }>>(`${this.apiUrl}/check-exists`, {
+      container_number: containerNumber,
+      shipment_reference: shipmentReference
+    });
+  }
+
   getVesselInfo(id: number): Observable<ApiResponse<VesselInfo>> {
     return this.http.get<ApiResponse<VesselInfo>>(`${this.apiUrl}/${id}/vessel-info`);
   }

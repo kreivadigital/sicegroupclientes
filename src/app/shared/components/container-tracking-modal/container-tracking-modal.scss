@@ -318,6 +318,12 @@
     }
   }
 
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+  }
+
   .btn-add-activity {
     display: inline-flex;
     align-items: center;

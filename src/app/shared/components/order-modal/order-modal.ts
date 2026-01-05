@@ -191,6 +191,16 @@ export class OrderModal implements OnInit {
     }
   }
 
+  removeFile(type: 'performa' | 'picking' | 'invoice') {
+    if (type === 'performa') {
+      this.performaPdfFile = null;
+    } else if (type === 'picking') {
+      this.packinListFile = null;
+    } else if (type === 'invoice') {
+      this.invoiceFile = null;
+    }
+  }
+
   getTitle(): string {
     const titles = {
       'create': 'Agregar nueva orden',
@@ -221,6 +231,13 @@ export class OrderModal implements OnInit {
     if (!path) return null;
     const parts = path.split('/');
     return parts[parts.length - 1] || null;
+  }
+
+  // Trunca el nombre del archivo a 20 caracteres
+  truncateFileName(name: string | null | undefined): string {
+    if (!name) return '';
+    if (name.length <= 20) return name;
+    return name.substring(0, 17) + '...';
   }
 
   onClose() {

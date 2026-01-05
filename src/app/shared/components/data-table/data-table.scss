@@ -3,6 +3,11 @@
 // ==========================================
 @use '../../../../assets/styles/variables' as *;
 
+// Sin padding para usuarios admin/superadmin
+:host-context(.role-admin) .data-table-container {
+  padding: 0;
+}
+
 .data-table-container {
   background-color: $bg-white;
   border-radius: $radius-lg;

@@ -72,7 +72,7 @@
         @if (mode === 'view') { @if (order()?.picking_list_path) {
         <div class="file-display" (click)="downloadFile('picking-list')">
           <i class="bi bi-file-earmark-spreadsheet me-2"></i>
-          <span>{{ getFileName(order()?.picking_list_path) }}</span>
+          <span>{{ truncateFileName(getFileName(order()?.picking_list_path)) }}</span>
           <button
             type="button"
             class="btn btn-sm btn-link"
@@ -87,16 +87,19 @@
         <!-- Archivo nuevo seleccionado -->
         <div class="file-display file-selected">
           <i class="bi bi-file-earmark-spreadsheet me-2"></i>
-          <span>{{ packinListFile.name }}</span>
+          <span>{{ truncateFileName(packinListFile.name) }}</span>
           <button type="button" class="btn btn-sm btn-link" (click)="packinInput.click()">
             <i class="bi bi-pencil"></i>
+          </button>
+          <button type="button" class="btn btn-sm btn-link text-danger" (click)="removeFile('picking')">
+            <i class="bi bi-trash"></i>
           </button>
         </div>
         } @else if (order()?.picking_list_path) {
         <!-- Archivo existente en servidor -->
         <div class="file-display file-existing">
           <i class="bi bi-file-earmark-spreadsheet me-2"></i>
-          <span>{{ getFileName(order()?.picking_list_path) }}</span>
+          <span>{{ truncateFileName(getFileName(order()?.picking_list_path)) }}</span>
           <button type="button" class="btn btn-sm btn-link" (click)="packinInput.click()">
             <i class="bi bi-pencil"></i>
           </button>
@@ -126,7 +129,7 @@
         @if (mode === 'view') { @if (order()?.performa_pdf_path) {
         <div class="file-display" (click)="downloadFile('performa-pdf')">
           <i class="bi bi-file-earmark-pdf me-2"></i>
-          <span>{{ getFileName(order()?.performa_pdf_path) }}</span>
+          <span>{{ truncateFileName(getFileName(order()?.performa_pdf_path)) }}</span>
           <button
             type="button"
             class="btn btn-sm btn-link"
@@ -141,16 +144,19 @@
         <!-- Archivo nuevo seleccionado -->
         <div class="file-display file-selected">
           <i class="bi bi-file-earmark-pdf me-2"></i>
-          <span>{{ performaPdfFile.name }}</span>
+          <span>{{ truncateFileName(performaPdfFile.name) }}</span>
           <button type="button" class="btn btn-sm btn-link" (click)="performaInput.click()">
             <i class="bi bi-pencil"></i>
+          </button>
+          <button type="button" class="btn btn-sm btn-link text-danger" (click)="removeFile('performa')">
+            <i class="bi bi-trash"></i>
           </button>
         </div>
         } @else if (order()?.performa_pdf_path) {
         <!-- Archivo existente en servidor -->
         <div class="file-display file-existing">
           <i class="bi bi-file-earmark-pdf me-2"></i>
-          <span>{{ getFileName(order()?.performa_pdf_path) }}</span>
+          <span>{{ truncateFileName(getFileName(order()?.performa_pdf_path)) }}</span>
           <button type="button" class="btn btn-sm btn-link" (click)="performaInput.click()">
             <i class="bi bi-pencil"></i>
           </button>
@@ -179,7 +185,7 @@
         @if (mode === 'view') { @if (order()?.invoice_path) {
         <div class="file-display" (click)="downloadFile('invoice')">
           <i class="bi bi-file-earmark-pdf me-2"></i>
-          <span>{{ getFileName(order()?.invoice_path) }}</span>
+          <span>{{ truncateFileName(getFileName(order()?.invoice_path)) }}</span>
           <button
             type="button"
             class="btn btn-sm btn-link"
@@ -194,16 +200,19 @@
         <!-- Archivo nuevo seleccionado -->
         <div class="file-display file-selected">
           <i class="bi bi-file-earmark-pdf me-2"></i>
-          <span>{{ invoiceFile.name }}</span>
+          <span>{{ truncateFileName(invoiceFile.name) }}</span>
           <button type="button" class="btn btn-sm btn-link" (click)="invoiceInput.click()">
             <i class="bi bi-pencil"></i>
+          </button>
+          <button type="button" class="btn btn-sm btn-link text-danger" (click)="removeFile('invoice')">
+            <i class="bi bi-trash"></i>
           </button>
         </div>
         } @else if (order()?.invoice_path) {
         <!-- Archivo existente en servidor -->
         <div class="file-display file-existing">
           <i class="bi bi-file-earmark-pdf me-2"></i>
-          <span>{{ getFileName(order()?.invoice_path) }}</span>
+          <span>{{ truncateFileName(getFileName(order()?.invoice_path)) }}</span>
           <button type="button" class="btn btn-sm btn-link" (click)="invoiceInput.click()">
             <i class="bi bi-pencil"></i>
           </button>

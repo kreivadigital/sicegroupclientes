@@ -1,7 +1,8 @@
-import { Component, viewChild } from '@angular/core';
+import { Component, inject, viewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Sidebar } from '../../shared/components/sidebar/sidebar';
 import { Header } from '../../shared/components/header/header';
+import { Auth } from '../../core/services/auth';
 
 /**
  * Layout principal de la aplicación
@@ -14,10 +15,13 @@ import { Header } from '../../shared/components/header/header';
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.scss',
   host: {
-    '[class.sidebar-collapsed]': 'sidebar()?.isCollapsed()'
+    '[class.sidebar-collapsed]': 'sidebar()?.isCollapsed()',
+    '[class.role-admin]': 'auth.isAdmin()'
   }
 })
 export class MainLayout {
+  auth = inject(Auth);
+
   // Referencia al sidebar para leer su estado
   sidebar = viewChild(Sidebar);
 

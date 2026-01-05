@@ -84,6 +84,8 @@
               <button
                 type="button"
                 class="btn btn-outline-secondary"
+                [class.is-invalid]="isFieldInvalid('password')"
+                [class.active]="showPassword()"
                 (click)="togglePasswordVisibility()"
                 [disabled]="loading()"
               >

@@ -87,8 +87,8 @@ export class OrderList implements OnInit {
   // Cliente ve: Ver, Editar, Rastrear
   actions = computed<TableAction[]>(() => {
     const baseActions: TableAction[] = [
-      { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-primary' },
-      { icon: 'bi-pencil-square', tooltip: 'Editar', action: 'edit', class: 'btn-outline-secondary' }
+      { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-success' },
+      { icon: 'bi-pencil-square', tooltip: 'Editar', action: 'edit', class: 'btn-outline-success' }
     ];
 
     if (this.auth.isAdmin()) {

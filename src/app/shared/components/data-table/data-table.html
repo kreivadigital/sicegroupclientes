@@ -77,7 +77,8 @@
                     <input
                       type="date"
                       class="form-control form-control-sm"
-                      [(ngModel)]="dateFrom">
+                      [(ngModel)]="dateFrom"
+                      [max]="today">
                   </div>
 
                   <!-- Filtro de Fecha Hasta -->
@@ -86,7 +87,8 @@
                     <input
                       type="date"
                       class="form-control form-control-sm"
-                      [(ngModel)]="dateTo">
+                      [(ngModel)]="dateTo"
+                      [max]="today">
                   </div>
                 </div>
 

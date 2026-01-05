@@ -18,11 +18,6 @@
   } @else if (container()) {
   <!-- Sección de Información del Contenedor -->
   <div class="info-section">
-    <!-- Ícono en esquina superior derecha -->
-    <div class="info-icon" title="Información adicional">
-      <i class="bi bi-info-lg"></i>
-    </div>
-
     <!-- Subsección: Números de Orden y Referencia -->
     <div class="info-numbers">
       @if (orderNumber) {
@@ -33,12 +28,12 @@
       }
       <div class="info-item">
         <div class="info-label">Número de Referencia</div>
-        <div class="info-value">{{ container()!.shipment_reference || '-' }}</div>
+        <div class="info-value">{{ container()!.shipment_reference || 'N/A' }}</div>
       </div>
       @if (showAddNotification) {
       <div class="info-item">
         <div class="info-label">Número de Contenedor</div>
-        <div class="info-value">{{ container()!.container_number || '-' }}</div>
+        <div class="info-value">{{ container()!.container_number || 'N/A' }}</div>
       </div>
       }
     </div>
@@ -48,10 +43,10 @@
       <div class="info-item">
         <div class="info-label">Puerto de Origen</div>
         <div class="info-value fw-bold">
-          {{ container()!.port_of_loading_name || '-' }},
-          <span class="info-country">{{ container()!.port_of_loading_country || '-' }}</span>
+          {{ container()!.port_of_loading_name || 'N/A' }},
+          <span class="info-country">{{ container()!.port_of_loading_country || 'N/A' }}</span>
         </div>
-        <div class="info-date">{{ formatDate(container()!.date_of_loading) }}</div>
+        <div class="info-date">{{ getOriginPortDate() }}</div>
       </div>
 
       <div class="info-arrow">
@@ -62,8 +57,8 @@
       <div class="info-item">
         <div class="info-label">Puerto de Destino</div>
         <div class="info-value fw-bold">
-          {{ container()!.destination_port_name || '-' }},
-          <span class="info-country">{{ container()!.destination_port_country || '-' }}</span>
+          {{ container()!.destination_port_name || 'N/A' }},
+          <span class="info-country">{{ container()!.destination_port_country || 'N/A' }}</span>
         </div>
         <div class="info-date">{{ formatDate(container()!.date_of_discharge) }}</div>
       </div>
@@ -154,46 +149,9 @@
         </thead>
         <tbody>
           @for (movement of allMovements(); track movement.id) {
-          <tr>
-            @if (editingMovementId() === movement.id) {
-            <!-- Modo edición (solo para NOTI) -->
-            <td>
-              <input
-                type="datetime-local"
-                class="form-control form-control-sm"
-                [(ngModel)]="editingTimestamp"
-              />
-            </td>
-            <td>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                [(ngModel)]="editingDetail"
-                placeholder="Detalle de la actividad"
-              />
-            </td>
-            <td class="text-center d-flex">
-              <button
-                type="button"
-                class="btn btn-sm btn-success me-1"
-                (click)="saveEdit(movement)"
-                title="Guardar"
-              >
-                <i class="bi bi-check"></i>
-              </button>
-              <button
-                type="button"
-                class="btn btn-sm btn-secondary"
-                (click)="cancelEdit()"
-                title="Cancelar"
-              >
-                <i class="bi bi-x"></i>
-              </button>
-            </td>
-            } @else {
-            <!-- Modo visualización -->
+          <tr [class.table-warning]="editingActivity()?.id === movement.id">
             <td>{{ formatDateTime(movement.event_timestamp) }}</td>
-            <td class="activity-detail">{{ movement.detail || '-' }}</td>
+            <td class="activity-detail">{{ movement.detail || 'N/A' }}</td>
             @if (showAddNotification) {
             <td class="text-center d-flex">
               @if (isEditable(movement)) {
@@ -201,7 +159,7 @@
               <button
                 type="button"
                 class="btn btn-sm btn-outline-primary me-1"
-                (click)="startEdit(movement)"
+                (click)="onEditActivity(movement)"
                 title="Editar"
               >
                 <i class="bi bi-pencil-square"></i>
@@ -222,7 +180,6 @@
               }
             </td>
             }
-            }
           </tr>
           }
         </tbody>
@@ -231,10 +188,10 @@
     }
   </div>
 
-  <!-- Sección de Agregar Actividad (solo visible desde Containers para admin) -->
+  <!-- Sección de Agregar/Modificar Actividad (solo visible desde Containers para admin) -->
   @if (showAddNotification) {
   <div class="add-activity-section">
-    <h6>Agregar nueva actividad</h6>
+    <h6>{{ editingActivity() ? 'Modificar actividad' : 'Agregar nueva actividad' }}</h6>
     <textarea
       class="form-control"
       rows="3"
@@ -243,19 +200,31 @@
       [disabled]="savingNotification()"
     >
     </textarea>
-    <button
-      type="button"
-      class="btn btn-add-activity"
-      (click)="onAddNotification()"
-      [disabled]="!newNotification.trim() || savingNotification()"
-    >
-      @if (savingNotification()) {
-      <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-      Guardando...
-      } @else {
-      Agregar
+    <div class="form-actions">
+      @if (editingActivity()) {
+      <button
+        type="button"
+        class="btn btn-secondary me-2"
+        (click)="onCancelEdit()"
+        [disabled]="savingNotification()"
+      >
+        Cancelar
+      </button>
       }
-    </button>
+      <button
+        type="button"
+        class="btn btn-add-activity"
+        (click)="onSubmitActivity()"
+        [disabled]="!newNotification.trim() || savingNotification()"
+      >
+        @if (savingNotification()) {
+        <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+        Guardando...
+        } @else {
+        {{ editingActivity() ? 'Guardar' : 'Agregar' }}
+        }
+      </button>
+    </div>
   </div>
   }
 
@@ -303,3 +272,14 @@
     <button type="button" class="btn btn-secondary" (click)="onClose()">Cerrar</button>
   </div>
 </app-modal>
+
+<!-- Modal de confirmación de eliminación -->
+@if (showDeleteConfirm()) {
+  <app-confirmation-modal
+    type="delete"
+    message="¿Confirma la acción de eliminar esta actividad?"
+    [showCancel]="true"
+    (confirm)="onConfirmDeleteMovement()"
+    (cancel)="onCancelDeleteMovement()">
+  </app-confirmation-modal>
+}

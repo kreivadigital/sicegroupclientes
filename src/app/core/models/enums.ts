@@ -4,7 +4,7 @@
  * ========================================
  * No editar manualmente.
  * Ejecutar: php artisan enums:sync
- * Fecha: 2025-12-15 20:29:28
+ * Fecha: 2025-12-23 02:54:58
  * Fuente: Laravel Enums (app/Enums/)
  */
 
@@ -30,7 +30,7 @@ export const UserRoleColors: Record<UserRole, string> = {
 };
 
 export const UserRoleIcons: Record<UserRole, string> = {
-  [UserRole.SuperAdmin]: 'bi-shield-lock-fill',
+  [UserRole.SuperAdmin]: 'bi-circle',
   [UserRole.Administrator]: 'bi-shield-check',
   [UserRole.Client]: 'bi-person',
 };

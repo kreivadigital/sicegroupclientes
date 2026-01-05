@@ -93,7 +93,7 @@
               {{ container.port_of_loading_name || '-' }}
               <span class="port-country">{{ container.port_of_loading_country || '-' }}</span>
             </span>
-            <span class="port-date">{{ container.created_at_shipsgo | date:'dd/MM/yyyy' }}</span>
+            <span class="port-date">{{ container.origin_port_date | date:'dd/MM/yyyy' }}</span>
           </div>
 
           <div class="port-connector">
@@ -159,5 +159,16 @@
       [showAddNotification]="true"
       (close)="onTrackingModalClose()">
     </app-container-tracking-modal>
+  }
+
+  <!-- Modal de confirmación de eliminación -->
+  @if (showDeleteConfirm()) {
+    <app-confirmation-modal
+      type="delete"
+      [message]="'¿Confirma la acción de eliminar el contenedor ' + containerToDelete()?.container_number + '?'"
+      [showCancel]="true"
+      (confirm)="onConfirmDelete()"
+      (cancel)="onCancelDelete()">
+    </app-confirmation-modal>
   }
 </div>

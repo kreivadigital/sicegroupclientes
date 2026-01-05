@@ -9,12 +9,13 @@ import { StatCard } from '../../../../shared/components/stat-card/stat-card';
 import { DataTable } from '../../../../shared/components/data-table/data-table';
 import { Pagination } from '../../../../shared/components/pagination/pagination';
 import { SearchBar } from '../../../../shared/components/search-bar/search-bar';
-import { ContainerModal } from '../container-modal/container-modal';
+import { ContainerModal, CONTAINER_AUTO_OPEN_KEY } from '../container-modal/container-modal';
 import { ContainerTrackingModal } from '../../../../shared/components/container-tracking-modal/container-tracking-modal';
+import { ConfirmationModal } from '../../../../shared/components/confirmation-modal/confirmation-modal';
 
 @Component({
   selector: 'app-container-list',
-  imports: [CommonModule, StatCard, DataTable, Pagination, SearchBar, ContainerModal, ContainerTrackingModal],
+  imports: [CommonModule, StatCard, DataTable, Pagination, SearchBar, ContainerModal, ContainerTrackingModal, ConfirmationModal],
   templateUrl: './container-list.html',
   styleUrl: './container-list.scss',
 })
@@ -38,6 +39,10 @@ export class ContainerList implements OnInit {
   showTrackingModal = signal(false);
   modalMode = signal<'create' | 'edit'>('create');
   selectedContainerId = signal<number | undefined>(undefined);
+
+  // Modal de confirmación de eliminación
+  showDeleteConfirm = signal(false);
+  containerToDelete = signal<Container | null>(null);
 
   // Import state
   importing = signal<boolean>(false);
@@ -77,7 +82,7 @@ export class ContainerList implements OnInit {
       portConfig: {
         locationKey: 'port_of_loading_name',
         countryKey: 'port_of_loading_country',
-        dateKey: 'created_at_shipsgo'
+        dateKey: 'origin_port_date'
       }
     },
     {
@@ -99,13 +104,31 @@ export class ContainerList implements OnInit {
 
   // Configuración de acciones (botones en última columna)
   actions: TableAction[] = [
-    { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-dark' },
+    { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-success' },
     { icon: 'bi-trash', tooltip: 'Eliminar', action: 'delete', class: 'btn-outline-danger' }
   ];
 
   ngOnInit() {
     this.loadStats();
     this.loadContainers();
+    this.checkAutoOpenTrackingModal();
+  }
+
+  /**
+   * Verifica si hay un contenedor guardado en localStorage para auto-abrir
+   */
+  private checkAutoOpenTrackingModal() {
+    const savedContainerId = localStorage.getItem(CONTAINER_AUTO_OPEN_KEY);
+    if (savedContainerId) {
+      const containerId = parseInt(savedContainerId, 10);
+      if (!isNaN(containerId)) {
+        // Pequeño delay para asegurar que el componente esté listo
+        setTimeout(() => {
+          this.selectedContainerId.set(containerId);
+          this.showTrackingModal.set(true);
+        }, 100);
+      }
+    }
   }
 
   loadStats() {
@@ -129,7 +152,10 @@ export class ContainerList implements OnInit {
     this.containerService.getContainers(page, filters).subscribe({
       next: (response) => {
         const paginationData = response.data as any;
-        const containers = paginationData.data || [];
+        const containers = (paginationData.data || []).map((c: any) => ({
+          ...c,
+          origin_port_date: c.date_of_loading || c.created_at_shipsgo || null
+        }));
 
         this.containers.set(containers);
         this.currentPage.set(paginationData.current_page);
@@ -171,23 +197,33 @@ export class ContainerList implements OnInit {
   }
 
   onDeleteContainer(container: Container) {
-    const confirmMessage = `¿Está seguro de eliminar el contenedor "${container.container_number}"?`;
+    this.containerToDelete.set(container);
+    this.showDeleteConfirm.set(true);
+  }
 
-    if (!confirm(confirmMessage)) {
-      return;
-    }
+  onConfirmDelete() {
+    const container = this.containerToDelete();
+    if (!container) return;
 
     this.containerService.deleteContainer(container.id).subscribe({
       next: () => {
+        this.showDeleteConfirm.set(false);
+        this.containerToDelete.set(null);
         // Recargar la lista después de eliminar
         this.loadContainers(this.currentPage(), this.currentSearch());
         this.loadStats();
       },
       error: (error) => {
         console.error('Error eliminando contenedor:', error);
-        alert('Error al eliminar el contenedor');
+        this.showDeleteConfirm.set(false);
+        this.containerToDelete.set(null);
       }
     });
+  }
+
+  onCancelDelete() {
+    this.showDeleteConfirm.set(false);
+    this.containerToDelete.set(null);
   }
 
   onModalClose() {
@@ -198,6 +234,8 @@ export class ContainerList implements OnInit {
   onTrackingModalClose() {
     this.showTrackingModal.set(false);
     this.selectedContainerId.set(undefined);
+    // Limpiar localStorage al cerrar el modal de tracking
+    localStorage.removeItem(CONTAINER_AUTO_OPEN_KEY);
   }
 
   onContainerSaved(container: Container) {

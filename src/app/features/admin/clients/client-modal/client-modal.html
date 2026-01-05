@@ -172,17 +172,21 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Cambiar contraseña</label>
-          <input 
-            type="password" 
-            class="form-control mb-2" 
-            formControlName="current_password"
-            placeholder="Ingresa tu contraseña actual">
-          <input 
-            type="password" 
-            class="form-control" 
-            formControlName="new_password"
+          <label class="form-label">Nueva contraseña (opcional)</label>
+          <input
+            type="password"
+            class="form-control"
+            formControlName="password"
             placeholder="Mínimo 6 caracteres">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Confirmar contraseña</label>
+          <input
+            type="password"
+            class="form-control"
+            formControlName="password_confirmation"
+            placeholder="Repite la contraseña">
         </div>
       }
     </form>
