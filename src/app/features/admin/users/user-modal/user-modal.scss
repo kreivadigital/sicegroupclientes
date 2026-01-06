@@ -1,0 +1,71 @@
+// ==========================================
+// USER MODAL
+// ==========================================
+@use '../../../../../assets/styles/variables' as *;
+
+// Form styling
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: $text-darkest;
+  margin-bottom: 0.25rem;
+}
+
+.form-control,
+.form-select {
+  font-size: 0.875rem;
+  border-radius: $radius-md;
+  border-color: $border-base;
+  transition: border-color $transition-base, box-shadow $transition-base;
+
+  &:focus {
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba($primary, 0.1);
+  }
+
+  &::placeholder {
+    color: $text-muted;
+  }
+}
+
+// Validation messages
+.text-danger.small {
+  font-size: 0.75rem;
+}
+
+// Separator
+hr {
+  border-color: $border-light;
+}
+
+// Spinner for loading roles
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+// Footer buttons
+.btn-secondary {
+  background-color: $bg-white;
+  border-color: $border-base;
+  color: $text-dark;
+
+  &:hover {
+    background-color: $bg-light;
+    border-color: $border-dark;
+  }
+}
+
+.btn-primary {
+  background-color: $primary;
+  border-color: $primary;
+
+  &:hover:not(:disabled) {
+    background-color: #02661E;
+    border-color: #02661E;
+  }
+
+  &:disabled {
+    opacity: 0.65;
+  }
+}

@@ -219,6 +219,7 @@
                     type="button"
                     [class]="'btn ' + (action.class || 'btn-outline-secondary')"
                     [title]="action.tooltip"
+                    [disabled]="isActionDisabled(action.action, row)"
                     (click)="onActionClick(action, row)"
                   >
                     <i [class]="action.icon"></i>

@@ -1,0 +1,146 @@
+// ==========================================
+// USER LIST
+// ==========================================
+@use '../../../../../assets/styles/variables' as *;
+
+// ==========================================
+// USER CARDS (Mobile)
+// ==========================================
+.user-card {
+  background-color: $bg-white;
+  border: 1px solid $border-base;
+  border-radius: $radius-lg;
+  padding: 1rem;
+  box-shadow: $shadow-sm;
+
+  // Estado deshabilitado (SuperAdmin)
+  &.card-disabled {
+    background-color: #f3f4f6;
+    opacity: 0.7;
+  }
+}
+
+// Header con nombre y rol
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid $border-light;
+  margin-bottom: 12px;
+
+  .user-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: $text-darkest;
+  }
+}
+
+// Badge de rol
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+
+  &.badge-super_admin {
+    background-color: $danger-bg;
+    color: $danger-text;
+  }
+
+  &.badge-administrator {
+    background-color: $warning-bg;
+    color: $warning-text;
+  }
+
+  &.badge-client {
+    background-color: $primary-light;
+    color: $primary;
+  }
+}
+
+// Campo individual
+.card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 12px;
+
+  .field-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: $text-muted;
+  }
+
+  .field-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: $text-darkest;
+  }
+}
+
+// Acciones
+.card-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 1rem;
+}
+
+.card-actions-disabled {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+
+  .text-muted {
+    font-size: 12px;
+    color: $text-muted;
+  }
+}
+
+.btn-edit,
+.btn-delete {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 8px 16px;
+  height: 32px;
+  background-color: $bg-white;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  i {
+    font-size: 1rem;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.btn-edit {
+  border: 1.5px solid #6c757d;
+  color: #6c757d;
+
+  &:hover {
+    background-color: #02661E;
+    border-color: #02661E;
+    color: $text-white;
+  }
+}
+
+.btn-delete {
+  border: 1.5px solid $danger-solid;
+  color: $danger-solid;
+
+  &:hover {
+    background-color: $danger-solid;
+    color: $text-white;
+  }
+}

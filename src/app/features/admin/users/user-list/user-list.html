@@ -1,0 +1,94 @@
+<div class="user-list-page">
+  <!-- Toolbar: Search + Add Button -->
+  <app-page-toolbar
+    [showSearch]="true"
+    [showFilters]="false"
+    searchPlaceholder="Buscar por nombre o email..."
+    addButtonText="Agregar Nuevo Usuario"
+    (searchChange)="onSearch($event)"
+    (addClick)="onAddUser()">
+  </app-page-toolbar>
+
+  <!-- Data Table -->
+  <app-data-table
+    [columns]="columns"
+    [data]="users()"
+    [actions]="actions"
+    [loading]="loading()"
+    [rowClassFn]="getUserRowClass"
+    [isActionDisabledFn]="isActionDisabled"
+    emptyMessage="No hay usuarios registrados"
+    (actionClick)="onTableAction($event)">
+
+    <!-- Template para cards en móvil -->
+    <ng-template #cardTemplate let-user let-onAction="onAction" let-rowClass="rowClass">
+      <div class="user-card" [class.card-disabled]="user.role === 'super_admin'">
+        <!-- Header: Nombre y Rol -->
+        <div class="card-header-row">
+          <span class="field-value user-name">{{ user.name || '-' }}</span>
+          <span [class]="'status-badge badge-' + user.role">
+            @switch (user.role) {
+              @case ('super_admin') { Super Admin }
+              @case ('administrator') { Administrador }
+              @case ('client') { Cliente }
+            }
+          </span>
+        </div>
+
+        <!-- Email -->
+        <div class="card-field">
+          <span class="field-label">Email</span>
+          <span class="field-value">{{ user.email || '-' }}</span>
+        </div>
+
+        <!-- Acciones (solo si no es SuperAdmin) -->
+        @if (user.role !== 'super_admin') {
+          <div class="card-actions">
+            <button class="btn-edit" (click)="onAction({ action: 'edit', row: user })">
+              <i class="bi bi-pencil-square"></i>
+              <span>Editar</span>
+            </button>
+            <button class="btn-delete" (click)="onAction({ action: 'delete', row: user })">
+              <i class="bi bi-trash"></i>
+              <span>Eliminar</span>
+            </button>
+          </div>
+        } @else {
+          <div class="card-actions-disabled">
+            <span class="text-muted">Sin acciones disponibles</span>
+          </div>
+        }
+      </div>
+    </ng-template>
+  </app-data-table>
+
+  <!-- Pagination -->
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    [totalItems]="totalItems()"
+    [perPage]="perPage()"
+    (pageChange)="onPageChange($event)">
+  </app-pagination>
+
+  <!-- Modal de crear/editar -->
+  @if (showModal()) {
+    <app-user-modal
+      [mode]="modalMode()"
+      [userId]="selectedUserId()"
+      (close)="onCloseModal()"
+      (save)="onUserSaved($event)">
+    </app-user-modal>
+  }
+
+  <!-- Modal de confirmación de eliminación -->
+  @if (showDeleteConfirm()) {
+    <app-confirmation-modal
+      type="delete"
+      [message]="'¿Confirma la acción de eliminar al usuario ' + userToDelete()?.name + '?'"
+      [showCancel]="true"
+      (confirm)="onConfirmDelete()"
+      (cancel)="onCancelDelete()">
+    </app-confirmation-modal>
+  }
+</div>

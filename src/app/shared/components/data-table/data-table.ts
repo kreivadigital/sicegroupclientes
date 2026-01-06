@@ -120,6 +120,9 @@ export class DataTable implements OnInit, OnDestroy {
   // Función para aplicar clases CSS condicionales a filas/cards
   @Input() rowClassFn?: (row: any) => string;
 
+  // Función para deshabilitar acciones específicas en filas específicas
+  @Input() isActionDisabledFn?: (action: string, row: any) => boolean;
+
   // Nuevos inputs para header
   @Input() title: string = '';
   @Input() showFilters: boolean = false;
@@ -328,5 +331,10 @@ export class DataTable implements OnInit, OnDestroy {
   // Obtiene la clase CSS para una fila basada en rowClassFn
   getRowClass(row: any): string {
     return this.rowClassFn ? this.rowClassFn(row) : '';
+  }
+
+  // Verifica si una acción está deshabilitada para una fila
+  isActionDisabled(action: string, row: any): boolean {
+    return this.isActionDisabledFn ? this.isActionDisabledFn(action, row) : false;
   }
 }

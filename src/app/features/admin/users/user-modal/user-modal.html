@@ -1,0 +1,131 @@
+<app-modal
+  [title]="getTitle()"
+  [size]="'md'"
+  (close)="onClose()">
+
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- Nombre -->
+      <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="name"
+          placeholder="Ej: Juan Pérez"
+          (blur)="capitalizeName()">
+        @if (form.get('name')?.invalid && form.get('name')?.touched) {
+          <div class="text-danger small mt-1">Este campo es requerido</div>
+        }
+      </div>
+
+      <!-- Correo electrónico -->
+      <div class="mb-3">
+        <label class="form-label">Correo electrónico</label>
+        <input
+          type="email"
+          class="form-control"
+          formControlName="email"
+          placeholder="Ej: juan@empresa.com"
+          (blur)="lowercaseEmail()">
+        @if (form.get('email')?.invalid && form.get('email')?.touched) {
+          <div class="text-danger small mt-1">
+            @if (form.get('email')?.hasError('required')) {
+              Este campo es requerido
+            }
+            @if (form.get('email')?.hasError('email')) {
+              Correo electrónico inválido
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Rol -->
+      <div class="mb-3">
+        <label class="form-label">Rol</label>
+        @if (loadingRoles()) {
+          <div class="form-control d-flex align-items-center">
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Cargando roles...
+          </div>
+        } @else {
+          <select class="form-select" formControlName="role">
+            <option value="" disabled>Seleccionar rol</option>
+            @for (role of roles(); track role.value) {
+              <option [value]="role.value">{{ role.label }}</option>
+            }
+          </select>
+        }
+        @if (form.get('role')?.invalid && form.get('role')?.touched) {
+          <div class="text-danger small mt-1">Este campo es requerido</div>
+        }
+      </div>
+
+      <!-- Separador para contraseña -->
+      <hr class="my-4">
+
+      <!-- Contraseña -->
+      <div class="mb-3">
+        <label class="form-label">
+          @if (mode === 'create') {
+            Contraseña
+          } @else {
+            Nueva contraseña (opcional)
+          }
+        </label>
+        <input
+          type="password"
+          class="form-control"
+          formControlName="password"
+          placeholder="Mínimo 8 caracteres">
+        @if (form.get('password')?.invalid && form.get('password')?.touched) {
+          <div class="text-danger small mt-1">
+            @if (form.get('password')?.hasError('required')) {
+              Este campo es requerido
+            }
+            @if (form.get('password')?.hasError('minlength')) {
+              Mínimo 8 caracteres
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Confirmar Contraseña -->
+      <div class="mb-3">
+        <label class="form-label">Confirmar contraseña</label>
+        <input
+          type="password"
+          class="form-control"
+          formControlName="password_confirmation"
+          placeholder="Repite la contraseña">
+      </div>
+    </form>
+  }
+
+  <!-- Footer con botones -->
+  <div footer>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="onClose()"
+      [disabled]="loading()">
+      Cancelar
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="onSubmit()"
+      [disabled]="form.invalid || loading()">
+      @if (loading()) {
+        <span class="spinner-border spinner-border-sm me-2"></span>
+      }
+      {{ mode === 'create' ? 'Agregar' : 'Actualizar' }}
+    </button>
+  </div>
+</app-modal>

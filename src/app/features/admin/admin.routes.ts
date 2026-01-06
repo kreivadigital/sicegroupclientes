@@ -9,6 +9,7 @@ import { ContainerList } from './containers/container-list/container-list';
 import { ContainerForm } from './containers/container-form/container-form';
 import { ContainerDetail } from './containers/container-detail/container-detail';
 import { Settings } from './settings/settings';
+import { UserList } from './users/user-list/user-list';
 import { superAdminGuard } from '../../core/guards/role-guard';
 
 export const adminRoutes: Routes = [
@@ -79,6 +80,13 @@ export const adminRoutes: Routes = [
     path: 'contenedores/:id/edit',
     component: ContainerForm,
     title: 'Editar Contenedor - Admin - Sice Group'
+  },
+  // Users Routes (Super Admin only)
+  {
+    path: 'usuarios',
+    component: UserList,
+    canActivate: [superAdminGuard],
+    title: 'Usuarios - Admin - Sice Group'
   },
   // Settings Routes (Super Admin only)
   {

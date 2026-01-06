@@ -42,8 +42,9 @@ export class Sidebar implements OnInit {
         { label: 'Clientes', icon: 'bi-people', route: '/admin/clientes' },
       ];
 
-      // Solo super admin puede ver configuraciones
+      // Solo super admin puede ver usuarios y configuraciones
       if (isSuperAdmin) {
+        items.push({ label: 'Usuarios', icon: 'bi-person-gear', route: '/admin/usuarios' });
         items.push({ label: 'Configuraciones', icon: 'bi-gear', route: '/admin/configuraciones' });
       }
 
