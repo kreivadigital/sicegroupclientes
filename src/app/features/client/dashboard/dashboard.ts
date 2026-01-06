@@ -78,7 +78,7 @@ export class Dashboard implements OnInit {
       portConfig: {
         locationKey: 'container.port_of_loading_name',
         countryKey: 'container.port_of_loading_country',
-        dateKey: 'container.created_at_shipsgo'
+        dateKey: 'container.origin_port_date'
       }
     },
     {
@@ -124,7 +124,14 @@ export class Dashboard implements OnInit {
     this.orderService.getMyOrders(page).subscribe({
       next: (response) => {
         const paginationData = response.data as any;
-        const orders = paginationData.data || [];
+        // Transformar datos para calcular origin_port_date (igual que en admin)
+        const orders = (paginationData.data || []).map((o: any) => ({
+          ...o,
+          container: o.container ? {
+            ...o.container,
+            origin_port_date: o.container.date_of_loading || o.container.created_at_shipsgo || null
+          } : null
+        }));
 
         this.orders.set(orders);
         this.currentPage.set(paginationData.current_page);

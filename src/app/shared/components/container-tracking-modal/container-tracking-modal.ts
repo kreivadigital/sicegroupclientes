@@ -188,6 +188,34 @@ export class ContainerTrackingModal implements OnInit {
     if (!container) return 0;
 
     const transitPercentage = container.transit_percentage || 0;
+    const hasVesselTracking = this.hasVesselImo();
+
+    // Sin IMO: no podemos rastrear el buque, usar % de ShipsGo con mínimo 15%
+    if (!hasVesselTracking) {
+      return Math.max(15, transitPercentage);
+    }
+
+    // Con IMO: aplicar lógica basada en movimientos confirmados (ACT)
+    return this.calculateStepBasedPercentage(transitPercentage);
+  }
+
+  /**
+   * Verifica si el contenedor tiene un IMO de buque asignado
+   * (necesario para tracking real en VesselFinder)
+   */
+  private hasVesselImo(): boolean {
+    const container = this.container();
+    return !!(container?.vesselfinder?.vessel_imo);
+  }
+
+  /**
+   * Calcula el porcentaje basado en los movimientos confirmados (ACT)
+   * Solo se usa cuando hay IMO disponible para tracking real
+   */
+  private calculateStepBasedPercentage(transitPercentage: number): number {
+    const container = this.container();
+    if (!container) return transitPercentage;
+
     const destinationPort = (container.destination_port_name || '').toLowerCase();
     const movements = this.movements();
 
@@ -218,8 +246,8 @@ export class ContainerTrackingModal implements OnInit {
       return Math.max(33, transitPercentage);
     }
 
-    // Sin movimientos relevantes → máximo 15%
-    return Math.min(15, transitPercentage);
+    // Sin movimientos relevantes → mínimo 15%
+    return Math.max(15, transitPercentage);
   }
 
   getProgressSteps() {

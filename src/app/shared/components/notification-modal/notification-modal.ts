@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Modal } from '../modal/modal';
 import { NotificationService } from '../../../core/services/notification';
 import { Notification } from '../../../core/models/notification.model';
-import { NotificationType, NotificationTypeLabels, enumToArrayWithLabels } from '../../../core/models/enums';
+import { NotificationType, NotificationTypeLabels } from '../../../core/models/enums';
 
 @Component({
   selector: 'app-notification-modal',
@@ -31,8 +31,10 @@ export class NotificationModal implements OnInit {
   form!: FormGroup;
   editingNotification = signal<Notification | null>(null);
 
-  // Tipos de notificación para el dropdown
-  notificationTypes = enumToArrayWithLabels(NotificationType, NotificationTypeLabels);
+  // Tipos de notificación disponibles (solo Notas)
+  notificationTypes = [
+    { value: NotificationType.Note, label: NotificationTypeLabels[NotificationType.Note] }
+  ];
 
   ngOnInit() {
     this.initForm();
@@ -41,7 +43,7 @@ export class NotificationModal implements OnInit {
 
   initForm() {
     this.form = this.fb.group({
-      type: [NotificationType.SystemNotification, [Validators.required]],
+      type: [NotificationType.Note],
       message: ['', [Validators.required, Validators.minLength(3)]]
     });
   }
@@ -66,10 +68,6 @@ export class NotificationModal implements OnInit {
       : 'Notificaciones';
   }
 
-  getTypeLabel(type: NotificationType): string {
-    return NotificationTypeLabels[type] || type;
-  }
-
   onEdit(notification: Notification) {
     this.editingNotification.set(notification);
     this.form.patchValue({
@@ -81,7 +79,7 @@ export class NotificationModal implements OnInit {
   onCancelEdit() {
     this.editingNotification.set(null);
     this.form.reset({
-      type: NotificationType.SystemNotification,
+      type: NotificationType.Note,
       message: ''
     });
   }
@@ -119,7 +117,7 @@ export class NotificationModal implements OnInit {
         next: () => {
           this.loadNotifications();
           this.form.reset({
-            type: NotificationType.SystemNotification,
+            type: NotificationType.Note,
             message: ''
           });
           this.saving.set(false);
