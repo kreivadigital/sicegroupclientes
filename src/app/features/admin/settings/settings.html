@@ -80,30 +80,38 @@
                         </td>
                         <td>
                           @if (editingId() === setting.id) {
-                            <div class="d-flex align-items-center gap-2">
-                              <input
-                                type="text"
-                                class="form-control form-control-sm"
-                                [(ngModel)]="editValue"
-                                [placeholder]="setting.is_encrypted ? 'Ingrese nuevo valor (encriptado)' : 'Ingrese valor'"
-                                (keyup.enter)="saveSetting(setting)"
-                                (keyup.escape)="cancelEdit()">
-                              <button
-                                class="btn btn-sm btn-success"
-                                (click)="saveSetting(setting)"
-                                [disabled]="saving()">
-                                @if (saving()) {
-                                  <span class="spinner-border spinner-border-sm"></span>
-                                } @else {
-                                  <i class="bi bi-check"></i>
-                                }
-                              </button>
-                              <button
-                                class="btn btn-sm btn-outline-secondary"
-                                (click)="cancelEdit()"
-                                [disabled]="saving()">
-                                <i class="bi bi-x"></i>
-                              </button>
+                            <div class="edit-container">
+                              <div class="d-flex align-items-center gap-2">
+                                <input
+                                  type="text"
+                                  class="form-control form-control-sm"
+                                  [(ngModel)]="editValue"
+                                  [placeholder]="setting.is_encrypted ? 'Ingrese nuevo valor completo' : 'Ingrese valor'"
+                                  (keyup.enter)="saveSetting(setting)"
+                                  (keyup.escape)="cancelEdit()">
+                                <button
+                                  class="btn btn-sm btn-success"
+                                  (click)="saveSetting(setting)"
+                                  [disabled]="saving()">
+                                  @if (saving()) {
+                                    <span class="spinner-border spinner-border-sm"></span>
+                                  } @else {
+                                    <i class="bi bi-check"></i>
+                                  }
+                                </button>
+                                <button
+                                  class="btn btn-sm btn-outline-secondary"
+                                  (click)="cancelEdit()"
+                                  [disabled]="saving()">
+                                  <i class="bi bi-x"></i>
+                                </button>
+                              </div>
+                              @if (setting.is_encrypted && setting.masked_value) {
+                                <small class="text-muted mt-1 d-block">
+                                  <i class="bi bi-info-circle me-1"></i>
+                                  Valor actual: <code>{{ setting.masked_value }}</code>
+                                </small>
+                              }
                             </div>
                           } @else {
                             <code class="setting-value">{{ setting.masked_value || '(vacio)' }}</code>

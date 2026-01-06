@@ -64,8 +64,14 @@ export class Settings implements OnInit {
 
   startEdit(setting: Setting) {
     this.editingId.set(setting.id);
-    // For editing, we start with empty value since we don't know the actual value
-    this.editValue.set('');
+
+    // Si NO está encriptado, mostrar el valor actual para edición
+    // Si está encriptado, dejar vacío (el usuario debe ingresar el valor completo)
+    if (!setting.is_encrypted && setting.masked_value) {
+      this.editValue.set(setting.masked_value);
+    } else {
+      this.editValue.set('');
+    }
   }
 
   cancelEdit() {
