@@ -1,0 +1,50 @@
+<div class="searchable-select" [class.open]="isOpen()" [class.disabled]="disabled">
+  <!-- Input principal -->
+  <div class="select-input" (click)="toggle()">
+    <span class="selected-text" [class.placeholder]="!selectedOption()">
+      {{ selectedOption()?.label || placeholder }}
+    </span>
+    <i class="bi" [class.bi-chevron-down]="!isOpen()" [class.bi-chevron-up]="isOpen()"></i>
+  </div>
+
+  <!-- Dropdown -->
+  @if (isOpen()) {
+    <div class="select-dropdown">
+      <!-- Buscador -->
+      <div class="search-wrapper">
+        <i class="bi bi-search"></i>
+        <input
+          #searchInput
+          type="text"
+          class="search-input"
+          [placeholder]="searchPlaceholder"
+          [value]="searchTerm()"
+          (input)="onSearchInput($event)"
+          (click)="$event.stopPropagation()"
+        />
+        @if (searchTerm()) {
+          <button type="button" class="clear-btn" (click)="clearSearch($event)">
+            <i class="bi bi-x"></i>
+          </button>
+        }
+      </div>
+
+      <!-- Lista de opciones -->
+      <div class="options-list">
+        @if (filteredOptions().length === 0) {
+          <div class="no-results">No se encontraron resultados</div>
+        } @else {
+          @for (option of filteredOptions(); track option.value) {
+            <div
+              class="option-item"
+              [class.selected]="option.value === value()"
+              (click)="selectOption(option)"
+            >
+              {{ option.label }}
+            </div>
+          }
+        }
+      </div>
+    </div>
+  }
+</div>

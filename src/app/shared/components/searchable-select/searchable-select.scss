@@ -1,0 +1,149 @@
+@use '../../../../assets/styles/variables' as *;
+
+.searchable-select {
+  position: relative;
+  width: 100%;
+}
+
+.select-input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: $text-darkest;
+  background-color: $bg-white;
+  border: 1px solid $border-dark;
+  border-radius: $radius-base;
+  cursor: pointer;
+  transition: border-color $transition-fast, box-shadow $transition-fast;
+  min-height: 38px;
+
+  &:hover {
+    border-color: $accent-blue;
+  }
+
+  i {
+    color: $text-muted;
+    font-size: 12px;
+    margin-left: 8px;
+  }
+}
+
+.searchable-select.open .select-input {
+  border-color: $primary;
+  box-shadow: 0 0 0 0.2rem $primary-light;
+}
+
+.searchable-select.disabled .select-input {
+  background-color: $bg-gray;
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.selected-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &.placeholder {
+    color: $text-muted;
+    background-color: transparent;
+    cursor: inherit;
+  }
+}
+
+.select-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: $bg-white;
+  border: 1px solid $border-dark;
+  border-radius: $radius-base;
+  box-shadow: $shadow-md;
+  z-index: $z-dropdown;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid $border-base;
+  gap: 8px;
+  background-color: $bg-white;
+
+  i {
+    color: $text-light;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  background-color: $bg-white;
+  color: $text-darkest;
+  cursor: text;
+  padding: 0;
+  margin: 0;
+
+  &::placeholder {
+    color: $text-light;
+  }
+}
+
+.clear-btn {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  color: $text-muted;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &:hover {
+    color: $text-darkest;
+  }
+}
+
+.options-list {
+  overflow-y: auto;
+  max-height: 240px;
+}
+
+.option-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background-color $transition-fast;
+  font-size: 14px;
+
+  &:hover {
+    background-color: $bg-light;
+  }
+
+  &.selected {
+    background-color: $primary-light;
+    color: $primary;
+    font-weight: 500;
+  }
+}
+
+.no-results {
+  padding: 12px;
+  text-align: center;
+  color: $text-muted;
+  font-size: 14px;
+}
