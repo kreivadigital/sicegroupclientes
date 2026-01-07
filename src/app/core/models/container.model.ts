@@ -177,3 +177,54 @@ export interface VesselInfo {
 
 // Labels, Colors, Icons para Movement ahora vienen de enums.ts
 // Importar: MovementEventLabels, MovementEventColors, MovementEventIcons, MovementStatusLabels
+
+// ==========================================
+// ROUTE DATA - Para mapa Leaflet
+// ==========================================
+
+/**
+ * Puerto en la ruta del contenedor
+ */
+export interface RoutePort {
+  name: string;
+  code: string | null;
+  country: string | null;
+  country_code: string | null;
+  coordinates: [number, number]; // [lat, lng] para Leaflet
+  status: 'PAST' | 'CURRENT' | 'FUTURE';
+}
+
+/**
+ * Segmento de ruta (línea entre puertos)
+ */
+export interface RouteSegment {
+  status: 'PAST' | 'CURRENT' | 'FUTURE';
+  coordinates: [number, number][]; // Array de [lat, lng]
+  vessel_name: string | null;
+  vessel_imo: string | null;
+  voyage: string | null;
+  departure?: string | null;
+  arrival?: string | null;
+  current_index?: number; // Solo en segmentos CURRENT
+}
+
+/**
+ * Posición actual del buque
+ */
+export interface CurrentPosition {
+  coordinates: [number, number]; // [lat, lng]
+  index: number;
+  vessel_name: string | null;
+  vessel_imo: string | null;
+  voyage: string | null;
+  heading?: number; // Bearing calculado (0-360), donde 0 = Norte
+}
+
+/**
+ * Datos completos de la ruta para Leaflet
+ */
+export interface RouteData {
+  segments: RouteSegment[];
+  ports: RoutePort[];
+  current_position: CurrentPosition | null;
+}

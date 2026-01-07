@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Container, ContainerFormData, ContainerCreateData, ContainerCreateResponse, Movement, ContainerLiveStatus, VesselInfo, MovementCreateData, MovementUpdateData } from '../models/container.model';
+import { Container, ContainerFormData, ContainerCreateData, ContainerCreateResponse, Movement, ContainerLiveStatus, VesselInfo, MovementCreateData, MovementUpdateData, RouteData } from '../models/container.model';
 import { ApiResponse, PaginatedResponse } from '../interfaces/api-response.interface';
 
 export interface ContainerFilters {
@@ -142,5 +142,17 @@ export class ContainerService {
    */
   deleteMovement(containerId: number, movementId: number): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${containerId}/movements/${movementId}`);
+  }
+
+  // ==========================================
+  // ROUTE DATA (para mapa Leaflet)
+  // ==========================================
+
+  /**
+   * Obtener datos de ruta GeoJSON procesados para Leaflet
+   * Incluye: segmentos de ruta, puertos visitados y posición actual del buque
+   */
+  getContainerRoute(containerId: number): Observable<ApiResponse<RouteData>> {
+    return this.http.get<ApiResponse<RouteData>>(`${this.apiUrl}/${containerId}/route`);
   }
 }
