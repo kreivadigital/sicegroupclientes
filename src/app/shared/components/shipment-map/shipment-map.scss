@@ -1,0 +1,145 @@
+@use '../../../../assets/styles/variables' as *;
+
+.shipment-map-component {
+  width: 100%;
+}
+
+.map-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: $bg-lightest;
+  border-radius: $radius-md;
+  font-size: 0.9rem;
+
+  i {
+    font-size: 2rem;
+  }
+}
+
+.map-wrapper {
+  width: 100%;
+  border-radius: $radius-md;
+  overflow: hidden;
+  background: $bg-gray;
+}
+
+.map-legend {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.5rem 1rem;
+  background: $bg-white;
+  border: 1px solid $border-darker;
+  border-top: none;
+  border-radius: 0 0 $radius-md $radius-md;
+  font-size: 0.75rem;
+  color: $text-base;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.line {
+  width: 20px;
+  height: 3px;
+  border-radius: 2px;
+
+  &.green {
+    background: $primary;
+  }
+
+  &.gray-dashed {
+    background: repeating-linear-gradient(
+      90deg,
+      $text-muted,
+      $text-muted 4px,
+      transparent 4px,
+      transparent 8px
+    );
+  }
+}
+
+.vessel-legend-icon {
+  color: $primary;
+  font-size: 1rem;
+}
+
+.port-legend {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $text-white;
+  font-size: 0.65rem;
+  font-weight: 600;
+
+  &.visited {
+    background: $primary;
+  }
+
+  &.pending {
+    background: $danger-solid;
+  }
+}
+
+// Leaflet overrides
+:host ::ng-deep {
+  .leaflet-container {
+    width: 100%;
+    height: 100%;
+    font-family: inherit;
+  }
+
+  .port-marker,
+  .vessel-marker {
+    background: transparent !important;
+    border: none !important;
+  }
+
+  .port-number {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $text-white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: $shadow-sm;
+    border: 2px solid $text-white;
+
+    &.visited {
+      background: $primary;
+    }
+
+    &.pending {
+      background: $danger-solid;
+    }
+  }
+
+  .vessel-icon {
+    width: 32px;
+    height: 32px;
+    background: $primary;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $text-white;
+    font-size: 1.1rem;
+    box-shadow: $shadow-sm;
+    transition: transform $transition-slow;
+
+    i {
+      line-height: 1;
+    }
+  }
+}

@@ -1,0 +1,32 @@
+<div class="shipment-map-component">
+  @if (loading()) {
+    <div class="map-state" [style.height.px]="height">
+      <div class="spinner-border text-primary"></div>
+      <span>Cargando datos de ruta...</span>
+    </div>
+  } @else if (error()) {
+    <div class="map-state" [style.height.px]="height">
+      <i class="bi bi-exclamation-triangle text-danger"></i>
+      <span class="text-danger">{{ error() }}</span>
+      <button class="btn btn-sm btn-outline-primary" (click)="loadData()">
+        <i class="bi bi-arrow-clockwise"></i> Reintentar
+      </button>
+    </div>
+  } @else if (!hasData()) {
+    <div class="map-state" [style.height.px]="height">
+      <i class="bi bi-geo-alt text-muted"></i>
+      <span class="text-muted">Sin datos de ruta disponibles</span>
+    </div>
+  } @else {
+    <div class="map-wrapper" [style.height.px]="height"></div>
+    <div class="map-legend">
+      <span class="legend-item"><span class="line green"></span> Recorrido</span>
+      <span class="legend-item"><span class="line gray-dashed"></span> Por recorrer</span>
+      <span class="legend-item"><span class="port-legend visited">1</span> Puerto visitado</span>
+      <span class="legend-item"><span class="port-legend pending">2</span> Puerto pendiente</span>
+      @if (routeData()?.current_position) {
+        <span class="legend-item"><i class="bi bi-arrow-up-circle-fill vessel-legend-icon"></i> Buque</span>
+      }
+    </div>
+  }
+</div>
