@@ -86,39 +86,21 @@
     </div>
   </div>
 
-  <!-- Sección de Mapa VesselFinder -->
+  <!-- Sección de Mapa de Ruta (Leaflet) -->
   <div class="maps-section">
-    @if (mapLoading()) {
-    <!-- Spinner de carga verde -->
-    <div class="maps-loading">
-      <div class="spinner-border text-success" role="status">
-        <span class="visually-hidden">Cargando mapa...</span>
-      </div>
-      <p class="mb-0 mt-2">Cargando ubicación del buque...</p>
-    </div>
-    } @else if (container()?.vesselfinder?.vessel_imo) {
-    <!-- Mapa disponible -->
     <div class="maps-header mb-2">
       <h6 class="mb-0">
         <i class="bi bi-geo-alt me-2"></i>
-        Ubicación del Buque @if (container()?.vesselfinder?.vessel_name) {
-        <span class="vessel-name">- {{ container()!.vesselfinder!.vessel_name }}</span>
+        Ruta del Contenedor
+        @if (container()?.current_vessel?.vessel_name) {
+          <span class="vessel-name">- {{ container()!.current_vessel!.vessel_name }}</span>
         }
       </h6>
     </div>
-    <app-vessel-map
-      [vesselImo]="container()!.vesselfinder!.vessel_imo"
-      [height]="'300'"
-      [showTrack]="true"
-    >
-    </app-vessel-map>
-    } @else {
-    <!-- Sin datos de vessel -->
-    <div class="maps-placeholder">
-      <i class="bi bi-geo-alt"></i>
-      <p class="mb-0">Localizado aun en origen</p>
-    </div>
-    }
+    <app-shipment-map
+      [containerId]="containerId"
+      [height]="350">
+    </app-shipment-map>
   </div>
 
   <!-- Sección de Actividades (movimientos manuales NOTI) -->

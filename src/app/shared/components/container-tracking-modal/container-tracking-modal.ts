@@ -2,19 +2,19 @@ import { Component, Input, Output, EventEmitter, OnInit, inject, signal, compute
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Modal } from '../modal/modal';
-import { VesselMap } from '../vessel-map/vessel-map';
+import { ShipmentMap } from '../shipment-map/shipment-map';
 import { ConfirmationModal } from '../confirmation-modal/confirmation-modal';
 import { ContainerService } from '../../../core/services/container.service';
 import { OrderService } from '../../../core/services/order.service';
 import { ToastService } from '../../../core/services/toast.service';
-import { Container, VesselInfo, Movement } from '../../../core/models/container.model';
+import { Container, Movement } from '../../../core/models/container.model';
 import { MovementEventLabels } from '../../../core/models/enums';
 import { Note } from '../../../core/models/notification.model';
 
 @Component({
   selector: 'app-container-tracking-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, Modal, VesselMap, ConfirmationModal],
+  imports: [CommonModule, FormsModule, Modal, ShipmentMap, ConfirmationModal],
   templateUrl: './container-tracking-modal.html',
   styleUrl: './container-tracking-modal.scss',
 })
@@ -36,10 +36,6 @@ export class ContainerTrackingModal implements OnInit {
 
   loading = signal(false);
   container = signal<Container | null>(null);
-
-  // Map loading state
-  mapLoading = signal(false);
-  vesselInfo = signal<VesselInfo | null>(null);
 
   // Movimientos
   movements = signal<Movement[]>([]);
@@ -98,8 +94,7 @@ export class ContainerTrackingModal implements OnInit {
         this.container.set(response.data);
         this.loading.set(false);
 
-        // Cargar vessel info, movimientos y notas
-        this.loadVesselInfo(this.containerId);
+        // Cargar movimientos y notas (el mapa se carga solo con el containerId)
         this.loadMovements();
         this.loadNotes();
       },
@@ -120,39 +115,6 @@ export class ContainerTrackingModal implements OnInit {
       error: (error) => {
         console.error('Error cargando movimientos:', error);
         this.movementsLoading.set(false);
-      }
-    });
-  }
-
-  loadVesselInfo(containerId: number) {
-    this.mapLoading.set(true);
-    const startTime = Date.now();
-    const minLoadingTime = 1500; // 1.5 segundos mínimo
-
-    this.containerService.getVesselInfo(containerId).subscribe({
-      next: (response) => {
-        const elapsed = Date.now() - startTime;
-        const remainingTime = Math.max(0, minLoadingTime - elapsed);
-
-        setTimeout(() => {
-          this.vesselInfo.set(response.data);
-          this.mapLoading.set(false);
-        }, remainingTime);
-      },
-      error: (error) => {
-        console.error('Error cargando vessel info:', error);
-        const elapsed = Date.now() - startTime;
-        const remainingTime = Math.max(0, minLoadingTime - elapsed);
-
-        setTimeout(() => {
-          this.vesselInfo.set({
-            vessel_imo: null,
-            vessel_name: null,
-            map_token: null,
-            source: 'error'
-          });
-          this.mapLoading.set(false);
-        }, remainingTime);
       }
     });
   }
