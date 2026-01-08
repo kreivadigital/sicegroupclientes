@@ -24,90 +24,25 @@ type Coordinate = [number, number]; // [lat, lng]
 export class SeaRoutingService {
   private http = inject(HttpClient);
 
-  // Estado de carga
   private geoDataLoaded = signal(false);
   private continentsData: GeoJSONData | null = null;
 
-  // Waypoints estratégicos [lat, lng] - puntos clave para rutas marítimas
-  private readonly WAYPOINTS: Record<string, Coordinate> = {
-    // Estrechos y canales principales
-    MALACCA: [1.3, 103.8],              // Estrecho de Malaca (Singapur)
-    SUEZ_NORTH: [31.2, 32.3],           // Entrada norte Canal de Suez
-    SUEZ_SOUTH: [29.9, 32.5],           // Entrada sur Canal de Suez
-    GIBRALTAR: [35.9, -5.5],            // Estrecho de Gibraltar
-    PANAMA_ATL: [9.3, -79.9],           // Panamá - lado Atlántico
-    PANAMA_PAC: [8.9, -79.5],           // Panamá - lado Pacífico
-    BAB_EL_MANDEB: [12.5, 43.3],        // Estrecho Bab el-Mandeb (Yemen)
-
-    // Cabos importantes
-    GOOD_HOPE: [-34.4, 18.5],           // Cabo de Buena Esperanza
-    HORN: [-55.9, -67.3],               // Cabo de Hornos
-    AGULHAS: [-34.8, 20.0],             // Cabo Agulhas (punto más al sur de África)
-
-    // Puntos intermedios Atlántico
-    ATLANTIC_NORTH: [40, -40],          // Atlántico Norte
-    ATLANTIC_MID: [0, -25],             // Centro Atlántico (Ecuador)
-    ATLANTIC_SOUTH: [-35, -30],         // Atlántico Sur
-    ATLANTIC_SW: [-35, -50],            // Atlántico Suroeste (cerca de Uruguay)
-
-    // Puntos intermedios Índico
-    INDIAN_WEST: [-10, 55],             // Índico Oeste
-    INDIAN_MID: [-10, 75],              // Centro Índico
-    INDIAN_EAST: [-5, 90],              // Índico Este
-
-    // Puntos intermedios Pacífico
-    PACIFIC_WEST: [10, 130],            // Pacífico Oeste
-    PACIFIC_MID_NORTH: [20, -160],      // Pacífico Central Norte
-    PACIFIC_MID_SOUTH: [-20, -130],     // Pacífico Central Sur
-    PACIFIC_EAST: [-10, -100],          // Pacífico Este
-
-    // Costa de China - Puertos principales
-    CHINA_SHANGHAI: [30.6, 122.1],      // Shanghai (salida al mar)
-    CHINA_NINGBO: [29.9, 122.3],        // Ningbo-Zhoushan
-    CHINA_QINGDAO: [36.1, 120.4],       // Qingdao
-    CHINA_TIANJIN: [38.9, 117.8],       // Tianjin
-    CHINA_SHENZHEN: [22.5, 114.1],      // Shenzhen
-    CHINA_XIAMEN: [24.5, 118.1],        // Xiamen
-    CHINA_GUANGZHOU: [22.3, 113.6],     // Guangzhou
-
-    // Hong Kong y Taiwán
-    HONG_KONG: [22.3, 114.2],           // Hong Kong
-    TAIWAN_WEST: [24.0, 120.0],         // Costa oeste de Taiwán
-    TAIWAN_STRAIT: [24.5, 119.5],       // Estrecho de Taiwán
-
-    // Mares de China
-    EAST_CHINA_SEA: [28, 125],          // Mar de China Oriental
-    SOUTH_CHINA_SEA_NORTH: [18, 115],   // Mar de China Meridional Norte
-    SOUTH_CHINA_SEA: [10, 115],         // Mar de China Meridional Centro
-    SOUTH_CHINA_SEA_SOUTH: [5, 110],    // Mar de China Meridional Sur
-    YELLOW_SEA: [35, 123],              // Mar Amarillo
-
-    // Sudeste Asiático
-    VIETNAM_COAST: [12, 110],           // Costa de Vietnam
-    PHILIPPINES_WEST: [12, 118],        // Filipinas Oeste
-    JAVA_SEA: [-5, 110],                // Mar de Java
-    LOMBOK_STRAIT: [-8.5, 115.5],       // Estrecho de Lombok (alternativa a Malaca)
-    SUNDA_STRAIT: [-6, 105.5],          // Estrecho de Sunda
-
-    // Japón y Corea
-    JAPAN_SOUTH: [31, 130],             // Sur de Japón
-    KOREA_STRAIT: [34, 129],            // Estrecho de Corea
-    KOREA_SOUTH: [34, 127],
-
-    // Mediterráneo
-    MED_WEST: [37, 0],                  // Mediterráneo Oeste
-    MED_EAST: [34, 25],                 // Mediterráneo Este
-
-    // Mar Rojo
-    RED_SEA_NORTH: [27, 34],            // Mar Rojo Norte
-    RED_SEA_SOUTH: [15, 42],            // Mar Rojo Sur
+  // Solo waypoints estratégicos: canales y estrechos angostos
+  // donde el algoritmo automático podría tener problemas
+  private readonly STRATEGIC_WAYPOINTS: Record<string, Coordinate> = {
+    MALACCA: [1.3, 103.8],           // Estrecho de Malaca
+    SUEZ_NORTH: [31.2, 32.3],        // Canal de Suez Norte
+    SUEZ_SOUTH: [29.9, 32.5],        // Canal de Suez Sur
+    GIBRALTAR: [35.9, -5.5],         // Estrecho de Gibraltar
+    PANAMA_ATL: [9.3, -79.9],        // Canal de Panamá Atlántico
+    PANAMA_PAC: [8.9, -79.5],        // Canal de Panamá Pacífico
+    BAB_EL_MANDEB: [12.5, 43.3],     // Estrecho Bab el-Mandeb
   };
 
-  // API pública
   isLoaded = computed(() => this.geoDataLoaded());
 
   /**
-   * Carga el GeoJSON de continentes desde assets
+   * Carga el GeoJSON de continentes
    */
   async loadGeoData(): Promise<void> {
     if (this.geoDataLoaded()) return;
@@ -120,15 +55,12 @@ export class SeaRoutingService {
       this.geoDataLoaded.set(true);
     } catch (error) {
       console.error('[SeaRouting] Error loading GeoJSON:', error);
-      // Continuar sin validación de tierra si falla
       this.geoDataLoaded.set(true);
     }
   }
 
   /**
-   * Procesa un array de coordenadas para evitar que crucen tierra
-   * @param coords Array de coordenadas [lat, lng]
-   * @returns Array de coordenadas procesadas
+   * Procesa coordenadas para evitar que crucen tierra
    */
   processRouteCoordinates(coords: Coordinate[]): Coordinate[] {
     if (!this.continentsData || coords.length < 2) return coords;
@@ -139,24 +71,189 @@ export class SeaRoutingService {
       const prev = result[result.length - 1];
       const curr = coords[i];
 
-      if (this.doesLineCrossLand(prev, curr)) {
-        // Buscar waypoints intermedios para evitar tierra
-        const seaRoute = this.findSeaRoute(prev, curr);
-        // Agregar todos excepto el primero (ya está en result)
-        result.push(...seaRoute.slice(1));
-      } else {
-        result.push(curr);
-      }
+      const segmentRoute = this.findSeaRoute(prev, curr);
+      // Agregar todos excepto el primero (ya está en result)
+      result.push(...segmentRoute.slice(1));
     }
 
     return result;
   }
 
   /**
+   * Encuentra una ruta marítima entre dos puntos
+   */
+  private findSeaRoute(origin: Coordinate, destination: Coordinate): Coordinate[] {
+    // Si no cruza tierra, retornar línea directa
+    if (!this.doesLineCrossLand(origin, destination)) {
+      return [origin, destination];
+    }
+
+    const route: Coordinate[] = [origin];
+    let current = origin;
+    let attempts = 0;
+    const maxAttempts = 15;
+
+    while (this.doesLineCrossLand(current, destination) && attempts < maxAttempts) {
+      // 1. Intentar con waypoint estratégico primero (para canales/estrechos)
+      const strategicPoint = this.findStrategicWaypoint(current, destination);
+      if (strategicPoint && !this.doesLineCrossLand(current, strategicPoint)) {
+        route.push(strategicPoint);
+        current = strategicPoint;
+        attempts++;
+        continue;
+      }
+
+      // 2. Encontrar punto de colisión con tierra
+      const collisionPoint = this.findLandEntryPoint(current, destination);
+      if (!collisionPoint) break;
+
+      // 3. Buscar punto en el mar que rodee la tierra
+      const seaPoint = this.findSeaPointAround(collisionPoint, current, destination);
+      if (!seaPoint) break;
+
+      route.push(seaPoint);
+      current = seaPoint;
+      attempts++;
+    }
+
+    route.push(destination);
+    return route;
+  }
+
+  /**
+   * Busca un waypoint estratégico útil para la ruta
+   */
+  private findStrategicWaypoint(origin: Coordinate, destination: Coordinate): Coordinate | null {
+    let bestWaypoint: Coordinate | null = null;
+    let bestScore = Infinity;
+
+    for (const [, coord] of Object.entries(this.STRATEGIC_WAYPOINTS)) {
+      // El waypoint debe estar "entre" origin y destination (aproximadamente)
+      const distOriginToWp = this.getDistance(origin, coord);
+      const distWpToDest = this.getDistance(coord, destination);
+      const distDirect = this.getDistance(origin, destination);
+
+      // Solo considerar si no añade demasiada distancia (máx 50% extra)
+      const totalViaWp = distOriginToWp + distWpToDest;
+      if (totalViaWp > distDirect * 1.5) continue;
+
+      // Verificar que el waypoint ayude (línea al waypoint no cruza tierra)
+      if (this.doesLineCrossLand(origin, coord)) continue;
+
+      if (totalViaWp < bestScore) {
+        bestScore = totalViaWp;
+        bestWaypoint = coord;
+      }
+    }
+
+    return bestWaypoint;
+  }
+
+  /**
+   * Encuentra el punto donde la línea entra a tierra
+   */
+  private findLandEntryPoint(origin: Coordinate, destination: Coordinate): Coordinate | null {
+    const steps = 20;
+    for (let i = 1; i <= steps; i++) {
+      const t = i / steps;
+      const point: Coordinate = [
+        origin[0] + (destination[0] - origin[0]) * t,
+        origin[1] + (destination[1] - origin[1]) * t
+      ];
+
+      if (this.isPointOnLand(point)) {
+        // Retornar el punto justo antes de entrar a tierra
+        const tPrev = (i - 1) / steps;
+        return [
+          origin[0] + (destination[0] - origin[0]) * tPrev,
+          origin[1] + (destination[1] - origin[1]) * tPrev
+        ];
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Busca un punto en el mar que permita rodear la tierra
+   * Usa búsqueda perpendicular a la línea original
+   */
+  private findSeaPointAround(
+    collisionPoint: Coordinate,
+    origin: Coordinate,
+    destination: Coordinate
+  ): Coordinate | null {
+    // Calcular vector perpendicular a la línea
+    const dx = destination[1] - origin[1];
+    const dy = destination[0] - origin[0];
+    const length = Math.sqrt(dx * dx + dy * dy);
+
+    if (length === 0) return null;
+
+    // Vector perpendicular normalizado
+    const perpX = -dy / length;
+    const perpY = dx / length;
+
+    // Buscar en ambas direcciones perpendiculares
+    const searchDistances = [5, 10, 15, 20, 30, 40, 50]; // grados
+
+    for (const dist of searchDistances) {
+      // Intentar hacia un lado
+      const point1: Coordinate = [
+        collisionPoint[0] + perpX * dist,
+        collisionPoint[1] + perpY * dist
+      ];
+
+      if (!this.isPointOnLand(point1) && !this.doesLineCrossLand(origin, point1)) {
+        return point1;
+      }
+
+      // Intentar hacia el otro lado
+      const point2: Coordinate = [
+        collisionPoint[0] - perpX * dist,
+        collisionPoint[1] - perpY * dist
+      ];
+
+      if (!this.isPointOnLand(point2) && !this.doesLineCrossLand(origin, point2)) {
+        return point2;
+      }
+    }
+
+    // Si no encuentra perpendicular, intentar mover hacia el origen
+    const backtrackDistances = [0.1, 0.2, 0.3];
+    for (const t of backtrackDistances) {
+      const backPoint: Coordinate = [
+        collisionPoint[0] - (destination[0] - origin[0]) * t,
+        collisionPoint[1] - (destination[1] - origin[1]) * t
+      ];
+
+      for (const dist of searchDistances) {
+        const point1: Coordinate = [
+          backPoint[0] + perpX * dist,
+          backPoint[1] + perpY * dist
+        ];
+
+        if (!this.isPointOnLand(point1) && !this.doesLineCrossLand(origin, point1)) {
+          return point1;
+        }
+
+        const point2: Coordinate = [
+          backPoint[0] - perpX * dist,
+          backPoint[1] - perpY * dist
+        ];
+
+        if (!this.isPointOnLand(point2) && !this.doesLineCrossLand(origin, point2)) {
+          return point2;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * Verifica si una línea entre dos puntos cruza tierra
    */
   private doesLineCrossLand(p1: Coordinate, p2: Coordinate): boolean {
-    // Muestrear puntos a lo largo de la línea
     const samples = 15;
     for (let i = 1; i < samples; i++) {
       const t = i / samples;
@@ -171,23 +268,20 @@ export class SeaRoutingService {
   }
 
   /**
-   * Verifica si un punto está sobre tierra
+   * Verifica si un punto está sobre tierra usando GeoJSON
    */
   private isPointOnLand(point: Coordinate): boolean {
     if (!this.continentsData) return false;
 
-    // Convertir a formato GeoJSON [lng, lat]
-    const geoPoint: [number, number] = [point[1], point[0]];
+    const geoPoint: [number, number] = [point[1], point[0]]; // [lng, lat] para GeoJSON
 
     for (const feature of this.continentsData.features) {
       if (feature.geometry.type === 'Polygon') {
-        const polygon = feature.geometry.coordinates[0] as number[][];
-        if (this.pointInPolygon(geoPoint, polygon)) {
+        if (this.pointInPolygon(geoPoint, feature.geometry.coordinates[0] as number[][])) {
           return true;
         }
       } else if (feature.geometry.type === 'MultiPolygon') {
-        const multiPolygon = feature.geometry.coordinates as number[][][][];
-        for (const polygon of multiPolygon) {
+        for (const polygon of feature.geometry.coordinates as number[][][][]) {
           if (this.pointInPolygon(geoPoint, polygon[0])) {
             return true;
           }
@@ -199,8 +293,6 @@ export class SeaRoutingService {
 
   /**
    * Algoritmo ray-casting para point-in-polygon
-   * @param point [lng, lat] en formato GeoJSON
-   * @param polygon Array de [lng, lat] del polígono
    */
   private pointInPolygon(point: [number, number], polygon: number[][]): boolean {
     const x = point[0];
@@ -222,156 +314,10 @@ export class SeaRoutingService {
   }
 
   /**
-   * Encuentra una ruta marítima entre dos puntos usando waypoints
-   */
-  private findSeaRoute(origin: Coordinate, destination: Coordinate): Coordinate[] {
-    const route: Coordinate[] = [origin];
-
-    // Determinar qué waypoints usar según la región
-    const candidateWaypoints = this.getCandidateWaypoints(origin, destination);
-
-    // Intentar encontrar un camino que no cruce tierra
-    let current = origin;
-    let attempts = 0;
-    const maxAttempts = 8; // Aumentado para rutas complejas (ej: China → Uruguay)
-    const usedWaypoints = new Set<string>();
-
-    while (this.doesLineCrossLand(current, destination) && attempts < maxAttempts) {
-      // Encontrar el mejor waypoint
-      const bestWaypoint = this.findBestWaypoint(current, destination, candidateWaypoints, usedWaypoints);
-
-      if (!bestWaypoint) break;
-
-      usedWaypoints.add(bestWaypoint.name);
-      route.push(bestWaypoint.coord);
-      current = bestWaypoint.coord;
-      attempts++;
-    }
-
-    route.push(destination);
-    return route;
-  }
-
-  /**
-   * Obtiene waypoints candidatos según la región de origen y destino
-   */
-  private getCandidateWaypoints(origin: Coordinate, destination: Coordinate): string[] {
-    const candidates: string[] = [];
-
-    // Determinar regiones
-    const originRegion = this.getRegion(origin);
-    const destRegion = this.getRegion(destination);
-
-    // Agregar waypoints según las regiones involucradas
-    if (originRegion === 'ASIA' || destRegion === 'ASIA') {
-      // Costa de China y mares cercanos
-      candidates.push(
-        'CHINA_SHANGHAI', 'CHINA_NINGBO', 'CHINA_SHENZHEN', 'CHINA_XIAMEN',
-        'HONG_KONG', 'TAIWAN_STRAIT', 'TAIWAN_WEST',
-        'EAST_CHINA_SEA', 'SOUTH_CHINA_SEA_NORTH', 'SOUTH_CHINA_SEA', 'SOUTH_CHINA_SEA_SOUTH',
-        'VIETNAM_COAST', 'PHILIPPINES_WEST',
-        'MALACCA', 'LOMBOK_STRAIT', 'SUNDA_STRAIT', 'JAVA_SEA',
-        'JAPAN_SOUTH', 'KOREA_STRAIT',
-        'INDIAN_EAST'
-      );
-    }
-
-    if (originRegion === 'EUROPE' || destRegion === 'EUROPE') {
-      candidates.push('GIBRALTAR', 'MED_WEST', 'MED_EAST', 'ATLANTIC_NORTH');
-    }
-
-    if (originRegion === 'AFRICA' || destRegion === 'AFRICA') {
-      candidates.push('GOOD_HOPE', 'AGULHAS', 'BAB_EL_MANDEB', 'SUEZ_NORTH', 'SUEZ_SOUTH');
-    }
-
-    if (originRegion === 'SOUTH_AMERICA' || destRegion === 'SOUTH_AMERICA') {
-      candidates.push('HORN', 'ATLANTIC_SW', 'ATLANTIC_SOUTH', 'PANAMA_ATL', 'PANAMA_PAC');
-    }
-
-    if (originRegion === 'NORTH_AMERICA' || destRegion === 'NORTH_AMERICA') {
-      candidates.push('PANAMA_ATL', 'PANAMA_PAC', 'ATLANTIC_NORTH', 'PACIFIC_MID_NORTH');
-    }
-
-    // Waypoints del Índico para rutas Asia-África
-    if ((originRegion === 'ASIA' && (destRegion === 'AFRICA' || destRegion === 'SOUTH_AMERICA')) ||
-        (destRegion === 'ASIA' && (originRegion === 'AFRICA' || originRegion === 'SOUTH_AMERICA'))) {
-      candidates.push('INDIAN_WEST', 'INDIAN_MID', 'INDIAN_EAST', 'RED_SEA_NORTH', 'RED_SEA_SOUTH');
-    }
-
-    // Waypoints del Atlántico para rutas transatlánticas
-    candidates.push('ATLANTIC_MID', 'ATLANTIC_SOUTH');
-
-    // Eliminar duplicados
-    return [...new Set(candidates)];
-  }
-
-  /**
-   * Determina la región geográfica de un punto
-   */
-  private getRegion(point: Coordinate): string {
-    const [lat, lng] = point;
-
-    // Asia
-    if (lng > 60 && lng < 180 && lat > -15 && lat < 60) return 'ASIA';
-
-    // Europa
-    if (lng > -10 && lng < 60 && lat > 35 && lat < 75) return 'EUROPE';
-
-    // África
-    if (lng > -20 && lng < 55 && lat > -40 && lat < 40) return 'AFRICA';
-
-    // América del Sur
-    if (lng > -85 && lng < -30 && lat > -60 && lat < 15) return 'SOUTH_AMERICA';
-
-    // América del Norte
-    if (lng > -170 && lng < -50 && lat > 15 && lat < 75) return 'NORTH_AMERICA';
-
-    // Oceanía
-    if (lng > 100 && lng < 180 && lat > -50 && lat < -5) return 'OCEANIA';
-
-    return 'UNKNOWN';
-  }
-
-  /**
-   * Encuentra el mejor waypoint para evitar tierra
-   */
-  private findBestWaypoint(
-    current: Coordinate,
-    destination: Coordinate,
-    candidates: string[],
-    usedWaypoints: Set<string>
-  ): { name: string; coord: Coordinate } | null {
-    let bestWaypoint: { name: string; coord: Coordinate } | null = null;
-    let bestScore = Infinity;
-
-    for (const name of candidates) {
-      if (usedWaypoints.has(name)) continue;
-
-      const coord = this.WAYPOINTS[name];
-      if (!coord) continue;
-
-      // Verificar que la línea al waypoint no cruce tierra
-      if (this.doesLineCrossLand(current, coord)) continue;
-
-      // Calcular score: distancia total pasando por este waypoint
-      const distToWaypoint = this.getDistance(current, coord);
-      const distFromWaypoint = this.getDistance(coord, destination);
-      const score = distToWaypoint + distFromWaypoint;
-
-      if (score < bestScore) {
-        bestScore = score;
-        bestWaypoint = { name, coord };
-      }
-    }
-
-    return bestWaypoint;
-  }
-
-  /**
-   * Calcula la distancia aproximada entre dos puntos (fórmula de Haversine simplificada)
+   * Calcula distancia entre dos puntos (Haversine simplificado)
    */
   private getDistance(p1: Coordinate, p2: Coordinate): number {
-    const R = 6371; // Radio de la Tierra en km
+    const R = 6371;
     const dLat = this.toRad(p2[0] - p1[0]);
     const dLng = this.toRad(p2[1] - p1[1]);
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
