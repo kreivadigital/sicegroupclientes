@@ -61,9 +61,38 @@ export class SeaRoutingService {
     PACIFIC_MID_SOUTH: [-20, -130],     // Pacífico Central Sur
     PACIFIC_EAST: [-10, -100],          // Pacífico Este
 
-    // Mar de China y Sudeste Asiático
-    SOUTH_CHINA_SEA: [10, 115],         // Mar de China Meridional
+    // Costa de China - Puertos principales
+    CHINA_SHANGHAI: [30.6, 122.1],      // Shanghai (salida al mar)
+    CHINA_NINGBO: [29.9, 122.3],        // Ningbo-Zhoushan
+    CHINA_QINGDAO: [36.1, 120.4],       // Qingdao
+    CHINA_TIANJIN: [38.9, 117.8],       // Tianjin
+    CHINA_SHENZHEN: [22.5, 114.1],      // Shenzhen
+    CHINA_XIAMEN: [24.5, 118.1],        // Xiamen
+    CHINA_GUANGZHOU: [22.3, 113.6],     // Guangzhou
+
+    // Hong Kong y Taiwán
+    HONG_KONG: [22.3, 114.2],           // Hong Kong
+    TAIWAN_WEST: [24.0, 120.0],         // Costa oeste de Taiwán
+    TAIWAN_STRAIT: [24.5, 119.5],       // Estrecho de Taiwán
+
+    // Mares de China
+    EAST_CHINA_SEA: [28, 125],          // Mar de China Oriental
+    SOUTH_CHINA_SEA_NORTH: [18, 115],   // Mar de China Meridional Norte
+    SOUTH_CHINA_SEA: [10, 115],         // Mar de China Meridional Centro
+    SOUTH_CHINA_SEA_SOUTH: [5, 110],    // Mar de China Meridional Sur
+    YELLOW_SEA: [35, 123],              // Mar Amarillo
+
+    // Sudeste Asiático
+    VIETNAM_COAST: [12, 110],           // Costa de Vietnam
+    PHILIPPINES_WEST: [12, 118],        // Filipinas Oeste
     JAVA_SEA: [-5, 110],                // Mar de Java
+    LOMBOK_STRAIT: [-8.5, 115.5],       // Estrecho de Lombok (alternativa a Malaca)
+    SUNDA_STRAIT: [-6, 105.5],          // Estrecho de Sunda
+
+    // Japón y Corea
+    JAPAN_SOUTH: [31, 130],             // Sur de Japón
+    KOREA_STRAIT: [34, 129],            // Estrecho de Corea
+    KOREA_SOUTH: [34, 127],
 
     // Mediterráneo
     MED_WEST: [37, 0],                  // Mediterráneo Oeste
@@ -204,7 +233,7 @@ export class SeaRoutingService {
     // Intentar encontrar un camino que no cruce tierra
     let current = origin;
     let attempts = 0;
-    const maxAttempts = 5;
+    const maxAttempts = 8; // Aumentado para rutas complejas (ej: China → Uruguay)
     const usedWaypoints = new Set<string>();
 
     while (this.doesLineCrossLand(current, destination) && attempts < maxAttempts) {
@@ -235,7 +264,16 @@ export class SeaRoutingService {
 
     // Agregar waypoints según las regiones involucradas
     if (originRegion === 'ASIA' || destRegion === 'ASIA') {
-      candidates.push('MALACCA', 'SOUTH_CHINA_SEA', 'JAVA_SEA', 'INDIAN_EAST');
+      // Costa de China y mares cercanos
+      candidates.push(
+        'CHINA_SHANGHAI', 'CHINA_NINGBO', 'CHINA_SHENZHEN', 'CHINA_XIAMEN',
+        'HONG_KONG', 'TAIWAN_STRAIT', 'TAIWAN_WEST',
+        'EAST_CHINA_SEA', 'SOUTH_CHINA_SEA_NORTH', 'SOUTH_CHINA_SEA', 'SOUTH_CHINA_SEA_SOUTH',
+        'VIETNAM_COAST', 'PHILIPPINES_WEST',
+        'MALACCA', 'LOMBOK_STRAIT', 'SUNDA_STRAIT', 'JAVA_SEA',
+        'JAPAN_SOUTH', 'KOREA_STRAIT',
+        'INDIAN_EAST'
+      );
     }
 
     if (originRegion === 'EUROPE' || destRegion === 'EUROPE') {
