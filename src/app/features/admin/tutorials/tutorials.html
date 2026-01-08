@@ -1,0 +1,51 @@
+<div class="tutorials-page">
+  <div class="page-header">
+    <h1 class="page-title">
+      <i class="bi bi-play-circle"></i>
+      Tutoriales
+    </h1>
+    <p class="page-subtitle">Videos instructivos para el uso del sistema</p>
+  </div>
+
+  <div class="search-container">
+    <div class="search-input-wrapper">
+      <i class="bi bi-search search-icon"></i>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Buscar por título..."
+        [value]="searchTerm()"
+        (input)="onSearchChange($event)"
+      />
+      @if (searchTerm()) {
+        <button class="clear-btn" (click)="searchTerm.set('')" type="button">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="tutorials-grid">
+    @for (tutorial of filteredTutorials(); track tutorial.id) {
+      <div class="tutorial-card">
+        <div class="card-icon">
+          <i class="bi bi-camera-video-fill"></i>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">{{ tutorial.title }}</h3>
+          <p class="card-description">{{ tutorial.description }}</p>
+        </div>
+        <button class="watch-btn" (click)="openTutorial(tutorial.driveUrl)" type="button">
+          <i class="bi bi-play-fill"></i>
+          Ver video
+        </button>
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <i class="bi bi-search empty-icon"></i>
+        <p class="empty-text">No se encontraron tutoriales</p>
+        <p class="empty-subtext">Intenta con otro término de búsqueda</p>
+      </div>
+    }
+  </div>
+</div>

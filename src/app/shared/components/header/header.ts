@@ -81,35 +81,64 @@ export class Header {
       };
     }
 
-    // Determinar si es admin o cliente
-    const isAdmin = user.role === UserRole.Administrator;
+    // Determinar roles
+    const isSuperAdmin = user.role === UserRole.SuperAdmin;
+    const isAdmin = user.role === UserRole.Administrator || isSuperAdmin;
+
+    // Texto del perfil según rol
+    const getProfileText = () => {
+      if (isSuperAdmin) return 'Perfil del Superadmin';
+      if (user.role === UserRole.Administrator) return 'Perfil del Administrador';
+      return 'Perfil del Cliente';
+    };
 
     // ==========================================
     // LÓGICA DE TÍTULOS DINÁMICOS
     // ==========================================
 
-    // Para ADMIN
+    // Para ADMIN y SUPERADMIN
     if (isAdmin) {
       if (url.includes('/admin/contenedores')) {
         return {
           title: `Hola, ${user.name}`,
           subtitle: 'Gestiona clientes, pedidos y contenedores',
           isAdmin: true,
-          profileText: 'Perfil del Administrador'
+          profileText: getProfileText()
         };
       } else if (url.includes('/admin/ordenes')) {
         return {
           title: 'Gestión de Órdenes',
           subtitle: '',
           isAdmin: true,
-          profileText: 'Perfil del Administrador'
+          profileText: getProfileText()
         };
       } else if (url.includes('/admin/clientes')) {
         return {
           title: 'Gestión de Clientes',
           subtitle: '',
           isAdmin: true,
-          profileText: 'Perfil del Administrador'
+          profileText: getProfileText()
+        };
+      } else if (url.includes('/admin/usuarios')) {
+        return {
+          title: 'Gestión de Usuarios',
+          subtitle: '',
+          isAdmin: true,
+          profileText: getProfileText()
+        };
+      } else if (url.includes('/admin/configuraciones')) {
+        return {
+          title: 'Configuraciones',
+          subtitle: '',
+          isAdmin: true,
+          profileText: getProfileText()
+        };
+      } else if (url.includes('/admin/tutoriales')) {
+        return {
+          title: 'Tutoriales',
+          subtitle: 'Videos instructivos para el uso del sistema',
+          isAdmin: true,
+          profileText: getProfileText()
         };
       }
     }
@@ -137,7 +166,7 @@ export class Header {
         title: 'Mi perfil',
         subtitle: 'Gestiona tu información personal y preferencias',
         isAdmin: isAdmin,
-        profileText: isAdmin ? 'Perfil del Administrador' : 'Perfil del Cliente'
+        profileText: getProfileText()
       };
     }
 
@@ -146,7 +175,7 @@ export class Header {
       title: user.name,
       subtitle: '',
       isAdmin: isAdmin,
-      profileText: isAdmin ? 'Perfil del Administrador' : 'Perfil del Cliente'
+      profileText: getProfileText()
     };
   });
 }

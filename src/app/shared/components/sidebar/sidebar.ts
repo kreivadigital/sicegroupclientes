@@ -48,6 +48,9 @@ export class Sidebar implements OnInit {
         items.push({ label: 'Configuraciones', icon: 'bi-gear', route: '/admin/configuraciones' });
       }
 
+      // Tutoriales va al final para todos los admins
+      items.push({ label: 'Tutoriales', icon: 'bi-play-circle', route: '/admin/tutoriales' });
+
       return items;
     } else {
       return [

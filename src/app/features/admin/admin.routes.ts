@@ -8,9 +8,10 @@ import { OrderDetail } from './orders/order-detail/order-detail';
 import { ContainerList } from './containers/container-list/container-list';
 import { ContainerForm } from './containers/container-form/container-form';
 import { ContainerDetail } from './containers/container-detail/container-detail';
-import { Settings } from './settings/settings';
 import { UserList } from './users/user-list/user-list';
+import { Settings } from './settings/settings';
 import { superAdminGuard } from '../../core/guards/role-guard';
+import { Tutorials } from './tutorials/tutorials';
 
 export const adminRoutes: Routes = [
   {
@@ -94,5 +95,10 @@ export const adminRoutes: Routes = [
     component: Settings,
     canActivate: [superAdminGuard],
     title: 'Configuraciones - Admin - Sice Group'
+  },
+  {
+    path: 'tutoriales',
+    component: Tutorials,
+    title: 'Tutoriales - Admin - Sice Group'
   }
 ];
