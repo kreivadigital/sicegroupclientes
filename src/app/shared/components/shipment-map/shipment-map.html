@@ -2,7 +2,11 @@
   @if (loading()) {
     <div class="map-state" [style.height.px]="height">
       <div class="spinner-border text-primary"></div>
-      <span>Cargando datos de ruta...</span>
+      @if (loadingGeoData()) {
+        <span>Cargando datos geográficos...</span>
+      } @else {
+        <span>Cargando ruta del contenedor...</span>
+      }
     </div>
   } @else if (error()) {
     <div class="map-state" [style.height.px]="height">

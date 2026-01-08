@@ -12,7 +12,8 @@ import {
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import { ContainerService } from '../../../core/services/container.service';
-import { RouteData } from '../../../core/models/container.model';
+import { SeaRoutingService } from '../../../core/services/sea-routing.service';
+import { RouteData, RouteSegment } from '../../../core/models/container.model';
 
 @Component({
   selector: 'app-shipment-map',
@@ -23,6 +24,7 @@ import { RouteData } from '../../../core/models/container.model';
 })
 export class ShipmentMap implements AfterViewInit, OnDestroy {
   private containerService = inject(ContainerService);
+  private seaRouting = inject(SeaRoutingService);
   private elementRef = inject(ElementRef);
   private cdr = inject(ChangeDetectorRef);
 
@@ -30,6 +32,7 @@ export class ShipmentMap implements AfterViewInit, OnDestroy {
   @Input() height = 350;
 
   loading = signal(true);
+  loadingGeoData = signal(false);
   error = signal<string | null>(null);
   routeData = signal<RouteData | null>(null);
 
@@ -50,7 +53,7 @@ export class ShipmentMap implements AfterViewInit, OnDestroy {
     this.resizeObserver?.disconnect();
   }
 
-  loadData() {
+  async loadData() {
     if (!this.containerId) {
       this.loading.set(false);
       return;
@@ -59,9 +62,19 @@ export class ShipmentMap implements AfterViewInit, OnDestroy {
     this.loading.set(true);
     this.error.set(null);
 
+    // 1. Cargar GeoJSON para sea routing (solo la primera vez)
+    if (!this.seaRouting.isLoaded()) {
+      this.loadingGeoData.set(true);
+      await this.seaRouting.loadGeoData();
+      this.loadingGeoData.set(false);
+    }
+
+    // 2. Obtener datos de ruta del backend
     this.containerService.getContainerRoute(this.containerId).subscribe({
       next: (res) => {
-        this.routeData.set(res.data);
+        // 3. Procesar coordenadas para evitar que crucen tierra
+        const processedData = this.processRouteData(res.data);
+        this.routeData.set(processedData);
         this.loading.set(false);
         this.cdr.detectChanges();
 
@@ -79,6 +92,19 @@ export class ShipmentMap implements AfterViewInit, OnDestroy {
         this.loading.set(false);
       }
     });
+  }
+
+  /**
+   * Procesa los datos de ruta para evitar que las líneas crucen tierra
+   */
+  private processRouteData(data: RouteData): RouteData {
+    return {
+      ...data,
+      segments: data.segments.map(seg => ({
+        ...seg,
+        coordinates: this.seaRouting.processRouteCoordinates(seg.coordinates)
+      }))
+    };
   }
 
   private createMap() {
