@@ -143,6 +143,15 @@
     }
   }
 
+  .vessel-container {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .vessel-icon {
     width: 32px;
     height: 32px;
@@ -155,9 +164,37 @@
     font-size: 1.1rem;
     box-shadow: $shadow-sm;
     transition: transform $transition-slow;
+    z-index: 2;
 
     i {
       line-height: 1;
+    }
+  }
+
+  .sonar-ring {
+    position: absolute;
+    border: 2px solid $primary;
+    border-radius: 50%;
+    animation: sonar-pulse 300ms ease-in-out infinite alternate;
+
+    &.ring-1 {
+      width: 42px;
+      height: 42px;
+    }
+
+    &.ring-2 {
+      width: 52px;
+      height: 52px;
+      animation-delay: 150ms;
+    }
+  }
+
+  @keyframes sonar-pulse {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
     }
   }
 }

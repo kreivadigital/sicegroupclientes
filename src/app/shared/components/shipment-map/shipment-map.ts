@@ -358,11 +358,15 @@ export class ShipmentMap implements AfterViewInit, OnDestroy {
       const normalizedPos = this.normalizeCoordinate(pos.coordinates, referenceLng);
       const icon = L.divIcon({
         className: 'vessel-marker',
-        html: `<div class="vessel-icon" style="transform: rotate(${vesselHeading}deg);">
-                 <i class="bi bi-arrow-up"></i>
+        html: `<div class="vessel-container">
+                 <div class="sonar-ring ring-1"></div>
+                 <div class="sonar-ring ring-2"></div>
+                 <div class="vessel-icon" style="transform: rotate(${vesselHeading}deg);">
+                   <i class="bi bi-arrow-up"></i>
+                 </div>
                </div>`,
-        iconSize: [32, 32],
-        iconAnchor: [16, 16],
+        iconSize: [48, 48],
+        iconAnchor: [24, 24],
       });
 
       L.marker(normalizedPos, { icon })
