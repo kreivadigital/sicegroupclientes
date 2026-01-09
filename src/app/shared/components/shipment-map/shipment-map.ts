@@ -354,27 +354,45 @@ export class ShipmentMap implements AfterViewInit, OnDestroy {
 
       } else if (isCurrent && seg.current_index !== undefined) {
         // CURRENT: Dividir en antes (verde) y después (gris dashed) del buque
-        const currentIndex = seg.current_index;
+        const currentIndex = Math.min(seg.current_index, normalizedCoords.length - 1);
 
-        // Parte recorrida (hasta el buque): Verde sólido
-        if (currentIndex > 0) {
-          const traveledCoords = normalizedCoords.slice(0, currentIndex + 1);
-          L.polyline(traveledCoords, {
-            color: COLOR_TRAVELED,
-            weight: 4,
-            opacity: 0.9,
+        // Caso especial: ruta con solo 2 puntos (línea recta de searoute)
+        if (normalizedCoords.length === 2) {
+          // Dibujar línea completa con estilo basado en progreso
+          const progress = currentIndex / Math.max(1, normalizedCoords.length - 1);
+          L.polyline(normalizedCoords, {
+            color: progress >= 0.5 ? COLOR_TRAVELED : COLOR_FUTURE,
+            weight: progress >= 0.5 ? 4 : 3,
+            opacity: progress >= 0.5 ? 0.9 : 0.75,
+            dashArray: progress >= 0.5 ? undefined : '10, 8',
           }).addTo(this.map!);
-        }
+        } else {
+          // Ruta con múltiples puntos: dividir en traveled y future
 
-        // Parte por recorrer (después del buque): Gris dashed
-        if (currentIndex < normalizedCoords.length - 1) {
-          const futureCoords = normalizedCoords.slice(currentIndex);
-          L.polyline(futureCoords, {
-            color: COLOR_FUTURE,
-            weight: 3,
-            opacity: 0.75,
-            dashArray: '10, 8',
-          }).addTo(this.map!);
+          // Parte recorrida (hasta el buque): Verde sólido
+          if (currentIndex > 0) {
+            const traveledCoords = normalizedCoords.slice(0, currentIndex + 1);
+            if (traveledCoords.length >= 2) {
+              L.polyline(traveledCoords, {
+                color: COLOR_TRAVELED,
+                weight: 4,
+                opacity: 0.9,
+              }).addTo(this.map!);
+            }
+          }
+
+          // Parte por recorrer (después del buque): Gris dashed
+          if (currentIndex < normalizedCoords.length - 1) {
+            const futureCoords = normalizedCoords.slice(currentIndex);
+            if (futureCoords.length >= 2) {
+              L.polyline(futureCoords, {
+                color: COLOR_FUTURE,
+                weight: 3,
+                opacity: 0.75,
+                dashArray: '10, 8',
+              }).addTo(this.map!);
+            }
+          }
         }
 
       } else if (isCurrent) {
