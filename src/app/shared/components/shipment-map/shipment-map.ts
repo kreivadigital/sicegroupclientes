@@ -365,8 +365,8 @@ export class ShipmentMap implements AfterViewInit, OnDestroy {
                    <i class="bi bi-arrow-up"></i>
                  </div>
                </div>`,
-        iconSize: [48, 48],
-        iconAnchor: [24, 24],
+        iconSize: [44, 44],
+        iconAnchor: [22, 22],
       });
 
       L.marker(normalizedPos, { icon })
