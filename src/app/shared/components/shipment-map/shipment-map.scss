@@ -103,7 +103,7 @@
   }
 
   &.pending {
-    background: $accent-red;
+    background: $danger-solid;
   }
 }
 
@@ -139,7 +139,7 @@
     }
 
     &.pending {
-      background: $accent-red;
+      background: $danger-solid;
     }
   }
 
