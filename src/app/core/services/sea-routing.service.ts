@@ -26,10 +26,19 @@ export class SeaRoutingService {
    */
   calculateRoute(origin: [number, number], destination: [number, number]): [number, number][] | null {
     try {
+      // Validar y normalizar coordenadas
+      const normalizedOrigin = this.validateAndNormalizeCoords(origin);
+      const normalizedDest = this.validateAndNormalizeCoords(destination);
+
+      if (!normalizedOrigin || !normalizedDest) {
+        console.warn('[SeaRouting] Coordenadas inválidas - origen:', origin, 'destino:', destination);
+        return null;
+      }
+
       // Crear GeoJSON Point Features
       // IMPORTANTE: GeoJSON usa [longitude, latitude], no [lat, lng]
-      const originFeature = this.createPointFeature(origin);
-      const destinationFeature = this.createPointFeature(destination);
+      const originFeature = this.createPointFeature(normalizedOrigin);
+      const destinationFeature = this.createPointFeature(normalizedDest);
 
       // Calcular ruta marítima
       const route = seaRoute(originFeature, destinationFeature, 'kilometers');
@@ -116,6 +125,33 @@ export class SeaRoutingService {
     }
 
     return this.processSegmentCoordinates(ports);
+  }
+
+  /**
+   * Normaliza una longitud al rango -180 a 180
+   */
+  private normalizeLongitude(lng: number): number {
+    while (lng > 180) lng -= 360;
+    while (lng < -180) lng += 360;
+    return lng;
+  }
+
+  /**
+   * Valida y normaliza coordenadas
+   */
+  private validateAndNormalizeCoords(coords: [number, number]): [number, number] | null {
+    const [lat, lng] = coords;
+
+    // Validar latitud (-90 a 90)
+    if (lat < -90 || lat > 90) {
+      console.warn('[SeaRouting] Latitud inválida:', lat);
+      return null;
+    }
+
+    // Normalizar longitud al rango -180 a 180
+    const normalizedLng = this.normalizeLongitude(lng);
+
+    return [lat, normalizedLng];
   }
 
   /**
