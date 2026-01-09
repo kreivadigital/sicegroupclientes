@@ -12,7 +12,8 @@ import {
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import { ContainerService } from '../../../core/services/container.service';
-import { RouteData } from '../../../core/models/container.model';
+import { SeaRoutingService } from '../../../core/services/sea-routing.service';
+import { RouteData, RouteSegment } from '../../../core/models/container.model';
 
 @Component({
   selector: 'app-shipment-map',
@@ -23,6 +24,7 @@ import { RouteData } from '../../../core/models/container.model';
 })
 export class ShipmentMap implements AfterViewInit, OnDestroy {
   private containerService = inject(ContainerService);
+  private seaRoutingService = inject(SeaRoutingService);
   private elementRef = inject(ElementRef);
   private cdr = inject(ChangeDetectorRef);
 
@@ -61,7 +63,9 @@ export class ShipmentMap implements AfterViewInit, OnDestroy {
 
     this.containerService.getContainerRoute(this.containerId).subscribe({
       next: (res) => {
-        this.routeData.set(res.data);
+        // Procesar datos con sea routing para evitar rutas por tierra
+        const processedData = this.processRouteWithSeaRouting(res.data);
+        this.routeData.set(processedData);
         this.loading.set(false);
         this.cdr.detectChanges();
 
@@ -79,6 +83,58 @@ export class ShipmentMap implements AfterViewInit, OnDestroy {
         this.loading.set(false);
       }
     });
+  }
+
+  /**
+   * Procesa los datos de ruta aplicando sea routing a cada segmento.
+   * Calcula rutas marítimas reales entre los puertos para evitar
+   * que las líneas crucen tierra/continentes.
+   */
+  private processRouteWithSeaRouting(data: RouteData): RouteData {
+    if (!data || !data.segments || data.segments.length === 0) {
+      return data;
+    }
+
+    // Procesar cada segmento con sea routing
+    const processedSegments: RouteSegment[] = data.segments.map(segment => {
+      if (segment.coordinates.length < 2) {
+        return segment;
+      }
+
+      // Para cada segmento, calcular la ruta marítima entre el primer y último punto
+      const origin = segment.coordinates[0];
+      const destination = segment.coordinates[segment.coordinates.length - 1];
+
+      // Calcular ruta marítima
+      const seaRouteCoords = this.seaRoutingService.calculateRoute(origin, destination);
+
+      if (seaRouteCoords && seaRouteCoords.length >= 2) {
+        // Si el segmento tiene current_index, necesitamos recalcularlo
+        // basándonos en la posición relativa en la nueva ruta
+        let newCurrentIndex: number | undefined = undefined;
+
+        if (segment.current_index !== undefined && segment.status === 'CURRENT') {
+          // Calcular el porcentaje de progreso en el segmento original
+          const originalProgress = segment.current_index / (segment.coordinates.length - 1);
+          // Aplicar el mismo porcentaje a la nueva ruta
+          newCurrentIndex = Math.round(originalProgress * (seaRouteCoords.length - 1));
+        }
+
+        return {
+          ...segment,
+          coordinates: seaRouteCoords,
+          current_index: newCurrentIndex
+        };
+      }
+
+      // Fallback: mantener coordenadas originales si sea routing falla
+      return segment;
+    });
+
+    return {
+      ...data,
+      segments: processedSegments
+    };
   }
 
   private createMap() {
