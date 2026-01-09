@@ -89,6 +89,9 @@ export class ShipmentMap implements AfterViewInit, OnDestroy {
    * Procesa los datos de ruta aplicando sea routing a cada segmento.
    * Calcula rutas marítimas reales entre los puertos para evitar
    * que las líneas crucen tierra/continentes.
+   *
+   * NOTA: No se aplica sea routing al segmento CURRENT para mantener
+   * coherencia entre la línea y la posición real del buque (de ShipsGo).
    */
   private processRouteWithSeaRouting(data: RouteData): RouteData {
     if (!data || !data.segments || data.segments.length === 0) {
@@ -101,7 +104,14 @@ export class ShipmentMap implements AfterViewInit, OnDestroy {
         return segment;
       }
 
-      // Para cada segmento, calcular la ruta marítima entre el primer y último punto
+      // NO aplicar sea routing a segmentos CURRENT
+      // El buque debe mostrarse en su posición real (de ShipsGo)
+      // y la línea debe coincidir con esa posición
+      if (segment.status === 'CURRENT') {
+        return segment;
+      }
+
+      // Para segmentos PAST y FUTURE, calcular la ruta marítima
       const origin = segment.coordinates[0];
       const destination = segment.coordinates[segment.coordinates.length - 1];
 
@@ -109,21 +119,9 @@ export class ShipmentMap implements AfterViewInit, OnDestroy {
       const seaRouteCoords = this.seaRoutingService.calculateRoute(origin, destination);
 
       if (seaRouteCoords && seaRouteCoords.length >= 2) {
-        // Si el segmento tiene current_index, necesitamos recalcularlo
-        // basándonos en la posición relativa en la nueva ruta
-        let newCurrentIndex: number | undefined = undefined;
-
-        if (segment.current_index !== undefined && segment.status === 'CURRENT') {
-          // Calcular el porcentaje de progreso en el segmento original
-          const originalProgress = segment.current_index / (segment.coordinates.length - 1);
-          // Aplicar el mismo porcentaje a la nueva ruta
-          newCurrentIndex = Math.round(originalProgress * (seaRouteCoords.length - 1));
-        }
-
         return {
           ...segment,
-          coordinates: seaRouteCoords,
-          current_index: newCurrentIndex
+          coordinates: seaRouteCoords
         };
       }
 
