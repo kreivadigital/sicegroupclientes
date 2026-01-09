@@ -162,7 +162,7 @@ export class ContainerTrackingModal implements OnInit {
     const percentage = this.getProgressPercentage();
     return [
       { label: 'Inicio', icon: 'bi-box-seam', progress: 0, active: percentage >= 0 },
-      { label: 'Zarpó', icon: 'bi-truck', progress: 33, active: percentage >= 33 },
+      { label: 'Zarpó', icon: 'ship', progress: 33, active: percentage >= 33 },
       { label: 'Llegada', icon: 'bi-flag', progress: 66, active: percentage >= 66 },
       { label: 'Entregado', icon: 'bi-check-circle', progress: 100, active: percentage >= 100 }
     ];

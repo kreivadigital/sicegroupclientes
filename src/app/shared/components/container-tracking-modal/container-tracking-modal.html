@@ -78,7 +78,11 @@
       @for (step of getProgressSteps(); track $index) {
       <div class="progress-step" [class.active]="step.active">
         <div class="step-icon">
-          <i [class]="'bi ' + step.icon"></i>
+          @if (step.icon === 'ship') {
+            <span class="icon-ship"></span>
+          } @else {
+            <i [class]="'bi ' + step.icon"></i>
+          }
         </div>
         <div class="step-label">{{ step.label }}</div>
       </div>

@@ -191,6 +191,20 @@
     font-size: 1.25rem;
     color: $text-muted;
   }
+
+  .icon-ship {
+    width: 1.25rem;
+    height: 1.25rem;
+    background-color: $text-muted;
+    mask-image: url('/assets/icons/ship.svg');
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-image: url('/assets/icons/ship.svg');
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+  }
 }
 
 .progress-step.active .step-icon {
@@ -198,6 +212,10 @@
 
   i {
     color: $text-white;
+  }
+
+  .icon-ship {
+    background-color: $text-white;
   }
 }
 
@@ -474,6 +492,11 @@
     i {
       font-size: 1rem;
     }
+
+    .icon-ship {
+      width: 1rem;
+      height: 1rem;
+    }
   }
 
   .step-label {
@@ -566,6 +589,11 @@
 
     i {
       font-size: 0.875rem;
+    }
+
+    .icon-ship {
+      width: 0.875rem;
+      height: 0.875rem;
     }
   }
 
