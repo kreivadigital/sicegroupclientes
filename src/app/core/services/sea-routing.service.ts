@@ -26,12 +26,24 @@ export class SeaRoutingService {
    */
   calculateRoute(origin: [number, number], destination: [number, number]): [number, number][] | null {
     try {
+      // Validar que las coordenadas existan y sean arrays válidos
+      if (!origin || !destination || !Array.isArray(origin) || !Array.isArray(destination)) {
+        console.warn('[SeaRouting] Coordenadas no son arrays válidos');
+        return null;
+      }
+
       // Validar y normalizar coordenadas
       const normalizedOrigin = this.validateAndNormalizeCoords(origin);
       const normalizedDest = this.validateAndNormalizeCoords(destination);
 
       if (!normalizedOrigin || !normalizedDest) {
         console.warn('[SeaRouting] Coordenadas inválidas - origen:', origin, 'destino:', destination);
+        return null;
+      }
+
+      // Verificar que origen y destino no sean el mismo punto (o muy cercanos)
+      if (this.arePointsTooClose(normalizedOrigin, normalizedDest)) {
+        // Puntos idénticos o muy cercanos, no hay ruta que calcular
         return null;
       }
 
@@ -141,7 +153,17 @@ export class SeaRoutingService {
    * Valida y normaliza coordenadas
    */
   private validateAndNormalizeCoords(coords: [number, number]): [number, number] | null {
+    if (!coords || coords.length < 2) {
+      return null;
+    }
+
     const [lat, lng] = coords;
+
+    // Validar que sean números finitos
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+      console.warn('[SeaRouting] Coordenadas no son números finitos:', lat, lng);
+      return null;
+    }
 
     // Validar latitud (-90 a 90)
     if (lat < -90 || lat > 90) {
@@ -153,6 +175,17 @@ export class SeaRoutingService {
     const normalizedLng = this.normalizeLongitude(lng);
 
     return [lat, normalizedLng];
+  }
+
+  /**
+   * Verifica si dos puntos son idénticos o están muy cercanos
+   * (menos de ~100 metros de distancia)
+   */
+  private arePointsTooClose(p1: [number, number], p2: [number, number]): boolean {
+    const THRESHOLD = 0.001; // ~100 metros en el ecuador
+    const latDiff = Math.abs(p1[0] - p2[0]);
+    const lngDiff = Math.abs(p1[1] - p2[1]);
+    return latDiff < THRESHOLD && lngDiff < THRESHOLD;
   }
 
   /**
