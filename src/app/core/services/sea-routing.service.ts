@@ -52,14 +52,15 @@ export class SeaRoutingService {
       const coordinates = route.geometry.coordinates as Position[];
       const result = coordinates.map(coord => [coord[1], coord[0]] as [number, number]);
 
-      // Debug: Log para rutas con pocos puntos (posible línea recta)
-      if (result.length <= 3) {
-        console.warn('[SeaRouting] Ruta con pocos puntos (posible línea recta):', {
-          origin,
-          destination,
-          pointCount: result.length,
+      // Si searoute devuelve solo 2 puntos (línea recta), es mejor usar coords originales
+      // Esto indica que no encontró una ruta marítima real
+      if (result.length <= 2) {
+        console.info('[SeaRouting] Ruta con solo 2 puntos, usando coordenadas originales:', {
+          origin: normalizedOrigin,
+          destination: normalizedDest,
           distance: route.properties?.length || 'N/A'
         });
+        return null; // Fallback a coordenadas originales
       }
 
       return result;
