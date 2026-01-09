@@ -175,7 +175,7 @@
     position: absolute;
     border: 2px solid $primary;
     border-radius: 50%;
-    animation: sonar-pulse 250ms ease-in-out infinite alternate;
+    animation: sonar-pulse 400ms ease-in-out infinite alternate;
 
     &.ring-1 {
       width: 34px;
@@ -185,7 +185,7 @@
     &.ring-2 {
       width: 44px;
       height: 44px;
-      animation-delay: 125ms;
+      animation-delay: 200ms;
     }
   }
 
