@@ -94,16 +94,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $text-white;
   font-size: 0.65rem;
   font-weight: 600;
+  background: $text-white;
 
   &.visited {
-    background: $primary;
+    color: $primary;
+    border: 2px solid $primary;
   }
 
   &.pending {
-    background: $danger-solid;
+    color: $danger-solid;
+    border: 2px solid $danger-solid;
   }
 }
 
@@ -128,18 +130,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: $text-white;
     font-size: 0.8rem;
     font-weight: 600;
     box-shadow: $shadow-sm;
-    border: 2px solid $text-white;
+    background: $text-white;
 
     &.visited {
-      background: $primary;
+      color: $primary;
+      border: 2px solid $primary;
     }
 
     &.pending {
-      background: $danger-solid;
+      color: $danger-solid;
+      border: 2px solid $danger-solid;
     }
   }
 
