@@ -41,7 +41,19 @@ export class SeaRoutingService {
 
       // Convertir coordenadas de GeoJSON [lng, lat] a Leaflet [lat, lng]
       const coordinates = route.geometry.coordinates as Position[];
-      return coordinates.map(coord => [coord[1], coord[0]] as [number, number]);
+      const result = coordinates.map(coord => [coord[1], coord[0]] as [number, number]);
+
+      // Debug: Log para rutas con pocos puntos (posible línea recta)
+      if (result.length <= 3) {
+        console.warn('[SeaRouting] Ruta con pocos puntos (posible línea recta):', {
+          origin,
+          destination,
+          pointCount: result.length,
+          distance: route.properties?.length || 'N/A'
+        });
+      }
+
+      return result;
 
     } catch (error) {
       console.error('[SeaRouting] Error calculando ruta:', error);
