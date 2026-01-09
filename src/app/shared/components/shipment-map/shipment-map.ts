@@ -89,14 +89,13 @@ export class ShipmentMap implements AfterViewInit, OnDestroy {
    * Procesa los datos de ruta aplicando sea routing a cada segmento.
    * Calcula rutas marítimas reales entre los puertos para evitar
    * que las líneas crucen tierra/continentes.
-   *
-   * NOTA: No se aplica sea routing al segmento CURRENT para mantener
-   * coherencia entre la línea y la posición real del buque (de ShipsGo).
    */
   private processRouteWithSeaRouting(data: RouteData): RouteData {
     if (!data || !data.segments || data.segments.length === 0) {
       return data;
     }
+
+    let updatedCurrentPosition = data.current_position;
 
     // Procesar cada segmento con sea routing
     const processedSegments: RouteSegment[] = data.segments.map(segment => {
@@ -104,24 +103,37 @@ export class ShipmentMap implements AfterViewInit, OnDestroy {
         return segment;
       }
 
-      // NO aplicar sea routing a segmentos CURRENT
-      // El buque debe mostrarse en su posición real (de ShipsGo)
-      // y la línea debe coincidir con esa posición
-      if (segment.status === 'CURRENT') {
-        return segment;
-      }
-
-      // Para segmentos PAST y FUTURE, calcular la ruta marítima
+      // Calcular la ruta marítima entre el primer y último punto
       const origin = segment.coordinates[0];
       const destination = segment.coordinates[segment.coordinates.length - 1];
-
-      // Calcular ruta marítima
       const seaRouteCoords = this.seaRoutingService.calculateRoute(origin, destination);
 
       if (seaRouteCoords && seaRouteCoords.length >= 2) {
+        let newCurrentIndex: number | undefined = undefined;
+
+        // Si es segmento CURRENT, recalcular current_index y posición del buque
+        if (segment.status === 'CURRENT' && segment.current_index !== undefined) {
+          // Calcular el porcentaje de progreso en el segmento original
+          const originalProgress = segment.current_index / Math.max(1, segment.coordinates.length - 1);
+
+          // Aplicar el mismo porcentaje a la nueva ruta
+          newCurrentIndex = Math.round(originalProgress * (seaRouteCoords.length - 1));
+          newCurrentIndex = Math.max(0, Math.min(newCurrentIndex, seaRouteCoords.length - 1));
+
+          // Actualizar current_position para que esté en la ruta sea-routed
+          if (updatedCurrentPosition) {
+            updatedCurrentPosition = {
+              ...updatedCurrentPosition,
+              coordinates: seaRouteCoords[newCurrentIndex],
+              index: newCurrentIndex
+            };
+          }
+        }
+
         return {
           ...segment,
-          coordinates: seaRouteCoords
+          coordinates: seaRouteCoords,
+          current_index: newCurrentIndex
         };
       }
 
@@ -131,7 +143,8 @@ export class ShipmentMap implements AfterViewInit, OnDestroy {
 
     return {
       ...data,
-      segments: processedSegments
+      segments: processedSegments,
+      current_position: updatedCurrentPosition
     };
   }
 
