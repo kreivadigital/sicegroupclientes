@@ -94,18 +94,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: $text-white;
   font-size: 0.65rem;
   font-weight: 600;
-  background: $text-white;
 
   &.visited {
-    color: $primary;
-    border: 2px solid $primary;
+    background: $accent-emerald;
   }
 
   &.pending {
-    color: $danger-solid;
-    border: 2px solid $danger-solid;
+    background: $accent-coral;
   }
 }
 
@@ -130,19 +128,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    color: $text-white;
     font-size: 0.8rem;
     font-weight: 600;
     box-shadow: $shadow-sm;
-    background: $text-white;
+    border: 2px solid $text-white;
 
     &.visited {
-      color: $primary;
-      border: 2px solid $primary;
+      background: $accent-emerald;
     }
 
     &.pending {
-      color: $danger-solid;
-      border: 2px solid $danger-solid;
+      background: $accent-coral;
     }
   }
 

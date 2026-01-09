@@ -252,7 +252,7 @@ export class ShipmentMap implements AfterViewInit, OnDestroy {
     const bounds: L.LatLngExpression[] = [];
 
     // Colores según el plan
-    const COLOR_TRAVELED = '#02661E';  // Verde ($primary) - Recorrido
+    const COLOR_TRAVELED = '#10B981';  // Verde ($accent-emerald) - Recorrido
     const COLOR_FUTURE = '#6B7280';    // Gris ($text-muted) - Por recorrer
 
     // Calcular heading del buque
