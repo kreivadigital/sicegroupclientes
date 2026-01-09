@@ -113,9 +113,9 @@
 
         <!-- Progreso de Tránsito -->
         <div class="card-transit">
-          <span class="transit-label">{{ container.transit_percentage || 0 }}% de Tránsito</span>
+          <span class="transit-label">{{ container.calculated_transit_percentage || 0 }}% de Tránsito</span>
           <div class="transit-progress">
-            <div class="progress-bar" [style.width.%]="container.transit_percentage || 0"></div>
+            <div class="progress-bar" [style.width.%]="container.calculated_transit_percentage || 0"></div>
           </div>
         </div>
 

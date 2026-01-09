@@ -145,71 +145,17 @@ export class ContainerTrackingModal implements OnInit {
     return statusLabels[status] || status;
   }
 
+  /**
+   * Obtiene el porcentaje de progreso del contenedor
+   * El cálculo ahora se realiza en el backend (Container::calculateTransitPercentage)
+   * para mantener una única fuente de verdad
+   */
   getProgressPercentage(): number {
     const container = this.container();
     if (!container) return 0;
 
-    const transitPercentage = container.transit_percentage || 0;
-    const hasVesselTracking = this.hasVesselImo();
-
-    // Sin IMO: no podemos rastrear el buque, usar % de ShipsGo con mínimo 15%
-    if (!hasVesselTracking) {
-      return Math.max(15, transitPercentage);
-    }
-
-    // Con IMO: aplicar lógica basada en movimientos confirmados (ACT)
-    return this.calculateStepBasedPercentage(transitPercentage);
-  }
-
-  /**
-   * Verifica si el contenedor tiene un IMO de buque asignado
-   * (necesario para tracking real en VesselFinder)
-   */
-  private hasVesselImo(): boolean {
-    const container = this.container();
-    return !!(container?.vesselfinder?.vessel_imo);
-  }
-
-  /**
-   * Calcula el porcentaje basado en los movimientos confirmados (ACT)
-   * Solo se usa cuando hay IMO disponible para tracking real
-   */
-  private calculateStepBasedPercentage(transitPercentage: number): number {
-    const container = this.container();
-    if (!container) return transitPercentage;
-
-    const destinationPort = (container.destination_port_name || '').toLowerCase();
-    const movements = this.movements();
-
-    // Filtrar solo movimientos confirmados (ACT)
-    const confirmedMovements = movements.filter(m => m.event_status === 'ACT');
-
-    // Verificar DISC en puerto destino → mínimo 100%
-    const hasDischargedAtDestination = confirmedMovements.some(m =>
-      m.event === 'DISC' &&
-      (m.location_name || '').toLowerCase() === destinationPort
-    );
-    if (hasDischargedAtDestination) {
-      return Math.max(100, transitPercentage);
-    }
-
-    // Verificar ARRV en puerto destino → mínimo 66%
-    const hasArrivedAtDestination = confirmedMovements.some(m =>
-      m.event === 'ARRV' &&
-      (m.location_name || '').toLowerCase() === destinationPort
-    );
-    if (hasArrivedAtDestination) {
-      return Math.max(66, transitPercentage);
-    }
-
-    // Verificar DEPA (cualquier puerto) → mínimo 33%
-    const hasDeparted = confirmedMovements.some(m => m.event === 'DEPA');
-    if (hasDeparted) {
-      return Math.max(33, transitPercentage);
-    }
-
-    // Sin movimientos relevantes → mínimo 15%
-    return Math.max(15, transitPercentage);
+    // Usar el valor calculado por el backend
+    return container.calculated_transit_percentage ?? container.transit_percentage ?? 0;
   }
 
   getProgressSteps() {

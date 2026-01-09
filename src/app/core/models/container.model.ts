@@ -37,6 +37,7 @@ export interface Container {
   // Tránsito
   transit_time: number;
   transit_percentage: number;
+  calculated_transit_percentage: number; // Calculado por el backend con lógica de movimientos
 
   // Tracking
   map_token?: string;

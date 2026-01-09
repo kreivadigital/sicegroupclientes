@@ -96,7 +96,7 @@ export class ContainerList implements OnInit {
       }
     },
     {
-      key: 'transit_percentage',
+      key: 'calculated_transit_percentage',
       label: '% de Tránsito',
       type: 'progress'
     }

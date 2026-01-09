@@ -24,6 +24,7 @@ export interface Order {
     destination_port_name?: string;
     destination_port_country?: string;
     transit_percentage?: number;
+    calculated_transit_percentage?: number;
     map_token?: string;
     created_at?: string;
   };
