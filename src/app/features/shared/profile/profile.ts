@@ -79,10 +79,9 @@ export class Profile implements OnInit {
     this.loading.set(true);
 
     // Buscar el cliente asociado al usuario
-    this.clientService.getClients(1).subscribe({
+    this.clientService.getAllClients().subscribe({
       next: (response) => {
-        const paginationData = response.data as any;
-        const clients = paginationData.data || [];
+        const clients = response.data || [];
         const userClient = clients.find((c: Client) => c.user_id === user.id);
 
         if (userClient) {
