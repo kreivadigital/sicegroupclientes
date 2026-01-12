@@ -120,11 +120,10 @@ export class OrderModal implements OnInit {
   }
 
   loadClients() {
-    // Cargar todos los clientes para el select
-    this.clientService.getClients(1, undefined).subscribe({
+    // Cargar TODOS los clientes para el select (sin paginación)
+    this.clientService.getAllClients().subscribe({
       next: (response) => {
-        const paginationData = response.data as any;
-        this.clients.set(paginationData.data || []);
+        this.clients.set(response.data || []);
       },
       error: (error) => console.error('Error cargando clientes:', error)
     });

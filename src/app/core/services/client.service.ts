@@ -22,6 +22,13 @@ export class ClientService {
     return this.http.get<PaginatedResponse<Client>>(this.apiUrl, { params });
   }
 
+  /**
+   * Obtiene TODOS los clientes sin paginación (para dropdowns)
+   */
+  getAllClients(): Observable<ApiResponse<Client[]>> {
+    return this.http.get<ApiResponse<Client[]>>(`${this.apiUrl}/all`);
+  }
+
   getClient(id: number): Observable<ApiResponse<Client>> {
     return this.http.get<ApiResponse<Client>>(`${this.apiUrl}/${id}`);
   }
