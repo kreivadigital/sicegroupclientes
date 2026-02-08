@@ -10,7 +10,7 @@
     <div class="row">
       <!-- Cliente -->
       <div class="col-12 mb-3">
-        <label class="form-label">Cliente</label>
+        <label class="form-label">Cliente <span class="text-dark">(*)</span></label>
         @if (mode === 'view' && order()) {
         <input
           type="text"
@@ -40,7 +40,7 @@
       </div>
 
       <div class="col-md-6 mb-3">
-        <label class="form-label">Dirección de entrega</label>
+        <label class="form-label">Dirección de entrega <span class="text-dark">(*)</span></label>
         <textarea
           class="form-control"
           rows="3"
@@ -54,7 +54,7 @@
 
       <!-- Cantidad de bultos y Packin list -->
       <div class="col-md-6 mb-3">
-        <label class="form-label">Cantidad de bultos</label>
+        <label class="form-label">Cantidad de bultos <span class="text-dark">(*)</span></label>
         <input
           type="number"
           class="form-control"
@@ -115,7 +115,7 @@
           #packinInput
           type="file"
           class="d-none"
-          accept=".xlsx,.xls"
+          accept=".pdf,.xlsx,.xls"
           (change)="onFileSelect($event, 'picking')"
         />
         } @else {
@@ -172,7 +172,7 @@
           #performaInput
           type="file"
           class="d-none"
-          accept=".pdf"
+          accept=".pdf,.xlsx,.xls"
           (change)="onFileSelect($event, 'performa')"
         />
         } @else {
@@ -228,7 +228,7 @@
           #invoiceInput
           type="file"
           class="d-none"
-          accept=".pdf"
+          accept=".pdf,.xlsx,.xls"
           (change)="onFileSelect($event, 'invoice')"
         />
         } @else {

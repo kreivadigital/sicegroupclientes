@@ -83,6 +83,9 @@ export class ContainerTrackingModal implements OnInit {
   showDeleteConfirm = signal(false);
   movementToDelete = signal<Movement | null>(null);
 
+  // Filas expandidas en la tabla de movimientos
+  expandedRows = new Set<number>();
+
   ngOnInit() {
     this.loadContainer();
   }
@@ -302,6 +305,22 @@ export class ContainerTrackingModal implements OnInit {
   // Verificar si un movimiento es editable (solo NOTI)
   isEditable(movement: Movement): boolean {
     return movement.event === 'NOTI';
+  }
+
+  // ==========================================
+  // EXPANDIR/CONTRAER FILAS
+  // ==========================================
+
+  toggleRowExpand(movementId: number) {
+    if (this.expandedRows.has(movementId)) {
+      this.expandedRows.delete(movementId);
+    } else {
+      this.expandedRows.add(movementId);
+    }
+  }
+
+  isRowExpanded(movementId: number): boolean {
+    return this.expandedRows.has(movementId);
   }
 
   // ==========================================

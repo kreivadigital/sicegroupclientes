@@ -44,7 +44,7 @@ export class Profile implements OnInit {
     this.companyInfoForm = this.fb.group({
       company_name: ['', [Validators.required]],
       address: ['', [Validators.required]],
-      rut: ['', [Validators.required]]
+      rut: ['']
     });
 
     this.securityForm = this.fb.group({

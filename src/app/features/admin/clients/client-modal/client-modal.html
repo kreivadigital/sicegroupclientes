@@ -13,7 +13,7 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <!-- Nombre de la empresa -->
       <div class="mb-3">
-        <label class="form-label">Nombre de la empresa</label>
+        <label class="form-label">Nombre de la empresa <span class="text-dark">(*)</span></label>
         <input
           type="text"
           class="form-control"
@@ -27,7 +27,7 @@
 
       <!-- Contacto -->
       <div class="mb-3">
-        <label class="form-label">Contacto</label>
+        <label class="form-label">Contacto <span class="text-dark">(*)</span></label>
         <input
           type="text"
           class="form-control"
@@ -41,7 +41,7 @@
 
       <!-- Correo electrónico -->
       <div class="mb-3">
-        <label class="form-label">Correo electrónico</label>
+        <label class="form-label">Correo electrónico <span class="text-dark">(*)</span></label>
         <input
           type="email"
           class="form-control"
@@ -62,7 +62,7 @@
 
       <!-- Teléfono -->
       <div class="mb-3">
-        <label class="form-label">Teléfono</label>
+        <label class="form-label">Teléfono <span class="text-dark">(*)</span></label>
         <input
           type="tel"
           class="form-control"
@@ -90,9 +90,6 @@
             </span>
           }
         </div>
-        @if (form.get('rut')?.invalid && form.get('rut')?.touched) {
-          <div class="text-danger small mt-1">Este campo es requerido</div>
-        }
         @if (rutExists()) {
           <div class="text-danger small mt-1">Este RUT ya está registrado</div>
         }
@@ -100,7 +97,7 @@
 
       <!-- Dirección -->
       <div class="mb-3">
-        <label class="form-label">Dirección</label>
+        <label class="form-label">Dirección <span class="text-dark">(*)</span></label>
         <input
           type="text"
           class="form-control"
@@ -113,7 +110,7 @@
 
       <!-- Ciudad -->
       <div class="mb-3">
-        <label class="form-label">Ciudad</label>
+        <label class="form-label">Ciudad <span class="text-dark">(*)</span></label>
         <input
           type="text"
           class="form-control"
@@ -126,7 +123,7 @@
 
       <!-- País -->
       <div class="mb-3">
-        <label class="form-label">País</label>
+        <label class="form-label">País <span class="text-dark">(*)</span></label>
         <input
           type="text"
           class="form-control"
@@ -140,7 +137,7 @@
       <!-- Contraseña (solo en create) -->
       @if (mode === 'create') {
         <div class="mb-3">
-          <label class="form-label">Contraseña</label>
+          <label class="form-label">Contraseña <span class="text-dark">(*)</span></label>
           <input
             type="password"
             class="form-control"
@@ -152,7 +149,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Confirmar Contraseña</label>
+          <label class="form-label">Confirmar Contraseña <span class="text-dark">(*)</span></label>
           <input
             type="password"
             class="form-control"

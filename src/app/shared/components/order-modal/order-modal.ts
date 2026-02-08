@@ -28,6 +28,10 @@ export class OrderModal implements OnInit {
   private toast = inject(ToastService);
   public auth = inject(Auth);
 
+  // Constantes para validación de archivos
+  private readonly MAX_FILE_SIZE = 250 * 1024 * 1024; // 250MB en bytes
+  private readonly ALLOWED_EXTENSIONS = ['.pdf', '.xlsx', '.xls'];
+
   @Input() mode: 'create' | 'edit' | 'view' = 'create';
   @Input() orderId?: number;
 
@@ -180,6 +184,22 @@ export class OrderModal implements OnInit {
     if (input.files && input.files[0]) {
       const file = input.files[0];
 
+      // Validar tamaño
+      if (file.size > this.MAX_FILE_SIZE) {
+        this.toast.error('El archivo excede el tamaño máximo permitido (250MB)');
+        input.value = '';
+        return;
+      }
+
+      // Validar extensión
+      const extension = '.' + file.name.split('.').pop()?.toLowerCase();
+      if (!this.ALLOWED_EXTENSIONS.includes(extension)) {
+        this.toast.error('Extensión no permitida. Use: .pdf, .xlsx o .xls');
+        input.value = '';
+        return;
+      }
+
+      // Asignar archivo si pasa validaciones
       if (type === 'performa') {
         this.performaPdfFile = file;
       } else if (type === 'picking') {

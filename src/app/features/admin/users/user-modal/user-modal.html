@@ -13,7 +13,7 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <!-- Nombre -->
       <div class="mb-3">
-        <label class="form-label">Nombre</label>
+        <label class="form-label">Nombre <span class="text-dark">(*)</span></label>
         <input
           type="text"
           class="form-control"
@@ -27,7 +27,7 @@
 
       <!-- Correo electrónico -->
       <div class="mb-3">
-        <label class="form-label">Correo electrónico</label>
+        <label class="form-label">Correo electrónico <span class="text-dark">(*)</span></label>
         <input
           type="email"
           class="form-control"
@@ -48,7 +48,7 @@
 
       <!-- Rol -->
       <div class="mb-3">
-        <label class="form-label">Rol</label>
+        <label class="form-label">Rol <span class="text-dark">(*)</span></label>
         @if (loadingRoles()) {
           <div class="form-control d-flex align-items-center">
             <span class="spinner-border spinner-border-sm me-2"></span>
@@ -74,7 +74,7 @@
       <div class="mb-3">
         <label class="form-label">
           @if (mode === 'create') {
-            Contraseña
+            Contraseña <span class="text-dark">(*)</span>
           } @else {
             Nueva contraseña (opcional)
           }
@@ -98,7 +98,12 @@
 
       <!-- Confirmar Contraseña -->
       <div class="mb-3">
-        <label class="form-label">Confirmar contraseña</label>
+        <label class="form-label">
+          Confirmar contraseña
+          @if (mode === 'create') {
+            <span class="text-dark">(*)</span>
+          }
+        </label>
         <input
           type="password"
           class="form-control"

@@ -302,13 +302,7 @@
 .notes-section .scrolleable-table {
   max-height: 300px;
   overflow-y: auto;
-}
-
-.notification-detail {
-  max-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow-x: hidden;
 }
 
 // Sección de Agregar Actividad
@@ -385,18 +379,19 @@
         font-size: 0.875rem;
         color: $text-muted;
         border-bottom: 1px solid $border-base;
-        padding: 0.75rem 1rem;
+        padding: 0.75rem 0.75rem;
+        white-space: nowrap;
       }
     }
 
     tbody {
       tr {
         td {
-          padding: 0.75rem 1rem;
+          padding: 0.75rem 0.75rem;
           border-bottom: 1px solid $bg-light;
           font-size: 0.875rem;
+          vertical-align: middle;
 
-          &.activity-detail,
           &.note-detail {
             max-width: 0;
             white-space: nowrap;
@@ -407,6 +402,53 @@
 
         &:hover {
           background-color: $bg-lightest;
+        }
+      }
+    }
+  }
+
+  // Estilos específicos para tabla de movimientos
+  .movements-table {
+    table-layout: fixed;
+    width: 100%;
+
+    thead th {
+      &:first-child {
+        width: 140px; // Fecha
+      }
+      &:last-child {
+        width: 110px; // Acción
+      }
+    }
+
+    tbody tr {
+      .date-cell {
+        white-space: nowrap;
+      }
+
+      .detail-cell {
+        max-width: 0;
+        overflow: hidden;
+
+        .detail-content {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        &.expanded .detail-content {
+          white-space: normal;
+          overflow: visible;
+        }
+      }
+
+      .action-cell {
+        white-space: nowrap;
+
+        .action-buttons {
+          display: flex;
+          gap: 0.25rem;
+          justify-content: center;
         }
       }
     }
@@ -553,6 +595,45 @@
 
       tbody td {
         padding: 0.5rem;
+      }
+    }
+
+    // Tabla de movimientos en mobile
+    .movements-table {
+      thead th {
+        padding: 0.25rem;
+
+        &:first-child {
+          width: auto;
+        }
+        &:last-child {
+          width: auto;
+        }
+      }
+
+      tbody tr {
+        td {
+          font-size: 12px;
+          padding: 0.25rem;
+        }
+
+        &.expanded td {
+          vertical-align: top;
+        }
+
+        .date-cell {
+          white-space: nowrap;
+          overflow: visible;
+        }
+
+        .action-cell .action-buttons {
+          gap: 0.15rem;
+
+          .btn {
+            padding: 0.2rem 0.35rem;
+            font-size: 12px;
+          }
+        }
       }
     }
   }

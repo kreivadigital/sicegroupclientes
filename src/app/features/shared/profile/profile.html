@@ -175,13 +175,7 @@
                   type="text"
                   class="form-control"
                   formControlName="rut"
-                  placeholder="12345678-9"
-                  [class.is-invalid]="companyInfoForm.get('rut')?.invalid && companyInfoForm.get('rut')?.touched">
-                @if (companyInfoForm.get('rut')?.invalid && companyInfoForm.get('rut')?.touched) {
-                  <div class="invalid-feedback">
-                    El RUT es requerido
-                  </div>
-                }
+                  placeholder="12345678-9">
               </div>
             </div>
           </form>

@@ -49,7 +49,7 @@ export class ClientModal implements OnInit {
       // Client data
       company_name: ['', [Validators.required]],
       phone: ['', [Validators.required]],
-      rut: ['', [Validators.required]],
+      rut: [''],
       address: ['', [Validators.required]],
       city: ['', [Validators.required]],
       country: ['', [Validators.required]],

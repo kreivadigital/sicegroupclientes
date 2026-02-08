@@ -122,50 +122,54 @@
       <i class="bi bi-inbox me-2"></i>No hay actividades registradas
     </div>
     } @else {
-    <div class="table-responsive scrolleable-table">
-      <table class="table table-hover">
+    <div class="scrolleable-table">
+      <table class="table table-hover movements-table">
         <thead>
           <tr>
-            <th style="width: 170px">Fecha</th>
+            <th>Fecha</th>
             <th>Detalle</th>
-            @if (showAddNotification) {
-            <th style="width: 100px" class="text-center">Acción</th>
-            }
+            <th class="text-center">Acción</th>
           </tr>
         </thead>
         <tbody>
           @for (movement of allMovements(); track movement.id) {
-          <tr [class.table-warning]="editingActivity()?.id === movement.id">
-            <td>{{ formatDateTime(movement.event_timestamp) }}</td>
-            <td class="activity-detail">{{ movement.detail || 'N/A' }}</td>
-            @if (showAddNotification) {
-            <td class="text-center d-flex">
-              @if (isEditable(movement)) {
-              <!-- Solo NOTI se puede editar/eliminar -->
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary me-1"
-                (click)="onEditActivity(movement)"
-                title="Editar"
-              >
-                <i class="bi bi-pencil-square"></i>
-              </button>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-danger"
-                (click)="deleteMovement(movement)"
-                title="Eliminar"
-              >
-                <i class="bi bi-trash"></i>
-              </button>
-              } @else {
-              <!-- Movimientos de Shipsgo: solo lectura -->
-              <span class="text-muted" title="Movimiento de Shipsgo (solo lectura)">
-                <i class="bi bi-lock"></i>
-              </span>
-              }
+          <tr [class.table-warning]="editingActivity()?.id === movement.id" [class.expanded]="isRowExpanded(movement.id)">
+            <td class="date-cell">{{ formatDateTime(movement.event_timestamp) }}</td>
+            <td class="detail-cell" [class.expanded]="isRowExpanded(movement.id)">
+              <div class="detail-content">{{ movement.detail || 'N/A' }}</div>
             </td>
-            }
+            <td class="action-cell">
+              <div class="action-buttons">
+                <!-- Botón Ver (siempre visible) -->
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  (click)="toggleRowExpand(movement.id)"
+                  [title]="isRowExpanded(movement.id) ? 'Contraer' : 'Ver detalle'"
+                >
+                  <i class="bi" [class.bi-eye]="!isRowExpanded(movement.id)" [class.bi-eye-slash]="isRowExpanded(movement.id)"></i>
+                </button>
+                @if (showAddNotification && isEditable(movement)) {
+                <!-- Solo NOTI se puede editar/eliminar -->
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary"
+                  (click)="onEditActivity(movement)"
+                  title="Editar"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="deleteMovement(movement)"
+                  title="Eliminar"
+                >
+                  <i class="bi bi-trash"></i>
+                </button>
+                }
+              </div>
+            </td>
           </tr>
           }
         </tbody>
