@@ -52,4 +52,36 @@
     color: $primary !important;
     border-color: $primary !important;
   }
+
+  // Dark (Gris Oscuro)
+  &.bg-dark {
+    background-color: #2c3e50 !important;
+    color: #ffffff !important;
+    border-color: #1a252f !important;
+  }
+
+  // ==========================================
+  // BADGES PERSONALIZADOS
+  // ==========================================
+
+  // Purple (Púrpura)
+  &.bg-purple {
+    background-color: #e9dbff !important;
+    color: #6f42c1 !important;
+    border-color: #6f42c1 !important;
+  }
+
+  // Orange (Naranja)
+  &.bg-orange {
+    background-color: #ffe5d0 !important;
+    color: #fd7e14 !important;
+    border-color: #fd7e14 !important;
+  }
+
+  // Navy (Azul Marino)
+  &.bg-navy {
+    background-color: #d4e4f7 !important;
+    color: #0d3b66 !important;
+    border-color: #0d3b66 !important;
+  }
 }

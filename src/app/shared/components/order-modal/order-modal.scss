@@ -3,6 +3,15 @@
 // ==========================================
 @use '../../../../assets/styles/variables' as *;
 
+// Wrapper para inputs de archivo con barra de progreso
+.file-input-wrapper {
+  position: relative;
+
+  &.uploading .file-display {
+    border-color: $primary;
+  }
+}
+
 .file-display {
   display: flex;
   align-items: center;
@@ -17,6 +26,25 @@
   &:hover {
     background-color: $border-base;
     border-color: $border-dark;
+  }
+
+  &.file-selected,
+  &.file-existing {
+    justify-content: space-between;
+
+    .file-info {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      min-width: 0; // Para permitir que el texto se trunque
+    }
+
+    .file-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      flex-shrink: 0;
+    }
   }
 
   i.bi-file-earmark-spreadsheet,
@@ -38,6 +66,36 @@
     &:hover {
       color: $primary-dark;
     }
+  }
+}
+
+// Barra de progreso para chunked upload
+.progress-bar {
+  height: 4px;
+  background-color: #e9ecef;
+  border-radius: 0 0 $radius-base $radius-base;
+  overflow: hidden;
+  margin-top: 2px;
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, $primary, darken($primary, 10%));
+    transition: width 0.3s ease;
+    box-shadow: 0 0 8px rgba($primary, 0.5);
+  }
+}
+
+// Animación del spinner durante upload
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 

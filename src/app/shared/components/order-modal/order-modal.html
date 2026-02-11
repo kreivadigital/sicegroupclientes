@@ -83,39 +83,77 @@
         </div>
         } @else {
         <input type="text" class="form-control" value="No adjuntado" readonly />
-        } } @else { @if (auth.isAdmin()) { @if (packinListFile) {
-        <!-- Archivo nuevo seleccionado -->
-        <div class="file-display file-selected">
-          <i class="bi bi-file-earmark-spreadsheet me-2"></i>
-          <span>{{ truncateFileName(packinListFile.name) }}</span>
-          <button type="button" class="btn btn-sm btn-link" (click)="packinInput.click()">
-            <i class="bi bi-pencil"></i>
+        } } @else { @if (auth.isAdmin()) {
+        <!-- Wrapper con soporte para barra de progreso -->
+        <div class="file-input-wrapper" [class.uploading]="fileStates.picking.uploading">
+          @if (fileStates.picking.file) {
+          <!-- Archivo nuevo seleccionado o en carga -->
+          <div class="file-display file-selected">
+            <div class="file-info">
+              <i class="bi bi-file-earmark-spreadsheet me-2"></i>
+              <span>{{ truncateFileName(fileStates.picking.file.name) }}</span>
+            </div>
+            <div class="file-actions">
+              <!-- Spinner mientras sube -->
+              @if (fileStates.picking.uploading) {
+              <i class="bi bi-hourglass-split spin text-primary me-2"></i>
+              }
+              <!-- Check cuando completa -->
+              @if (fileStates.picking.completed) {
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              }
+              <!-- Botones solo si NO está subiendo -->
+              @if (!fileStates.picking.uploading) {
+              <button
+                type="button"
+                class="btn btn-sm btn-link"
+                [disabled]="isFileUploadDisabled('picking')"
+                (click)="handleFileButtonClick('picking', packinInput)">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-link text-danger" (click)="removeFile('picking')">
+                <i class="bi bi-trash"></i>
+              </button>
+              }
+            </div>
+          </div>
+          <!-- Barra de progreso visual -->
+          @if (fileStates.picking.uploading) {
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="fileStates.picking.progress"></div>
+          </div>
+          }
+          } @else if (order()?.picking_list_path) {
+          <!-- Archivo existente en servidor -->
+          <div class="file-display file-existing">
+            <i class="bi bi-file-earmark-spreadsheet me-2"></i>
+            <span>{{ truncateFileName(getFileName(order()?.picking_list_path)) }}</span>
+            <button
+              type="button"
+              class="btn btn-sm btn-link"
+              [disabled]="isFileUploadDisabled('picking')"
+              (click)="handleFileButtonClick('picking', packinInput)">
+              <i class="bi bi-pencil"></i>
+            </button>
+          </div>
+          } @else {
+          <!-- Sin archivo -->
+          <button
+            type="button"
+            class="btn btn-secondary w-100"
+            [disabled]="isFileUploadDisabled('picking')"
+            (click)="handleFileButtonClick('picking', packinInput)">
+            <i class="bi bi-upload me-2"></i>
+            Adjuntar
           </button>
-          <button type="button" class="btn btn-sm btn-link text-danger" (click)="removeFile('picking')">
-            <i class="bi bi-trash"></i>
-          </button>
+          }
         </div>
-        } @else if (order()?.picking_list_path) {
-        <!-- Archivo existente en servidor -->
-        <div class="file-display file-existing">
-          <i class="bi bi-file-earmark-spreadsheet me-2"></i>
-          <span>{{ truncateFileName(getFileName(order()?.picking_list_path)) }}</span>
-          <button type="button" class="btn btn-sm btn-link" (click)="packinInput.click()">
-            <i class="bi bi-pencil"></i>
-          </button>
-        </div>
-        } @else {
-        <!-- Sin archivo -->
-        <button type="button" class="btn btn-secondary w-100" (click)="packinInput.click()">
-          <i class="bi bi-upload me-2"></i>
-          Adjuntar Excel
-        </button>
-        }
         <input
           #packinInput
           type="file"
           class="d-none"
           accept=".pdf,.xlsx,.xls"
+          [disabled]="isFileUploadDisabled('picking')"
           (change)="onFileSelect($event, 'picking')"
         />
         } @else {
@@ -125,7 +163,7 @@
 
       <!-- PDF Proforma y Factura -->
       <div class="col-md-6 mb-3">
-        <label class="form-label">PDF Proforma @if (auth.isAdmin()) {(opcional)}</label>
+        <label class="form-label">Proforma @if (auth.isAdmin()) {(opcional)}</label>
         @if (mode === 'view') { @if (order()?.performa_pdf_path) {
         <div class="file-display" (click)="downloadFile('performa-pdf')">
           <i class="bi bi-file-earmark-pdf me-2"></i>
@@ -140,39 +178,73 @@
         </div>
         } @else {
         <input type="text" class="form-control" value="No adjuntado" readonly />
-        } } @else { @if (auth.isAdmin()) { @if (performaPdfFile) {
-        <!-- Archivo nuevo seleccionado -->
-        <div class="file-display file-selected">
-          <i class="bi bi-file-earmark-pdf me-2"></i>
-          <span>{{ truncateFileName(performaPdfFile.name) }}</span>
-          <button type="button" class="btn btn-sm btn-link" (click)="performaInput.click()">
-            <i class="bi bi-pencil"></i>
+        } } @else { @if (auth.isAdmin()) {
+        <!-- Wrapper con soporte para barra de progreso -->
+        <div class="file-input-wrapper" [class.uploading]="fileStates.performa.uploading">
+          @if (fileStates.performa.file) {
+          <!-- Archivo nuevo seleccionado o en carga -->
+          <div class="file-display file-selected">
+            <div class="file-info">
+              <i class="bi bi-file-earmark-pdf me-2"></i>
+              <span>{{ truncateFileName(fileStates.performa.file.name) }}</span>
+            </div>
+            <div class="file-actions">
+              @if (fileStates.performa.uploading) {
+              <i class="bi bi-hourglass-split spin text-primary me-2"></i>
+              }
+              @if (fileStates.performa.completed) {
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              }
+              @if (!fileStates.performa.uploading) {
+              <button
+                type="button"
+                class="btn btn-sm btn-link"
+                [disabled]="isFileUploadDisabled('performa')"
+                (click)="handleFileButtonClick('performa', performaInput)">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-link text-danger" (click)="removeFile('performa')">
+                <i class="bi bi-trash"></i>
+              </button>
+              }
+            </div>
+          </div>
+          @if (fileStates.performa.uploading) {
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="fileStates.performa.progress"></div>
+          </div>
+          }
+          } @else if (order()?.performa_pdf_path) {
+          <!-- Archivo existente en servidor -->
+          <div class="file-display file-existing">
+            <i class="bi bi-file-earmark-pdf me-2"></i>
+            <span>{{ truncateFileName(getFileName(order()?.performa_pdf_path)) }}</span>
+            <button
+              type="button"
+              class="btn btn-sm btn-link"
+              [disabled]="isFileUploadDisabled('performa')"
+              (click)="handleFileButtonClick('performa', performaInput)">
+              <i class="bi bi-pencil"></i>
+            </button>
+          </div>
+          } @else {
+          <!-- Sin archivo -->
+          <button
+            type="button"
+            class="btn btn-secondary w-100"
+            [disabled]="isFileUploadDisabled('performa')"
+            (click)="handleFileButtonClick('performa', performaInput)">
+            <i class="bi bi-upload me-2"></i>
+            Adjuntar
           </button>
-          <button type="button" class="btn btn-sm btn-link text-danger" (click)="removeFile('performa')">
-            <i class="bi bi-trash"></i>
-          </button>
+          }
         </div>
-        } @else if (order()?.performa_pdf_path) {
-        <!-- Archivo existente en servidor -->
-        <div class="file-display file-existing">
-          <i class="bi bi-file-earmark-pdf me-2"></i>
-          <span>{{ truncateFileName(getFileName(order()?.performa_pdf_path)) }}</span>
-          <button type="button" class="btn btn-sm btn-link" (click)="performaInput.click()">
-            <i class="bi bi-pencil"></i>
-          </button>
-        </div>
-        } @else {
-        <!-- Sin archivo -->
-        <button type="button" class="btn btn-secondary w-100" (click)="performaInput.click()">
-          <i class="bi bi-upload me-2"></i>
-          Adjuntar PDF
-        </button>
-        }
         <input
           #performaInput
           type="file"
           class="d-none"
           accept=".pdf,.xlsx,.xls"
+          [disabled]="isFileUploadDisabled('performa')"
           (change)="onFileSelect($event, 'performa')"
         />
         } @else {
@@ -196,39 +268,73 @@
         </div>
         } @else {
         <input type="text" class="form-control" value="No adjuntado" readonly />
-        } } @else { @if (auth.isAdmin()) { @if (invoiceFile) {
-        <!-- Archivo nuevo seleccionado -->
-        <div class="file-display file-selected">
-          <i class="bi bi-file-earmark-pdf me-2"></i>
-          <span>{{ truncateFileName(invoiceFile.name) }}</span>
-          <button type="button" class="btn btn-sm btn-link" (click)="invoiceInput.click()">
-            <i class="bi bi-pencil"></i>
+        } } @else { @if (auth.isAdmin()) {
+        <!-- Wrapper con soporte para barra de progreso -->
+        <div class="file-input-wrapper" [class.uploading]="fileStates.invoice.uploading">
+          @if (fileStates.invoice.file) {
+          <!-- Archivo nuevo seleccionado o en carga -->
+          <div class="file-display file-selected">
+            <div class="file-info">
+              <i class="bi bi-file-earmark-pdf me-2"></i>
+              <span>{{ truncateFileName(fileStates.invoice.file.name) }}</span>
+            </div>
+            <div class="file-actions">
+              @if (fileStates.invoice.uploading) {
+              <i class="bi bi-hourglass-split spin text-primary me-2"></i>
+              }
+              @if (fileStates.invoice.completed) {
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              }
+              @if (!fileStates.invoice.uploading) {
+              <button
+                type="button"
+                class="btn btn-sm btn-link"
+                [disabled]="isFileUploadDisabled('invoice')"
+                (click)="handleFileButtonClick('invoice', invoiceInput)">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-link text-danger" (click)="removeFile('invoice')">
+                <i class="bi bi-trash"></i>
+              </button>
+              }
+            </div>
+          </div>
+          @if (fileStates.invoice.uploading) {
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="fileStates.invoice.progress"></div>
+          </div>
+          }
+          } @else if (order()?.invoice_path) {
+          <!-- Archivo existente en servidor -->
+          <div class="file-display file-existing">
+            <i class="bi bi-file-earmark-pdf me-2"></i>
+            <span>{{ truncateFileName(getFileName(order()?.invoice_path)) }}</span>
+            <button
+              type="button"
+              class="btn btn-sm btn-link"
+              [disabled]="isFileUploadDisabled('invoice')"
+              (click)="handleFileButtonClick('invoice', invoiceInput)">
+              <i class="bi bi-pencil"></i>
+            </button>
+          </div>
+          } @else {
+          <!-- Sin archivo -->
+          <button
+            type="button"
+            class="btn btn-secondary w-100"
+            [disabled]="isFileUploadDisabled('invoice')"
+            (click)="handleFileButtonClick('invoice', invoiceInput)">
+            <i class="bi bi-upload me-2"></i>
+            Adjuntar
           </button>
-          <button type="button" class="btn btn-sm btn-link text-danger" (click)="removeFile('invoice')">
-            <i class="bi bi-trash"></i>
-          </button>
+          }
         </div>
-        } @else if (order()?.invoice_path) {
-        <!-- Archivo existente en servidor -->
-        <div class="file-display file-existing">
-          <i class="bi bi-file-earmark-pdf me-2"></i>
-          <span>{{ truncateFileName(getFileName(order()?.invoice_path)) }}</span>
-          <button type="button" class="btn btn-sm btn-link" (click)="invoiceInput.click()">
-            <i class="bi bi-pencil"></i>
-          </button>
-        </div>
-        } @else {
-        <!-- Sin archivo -->
-        <button type="button" class="btn btn-secondary w-100" (click)="invoiceInput.click()">
-          <i class="bi bi-upload me-2"></i>
-          Adjuntar PDF
-        </button>
-        }
         <input
           #invoiceInput
           type="file"
           class="d-none"
           accept=".pdf,.xlsx,.xls"
+          [disabled]="isFileUploadDisabled('invoice')"
           (change)="onFileSelect($event, 'invoice')"
         />
         } @else {
@@ -307,7 +413,7 @@
       type="button"
       class="btn btn-primary"
       (click)="onSubmit()"
-      [disabled]="form.invalid || loading()"
+      [disabled]="!canSaveOrder()"
     >
       @if (loading()) {
       <span class="spinner-border spinner-border-sm me-2"></span>

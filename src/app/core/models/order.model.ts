@@ -53,7 +53,12 @@ export interface OrderFormData {
   package_count: number;
   description?: string;
   status: OrderStatus;
+  // Archivos directos (legacy - se mantiene para compatibilidad)
   performa_pdf_file?: File;
   picking_list_file?: File;
   invoice_file?: File;
+  // Paths temporales de archivos cargados por chunks
+  temp_performa_pdf_path?: string;
+  temp_packing_list_path?: string;
+  temp_invoice_path?: string;
 }

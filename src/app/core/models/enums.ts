@@ -4,7 +4,7 @@
  * ========================================
  * No editar manualmente.
  * Ejecutar: php artisan enums:sync
- * Fecha: 2025-12-23 02:54:58
+ * Fecha: 2026-02-11 05:43:42
  * Fuente: Laravel Enums (app/Enums/)
  */
 
@@ -25,7 +25,7 @@ export const UserRoleLabels: Record<UserRole, string> = {
 
 export const UserRoleColors: Record<UserRole, string> = {
   [UserRole.SuperAdmin]: 'danger',
-  [UserRole.Administrator]: 'primary',
+  [UserRole.Administrator]: 'purple',
   [UserRole.Client]: 'primary',
 };
 
@@ -82,7 +82,7 @@ export const OrderStatusLabels: Record<OrderStatus, string> = {
 export const OrderStatusColors: Record<OrderStatus, string> = {
   [OrderStatus.Pending]: 'warning',
   [OrderStatus.Processing]: 'primary',
-  [OrderStatus.Shipped]: 'primary',
+  [OrderStatus.Shipped]: 'purple',
   [OrderStatus.Delivered]: 'success',
   [OrderStatus.Cancelled]: 'danger',
 };
@@ -127,12 +127,12 @@ export const ContainerStatusColors: Record<ContainerStatus, string> = {
   [ContainerStatus.NEW]: 'secondary',
   [ContainerStatus.INPROGRESS]: 'primary',
   [ContainerStatus.BOOKED]: 'info',
-  [ContainerStatus.LOADED]: 'info',
-  [ContainerStatus.SAILING]: 'success',
+  [ContainerStatus.LOADED]: 'orange',
+  [ContainerStatus.SAILING]: 'navy',
   [ContainerStatus.ARRIVED]: 'warning',
-  [ContainerStatus.DISCHARGED]: 'warning',
+  [ContainerStatus.DISCHARGED]: 'success',
   [ContainerStatus.UNTRACKED]: 'danger',
-  [ContainerStatus.CANCELLED]: 'secondary',
+  [ContainerStatus.CANCELLED]: 'dark',
 };
 
 export const ContainerStatusIcons: Record<ContainerStatus, string> = {
@@ -176,9 +176,9 @@ export const NotificationTypeLabels: Record<NotificationType, string> = {
 export const NotificationTypeColors: Record<NotificationType, string> = {
   [NotificationType.OrderCreated]: 'primary',
   [NotificationType.OrderUpdated]: 'warning',
-  [NotificationType.OrderStatusChanged]: 'primary',
+  [NotificationType.OrderStatusChanged]: 'purple',
   [NotificationType.ContainerArrived]: 'success',
-  [NotificationType.ContainerDeparted]: 'warning',
+  [NotificationType.ContainerDeparted]: 'orange',
   [NotificationType.SystemNotification]: 'secondary',
   [NotificationType.Test]: 'danger',
   [NotificationType.Note]: 'info',
@@ -279,9 +279,9 @@ export const MovementEventColors: Record<MovementEvent, string> = {
   [MovementEvent.DEPA]: 'info',
   [MovementEvent.ARRV]: 'warning',
   [MovementEvent.DISC]: 'success',
-  [MovementEvent.GTOT]: 'warning',
+  [MovementEvent.GTOT]: 'orange',
   [MovementEvent.EMRT]: 'secondary',
-  [MovementEvent.NOTI]: 'primary',
+  [MovementEvent.NOTI]: 'purple',
 };
 
 export const MovementEventIcons: Record<MovementEvent, string> = {

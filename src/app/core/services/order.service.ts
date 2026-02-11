@@ -75,6 +75,7 @@ export class OrderService {
       formData.append('description', data.description);
     }
 
+    // ✅ FIX: Agregar archivos directos (legacy - para compatibilidad)
     if (data.performa_pdf_file) {
       formData.append('performa_pdf_file', data.performa_pdf_file);
     }
@@ -85,6 +86,19 @@ export class OrderService {
 
     if (data.invoice_file) {
       formData.append('invoice_file', data.invoice_file);
+    }
+
+    // ✅ FIX: Agregar rutas temporales de archivos cargados por chunks
+    if (data.temp_performa_pdf_path) {
+      formData.append('temp_performa_pdf_path', data.temp_performa_pdf_path);
+    }
+
+    if (data.temp_packing_list_path) {
+      formData.append('temp_packing_list_path', data.temp_packing_list_path);
+    }
+
+    if (data.temp_invoice_path) {
+      formData.append('temp_invoice_path', data.temp_invoice_path);
     }
 
     return this.http.post<ApiResponse<Order>>(this.apiUrl, formData);
@@ -106,6 +120,7 @@ export class OrderService {
       formData.append('description', data.description);
     }
 
+    // ✅ FIX: Agregar archivos directos (legacy - para compatibilidad)
     if (data.performa_pdf_file) {
       formData.append('performa_pdf_file', data.performa_pdf_file);
     }
@@ -116,6 +131,19 @@ export class OrderService {
 
     if (data.invoice_file) {
       formData.append('invoice_file', data.invoice_file);
+    }
+
+    // ✅ FIX: Agregar rutas temporales de archivos cargados por chunks
+    if (data.temp_performa_pdf_path) {
+      formData.append('temp_performa_pdf_path', data.temp_performa_pdf_path);
+    }
+
+    if (data.temp_packing_list_path) {
+      formData.append('temp_packing_list_path', data.temp_packing_list_path);
+    }
+
+    if (data.temp_invoice_path) {
+      formData.append('temp_invoice_path', data.temp_invoice_path);
     }
 
     return this.http.post<ApiResponse<Order>>(`${this.apiUrl}/${id}`, formData);
