@@ -25,6 +25,19 @@ const angularApp = new AngularNodeAppEngine();
  */
 
 /**
+ * Security headers — defense in depth (clickjacking, MIME sniffing, downgrade).
+ * Aplicado a todo response (estaticos + SSR de Angular).
+ */
+app.use((_req, res, next) => {
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=(), usb=()');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  next();
+});
+
+/**
  * Serve static files from /browser
  */
 app.use(

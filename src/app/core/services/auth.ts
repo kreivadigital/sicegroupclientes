@@ -1,7 +1,7 @@
 import { Injectable, signal, computed, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, tap, catchError } from 'rxjs';
+import { Observable, of, tap, catchError, shareReplay, finalize, map } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { LoginRequest, LoginResponse, User } from '../models/user.model';
@@ -16,6 +16,10 @@ export class Auth {
 
   // ✨ SIGNALS - Estado reactivo automático
   public currentUser = signal<User | null>(null);
+
+  // Observable compartido del refresh en vuelo. Si N requests reciben 401
+  // al mismo tiempo, todos esperan al MISMO refresh en lugar de disparar N.
+  private refreshing$: Observable<void> | null = null;
 
   // Computed signals (se actualizan automáticamente cuando un signal simple cambia)
   public isAuthenticated = computed(() => this.currentUser() !== null);
@@ -70,6 +74,25 @@ export class Auth {
         return of(null);
       })
     );
+  }
+
+  /**
+   * Renueva el JWT (cookie httpOnly) llamando a /auth/refresh.
+   * Si hay un refresh en vuelo, devuelve el mismo Observable para evitar
+   * disparar multiples llamadas concurrentes.
+   */
+  refresh(): Observable<void> {
+    if (this.refreshing$) return this.refreshing$;
+
+    this.refreshing$ = this.http
+      .post<{ message: string }>(`${environment.apiBase}/auth/refresh`, {})
+      .pipe(
+        map(() => undefined as void),
+        finalize(() => { this.refreshing$ = null; }),
+        shareReplay(1)
+      );
+
+    return this.refreshing$;
   }
 
   /**
