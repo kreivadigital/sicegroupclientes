@@ -6,7 +6,7 @@ import { ContainerService } from '../../../../core/services/container.service';
 import { Container, ContainerCreateData } from '../../../../core/models/container.model';
 import { ConfirmationModal, ConfirmationType } from '../../../../shared/components/confirmation-modal/confirmation-modal';
 
-// Key para localStorage - guardar ID del contenedor creado/actualizado
+// Key para sessionStorage - guardar ID del contenedor creado/actualizado
 export const CONTAINER_AUTO_OPEN_KEY = 'container_auto_open_id';
 
 @Component({
@@ -151,8 +151,8 @@ export class ContainerModal implements OnInit {
         this.loading.set(false);
         this.savedContainer = response.data;
 
-        // Guardar ID en localStorage para auto-abrir tracking modal
-        localStorage.setItem(CONTAINER_AUTO_OPEN_KEY, response.data.id.toString());
+        // Guardar ID en sessionStorage para auto-abrir tracking modal
+        sessionStorage.setItem(CONTAINER_AUTO_OPEN_KEY, response.data.id.toString());
 
         const containerNum = response.data.container_number;
         const reference = response.data.shipment_reference;
@@ -194,8 +194,8 @@ export class ContainerModal implements OnInit {
         this.loading.set(false);
         this.savedContainer = response.data;
 
-        // Guardar ID en localStorage para auto-abrir tracking modal
-        localStorage.setItem(CONTAINER_AUTO_OPEN_KEY, response.data.id.toString());
+        // Guardar ID en sessionStorage para auto-abrir tracking modal
+        sessionStorage.setItem(CONTAINER_AUTO_OPEN_KEY, response.data.id.toString());
 
         const containerNum = response.data.container_number;
         const reference = response.data.shipment_reference;

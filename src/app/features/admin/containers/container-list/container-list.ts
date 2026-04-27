@@ -115,10 +115,10 @@ export class ContainerList implements OnInit {
   }
 
   /**
-   * Verifica si hay un contenedor guardado en localStorage para auto-abrir
+   * Verifica si hay un contenedor guardado en sessionStorage para auto-abrir
    */
   private checkAutoOpenTrackingModal() {
-    const savedContainerId = localStorage.getItem(CONTAINER_AUTO_OPEN_KEY);
+    const savedContainerId = sessionStorage.getItem(CONTAINER_AUTO_OPEN_KEY);
     if (savedContainerId) {
       const containerId = parseInt(savedContainerId, 10);
       if (!isNaN(containerId)) {
@@ -234,8 +234,8 @@ export class ContainerList implements OnInit {
   onTrackingModalClose() {
     this.showTrackingModal.set(false);
     this.selectedContainerId.set(undefined);
-    // Limpiar localStorage al cerrar el modal de tracking
-    localStorage.removeItem(CONTAINER_AUTO_OPEN_KEY);
+    // Limpiar sessionStorage al cerrar el modal de tracking
+    sessionStorage.removeItem(CONTAINER_AUTO_OPEN_KEY);
   }
 
   onContainerSaved(container: Container) {

@@ -27,6 +27,8 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
           width="100%"
           frameborder="0"
           scrolling="no"
+          sandbox="allow-scripts allow-same-origin allow-popups"
+          referrerpolicy="no-referrer"
           (load)="onIframeLoad()"
           (error)="onIframeError()">
         </iframe>
@@ -88,6 +90,14 @@ export class VesselMap implements OnInit, OnChanges {
       return;
     }
 
+    // Validar formato IMO: exactamente 7 digitos. Bloquea cualquier valor
+    // arbitrario que llegue al iframe via bypassSecurityTrustResourceUrl.
+    if (!/^\d{7}$/.test(this.vesselImo)) {
+      console.warn('[VesselMap] IMO inválido, ignorando:', this.vesselImo);
+      this.iframeSrc.set('');
+      return;
+    }
+
     // URL directa del embed de VesselFinder
     const params = new URLSearchParams({
       imo: this.vesselImo,
@@ -99,9 +109,6 @@ export class VesselMap implements OnInit, OnChanges {
     });
 
     const url = `https://www.vesselfinder.com/aismap?${params.toString()}`;
-
-    console.log('[VesselMap] Vessel IMO:', this.vesselImo);
-    console.log('[VesselMap] URL:', url);
 
     this.iframeSrc.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
   }
