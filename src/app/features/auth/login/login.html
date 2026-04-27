@@ -99,8 +99,13 @@
             </div>
           </div>
 
-          <!-- Mensaje de error global -->
-          @if (error()) {
+          <!-- Cooldown por rate limit (prioritario sobre error) -->
+          @if (isLocked()) {
+            <div class="alert alert-warning d-flex align-items-center" role="alert">
+              <i class="bi bi-clock-history me-2"></i>
+              <div>Demasiados intentos. Reintenta en <strong>{{ cooldownDisplay() }}</strong></div>
+            </div>
+          } @else if (error()) {
             <div class="alert alert-danger d-flex align-items-center" role="alert">
               <i class="bi bi-exclamation-triangle-fill me-2"></i>
               <div>{{ error() }}</div>
@@ -123,12 +128,17 @@
           <button
             type="submit"
             class="btn btn-primary w-100"
-            [disabled]="loading()"
+            [disabled]="loading() || isLocked()"
           >
             @if (loading()) {
               <span>
                 <app-loading-spinner></app-loading-spinner>
                 Iniciando sesión...
+              </span>
+            } @else if (isLocked()) {
+              <span>
+                <i class="bi bi-clock me-2"></i>
+                Reintenta en {{ cooldownDisplay() }}
               </span>
             } @else {
               <span>

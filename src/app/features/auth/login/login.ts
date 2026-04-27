@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, computed, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Auth } from '../../../core/services/auth';
@@ -11,7 +11,7 @@ import { UserRole } from '../../../core/models/enums';
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
-export class Login {
+export class Login implements OnDestroy {
   // Formulario reactivo
   loginForm: FormGroup;
 
@@ -19,6 +19,20 @@ export class Login {
   loading = signal(false);
   error = signal<string | null>(null);
   showPassword = signal(false);
+
+  // Cooldown (rate limit)
+  cooldownSeconds = signal<number | null>(null);
+  private cooldownInterval: ReturnType<typeof setInterval> | null = null;
+
+  isLocked = computed(() => this.cooldownSeconds() !== null);
+
+  cooldownDisplay = computed(() => {
+    const s = this.cooldownSeconds();
+    if (s === null) return null;
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${m}:${String(sec).padStart(2, '0')}`;
+  });
 
   constructor(
     private fb: FormBuilder,
@@ -31,6 +45,10 @@ export class Login {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
+  }
+
+  ngOnDestroy() {
+    this.clearCooldown();
   }
 
   /**
@@ -71,6 +89,11 @@ export class Login {
    * Manejo del submit del formulario
    */
   onSubmit() {
+    // Bloqueado por rate limit
+    if (this.isLocked()) {
+      return;
+    }
+
     // Marcar todos los campos como tocados para mostrar errores
     if (this.loginForm.invalid) {
       Object.keys(this.loginForm.controls).forEach(key => {
@@ -104,6 +127,13 @@ export class Login {
       },
       error: (err) => {
         this.loading.set(false);
+
+        if (err.status === 429) {
+          const seconds = Number(err.error?.retry_after_seconds) || 60;
+          this.error.set(null);
+          this.startCooldown(seconds);
+          return;
+        }
 
         // Manejar diferentes tipos de error
         if (err.status === 401) {
@@ -141,5 +171,27 @@ export class Login {
     if (this.error()) {
       this.error.set(null);
     }
+  }
+
+  private startCooldown(seconds: number) {
+    this.clearCooldown();
+    this.cooldownSeconds.set(seconds);
+
+    this.cooldownInterval = setInterval(() => {
+      const current = this.cooldownSeconds();
+      if (current === null || current <= 1) {
+        this.clearCooldown();
+        return;
+      }
+      this.cooldownSeconds.set(current - 1);
+    }, 1000);
+  }
+
+  private clearCooldown() {
+    if (this.cooldownInterval) {
+      clearInterval(this.cooldownInterval);
+      this.cooldownInterval = null;
+    }
+    this.cooldownSeconds.set(null);
   }
 }

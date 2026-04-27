@@ -84,12 +84,23 @@ export class ToastService {
   private render() {
     if (!this.container) return;
 
-    this.container.innerHTML = this.toasts.map(toast => `
-      <div class="toast-item toast-${toast.type} ${toast.removing ? 'toast-removing' : ''}" data-id="${toast.id}">
-        <i class="bi ${this.icons[toast.type]}"></i>
-        <span class="toast-message">${toast.message}</span>
-      </div>
-    `).join('');
+    this.container.replaceChildren();
+
+    for (const toast of this.toasts) {
+      const item = document.createElement('div');
+      item.className = `toast-item toast-${toast.type}${toast.removing ? ' toast-removing' : ''}`;
+      item.dataset['id'] = String(toast.id);
+
+      const icon = document.createElement('i');
+      icon.className = `bi ${this.icons[toast.type]}`;
+
+      const msg = document.createElement('span');
+      msg.className = 'toast-message';
+      msg.textContent = toast.message;
+
+      item.append(icon, msg);
+      this.container.appendChild(item);
+    }
   }
 
   success(message: string, duration?: number) {
