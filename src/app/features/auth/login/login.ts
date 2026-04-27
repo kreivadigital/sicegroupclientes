@@ -4,6 +4,7 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Auth } from '../../../core/services/auth';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
 import { UserRole } from '../../../core/models/enums';
+import { isSafeReturnUrl } from '../../../core/utils/safe-redirect';
 
 @Component({
   selector: 'app-login',
@@ -111,10 +112,10 @@ export class Login implements OnDestroy {
       next: (response) => {
         this.loading.set(false);
 
-        // Obtener URL de retorno o redirigir según rol
+        // Obtener URL de retorno (validada — evita open redirect a dominios externos)
         const returnUrl = this.route.snapshot.queryParams['returnUrl'];
 
-        if (returnUrl) {
+        if (isSafeReturnUrl(returnUrl)) {
           this.router.navigateByUrl(returnUrl);
         } else {
           // Redirigir según rol
