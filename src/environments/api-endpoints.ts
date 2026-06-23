@@ -114,6 +114,9 @@ export const ApiEndpoints = {
         // GET → Fuerza actualización con la API de ShipsGo
         refresh: (id: number) => `${apiBase}/containers/${id}/refresh`,
 
+        // POST → Sincroniza masivo los contenedores activos (no DISCHARGED/CANCELLED)
+        sync: `${apiBase}/containers/sync`,
+
         // GET → Devuelve los movimientos del contenedor
         movements: (id: number) => `${apiBase}/containers/${id}/movements`,
 

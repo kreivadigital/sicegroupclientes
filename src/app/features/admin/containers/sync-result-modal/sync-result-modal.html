@@ -1,0 +1,106 @@
+<div class="modal-backdrop" (click)="onClose()"></div>
+
+<div class="modal-container">
+  <div class="modal-content sync-result-modal">
+    <!-- Header -->
+    <div class="sync-header">
+      <div class="sync-header-text">
+        <h5 class="sync-title">Sincronización completada</h5>
+        <p class="sync-subtitle">
+          <span>{{ result.total }} activos</span>
+          <span class="dot">·</span>
+          <span class="changed">{{ result.changed }} con cambios</span>
+          <span class="dot">·</span>
+          <span [class.has-errors]="result.failed > 0">{{ result.failed }} errores</span>
+        </p>
+      </div>
+      <button type="button" class="btn-close-x" (click)="onClose()" aria-label="Cerrar">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="sync-body">
+
+      <!-- Sin cambios y sin errores -->
+      @if (result.changed === 0 && result.failed === 0) {
+        <div class="sync-empty">
+          <i class="bi bi-check-circle"></i>
+          <span>Todo al día. No hubo cambios.</span>
+        </div>
+      }
+
+      <!-- Lista de cambios -->
+      @if (result.changes.length > 0) {
+        <div class="sync-section-label">Cambios</div>
+        <ul class="sync-list">
+          @for (c of result.changes; track c.container_number) {
+            <li class="sync-item">
+              <div class="sync-item-head">
+                <span class="sync-cn">{{ c.container_number }}</span>
+                <span class="sync-ref">{{ c.shipment_reference }}</span>
+              </div>
+              <div class="sync-item-detail">
+                @if (c.status_changed) {
+                  <span class="status-change">
+                    <span class="badge" [class]="'bg-' + statusColor(c.status_from)">
+                      {{ statusLabel(c.status_from) }}
+                    </span>
+                    <i class="bi bi-arrow-right"></i>
+                    <span class="badge" [class]="'bg-' + statusColor(c.status_to)">
+                      {{ statusLabel(c.status_to) }}
+                    </span>
+                  </span>
+                }
+                @if (c.new_movements > 0) {
+                  <span class="movements-badge">
+                    <i class="bi bi-plus-circle"></i>
+                    {{ c.new_movements }} {{ c.new_movements === 1 ? 'movimiento' : 'movimientos' }}
+                  </span>
+                }
+              </div>
+            </li>
+          }
+        </ul>
+      }
+
+      <!-- Sin cambios (contador colapsable) -->
+      @if (result.unchanged > 0) {
+        <button type="button" class="sync-collapse" (click)="toggleUnchanged()">
+          <i class="bi" [class.bi-chevron-right]="!showUnchanged()" [class.bi-chevron-down]="showUnchanged()"></i>
+          {{ result.unchanged }} sin cambios
+        </button>
+        @if (showUnchanged()) {
+          <p class="sync-collapse-note">
+            Estos contenedores se consultaron en ShipsGo pero no tuvieron cambios de estado ni movimientos nuevos.
+          </p>
+        }
+      }
+
+      <!-- Errores -->
+      @if (result.errors.length > 0) {
+        <button type="button" class="sync-collapse errors" (click)="toggleErrors()">
+          <i class="bi" [class.bi-chevron-right]="!showErrors()" [class.bi-chevron-down]="showErrors()"></i>
+          {{ result.errors.length }} con error
+        </button>
+        @if (showErrors()) {
+          <ul class="sync-list errors">
+            @for (e of result.errors; track e.container_number) {
+              <li class="sync-item error">
+                <div class="sync-item-head">
+                  <span class="sync-cn">{{ e.container_number }}</span>
+                </div>
+                <div class="sync-error-msg">{{ e.error }}</div>
+              </li>
+            }
+          </ul>
+        }
+      }
+    </div>
+
+    <!-- Footer -->
+    <div class="sync-footer">
+      <button type="button" class="btn btn-primary" (click)="onClose()">Cerrar</button>
+    </div>
+  </div>
+</div>

@@ -78,6 +78,8 @@ export interface Container {
 export interface ContainerCreateData {
   container_number: string;
   shipment_reference?: string;
+  /** Si true, cuando el contenedor no existe en ShipsGo se crea allá (POST, consume créditos) */
+  create_in_shipsgo?: boolean;
 }
 
 /**

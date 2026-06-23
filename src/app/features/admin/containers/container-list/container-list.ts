@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ContainerService } from '../../../../core/services/container.service';
+import { ContainerService, SyncResult } from '../../../../core/services/container.service';
 import { DashboardService } from '../../../../core/services/dashboard.service';
 import { Container } from '../../../../core/models/container.model';
 import { ContainerStatusLabels, ContainerStatusColors } from '../../../../core/models/enums';
@@ -12,10 +12,11 @@ import { SearchBar } from '../../../../shared/components/search-bar/search-bar';
 import { ContainerModal, CONTAINER_AUTO_OPEN_KEY } from '../container-modal/container-modal';
 import { ContainerTrackingModal } from '../../../../shared/components/container-tracking-modal/container-tracking-modal';
 import { ConfirmationModal } from '../../../../shared/components/confirmation-modal/confirmation-modal';
+import { SyncResultModal } from '../sync-result-modal/sync-result-modal';
 
 @Component({
   selector: 'app-container-list',
-  imports: [CommonModule, StatCard, DataTable, Pagination, SearchBar, ContainerModal, ContainerTrackingModal, ConfirmationModal],
+  imports: [CommonModule, StatCard, DataTable, Pagination, SearchBar, ContainerModal, ContainerTrackingModal, ConfirmationModal, SyncResultModal],
   templateUrl: './container-list.html',
   styleUrl: './container-list.scss',
 })
@@ -46,6 +47,11 @@ export class ContainerList implements OnInit {
 
   // Import state
   importing = signal<boolean>(false);
+
+  // Sync state
+  syncing = signal<boolean>(false);
+  showSyncResult = signal<boolean>(false);
+  syncResult = signal<SyncResult | null>(null);
 
   // Dashboard stats
   totalClients = signal<number>(0);
@@ -281,5 +287,47 @@ export class ContainerList implements OnInit {
         this.importing.set(false);
       }
     });
+  }
+
+  /**
+   * Sincroniza masivo los contenedores activos (no DISCHARGED/CANCELLED) contra ShipsGo.
+   * Solo GET por shipsgo_shipment_id → no consume créditos.
+   */
+  onSyncContainers() {
+    this.syncing.set(true);
+
+    this.containerService.syncActiveContainers().subscribe({
+      next: (res) => {
+        this.syncing.set(false);
+        this.syncResult.set(res);
+        this.showSyncResult.set(true);
+        // Recargar lista + stats con los datos actualizados
+        this.loadContainers(this.currentPage(), this.currentSearch());
+        this.loadStats();
+      },
+      error: (error) => {
+        this.syncing.set(false);
+        // Error de transporte/servidor: armamos un resultado mínimo para el modal
+        this.syncResult.set({
+          message: error.error?.message || 'Error al sincronizar contenedores',
+          total: 0,
+          synced: 0,
+          changed: 0,
+          unchanged: 0,
+          failed: 1,
+          changes: [],
+          errors: [{
+            container_number: '—',
+            shipsgo_shipment_id: 0,
+            error: error.error?.message || 'No se pudo completar la sincronización',
+          }],
+        });
+        this.showSyncResult.set(true);
+      }
+    });
+  }
+
+  onCloseSyncResult() {
+    this.showSyncResult.set(false);
   }
 }

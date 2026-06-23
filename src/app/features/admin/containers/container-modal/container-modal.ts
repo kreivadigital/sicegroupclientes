@@ -93,43 +93,19 @@ export class ContainerModal implements OnInit {
     if (this.form.invalid) return;
 
     if (this.mode === 'create') {
-      // En modo crear, primero verificamos si el contenedor existe
-      this.loading.set(true);
-
-      const containerNumber = this.form.value.container_number;
-      const shipmentReference = this.form.value.shipment_reference;
-
-      this.containerService.checkContainerExists(containerNumber, shipmentReference).subscribe({
-        next: (response) => {
-          this.loading.set(false);
-
-          if (response.data?.exists) {
-            // El contenedor existe en DB o API, proceder directamente
-            this.proceedWithCreate();
-          } else {
-            // El contenedor NO existe, mostrar confirmación
-            this.newContainerMessage.set(
-              `El contenedor ${containerNumber} - ${shipmentReference} no existe en el sistema. ¿Desea crear un registro manual?`
-            );
-            this.showNewContainerConfirm.set(true);
-          }
-        },
-        error: (error) => {
-          console.error('Error verificando contenedor:', error);
-          this.loading.set(false);
-          // Si falla la verificación, proceder de todas formas
-          this.proceedWithCreate();
-        }
-      });
+      // Intento directo: el backend busca en ShipsGo. Si existe, crea el container
+      // con el shipsgo_shipment_id real. Si NO existe, responde 404 con can_create=true
+      // y abrimos la confirmación para crearlo en ShipsGo.
+      this.proceedWithCreate();
     } else if (this.mode === 'edit' && this.containerId) {
       this.proceedWithUpdate();
     }
   }
 
-  // Confirmar creación de contenedor nuevo
+  // Confirmar creación en ShipsGo (consume crédito)
   onConfirmNewContainer() {
     this.showNewContainerConfirm.set(false);
-    this.proceedWithCreate();
+    this.proceedWithCreate(true);
   }
 
   // Cancelar creación de contenedor nuevo
@@ -137,13 +113,15 @@ export class ContainerModal implements OnInit {
     this.showNewContainerConfirm.set(false);
   }
 
-  // Proceder con la creación del contenedor
-  private proceedWithCreate() {
+  // Proceder con la creación del contenedor.
+  // createInShipsgo=true confirma la creación real en ShipsGo cuando no existe.
+  private proceedWithCreate(createInShipsgo = false) {
     this.loading.set(true);
 
     const formData: ContainerCreateData = {
       container_number: this.form.value.container_number,
       shipment_reference: this.form.value.shipment_reference || undefined,
+      create_in_shipsgo: createInShipsgo || undefined,
     };
 
     this.containerService.createContainer(formData).subscribe({
@@ -174,6 +152,18 @@ export class ContainerModal implements OnInit {
       error: (error) => {
         console.error('Error procesando contenedor:', error);
         this.loading.set(false);
+
+        // Backend: el contenedor no existe en ShipsGo pero se puede crear allá.
+        // Pedimos confirmación al admin antes de consumir un crédito.
+        if (error.status === 404 && error.error?.can_create && !createInShipsgo) {
+          const num = this.form.value.container_number;
+          const ref = this.form.value.shipment_reference;
+          this.newContainerMessage.set(
+            `El contenedor ${num} - ${ref} no existe en ShipsGo. ¿Desea crearlo en ShipsGo? Esto inicia el seguimiento y consume un crédito.`
+          );
+          this.showNewContainerConfirm.set(true);
+          return;
+        }
 
         const errorMessage = error.error?.message || 'Error al procesar el contenedor';
         this.notificationType.set('error');

@@ -14,6 +14,26 @@ export interface ContainerFilters {
   llegadaHasta?: string;
 }
 
+export interface SyncChange {
+  container_number: string;
+  shipment_reference: string;
+  status_from: string;
+  status_to: string;
+  status_changed: boolean;
+  new_movements: number;
+}
+
+export interface SyncResult {
+  message: string;
+  total: number;
+  synced: number;
+  changed: number;
+  unchanged: number;
+  failed: number;
+  changes: SyncChange[];
+  errors: Array<{ container_number: string; shipsgo_shipment_id: number; error: string }>;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -88,6 +108,14 @@ export class ContainerService {
 
   importFromShipsGo(): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<any>>(`${this.apiUrl}/import-from-shipsgo`, {});
+  }
+
+  /**
+   * Sincroniza masivo los contenedores activos (no DISCHARGED/CANCELLED)
+   * contra ShipsGo, buscando por shipsgo_shipment_id. Solo GET → no consume créditos.
+   */
+  syncActiveContainers(): Observable<SyncResult> {
+    return this.http.post<SyncResult>(`${this.apiUrl}/sync`, {});
   }
 
   /**

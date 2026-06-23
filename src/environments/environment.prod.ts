@@ -1,7 +1,7 @@
 export const environment = {
     production: true,
-    apiBase: 'https://api.sicegroup.com/api', // TODO: Actualizar con la URL real de producción
-    apiUrl: 'https://api.sicegroup.com/api',
+    apiBase: 'https://api.sicegroup.com.uy/api',
+    apiUrl: 'https://api.sicegroup.com.uy/api',
     appName: 'Sice Group Dashboard',
     upload: {
         maxFileSizeMB: 250,

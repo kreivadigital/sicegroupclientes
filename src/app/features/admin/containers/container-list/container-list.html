@@ -52,6 +52,18 @@
         <button
           type="button"
           class="btn btn-primary text-nowrap"
+          (click)="onSyncContainers()"
+          [disabled]="syncing()">
+          @if (syncing()) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+          } @else {
+            <i class="bi bi-arrow-repeat me-2"></i>
+          }
+          Sincronizar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary text-nowrap"
           (click)="onAddContainer()">
           <i class="bi bi-plus-lg me-2"></i>
           Agregar Nuevo Contenedor
@@ -159,6 +171,14 @@
       [showAddNotification]="true"
       (close)="onTrackingModalClose()">
     </app-container-tracking-modal>
+  }
+
+  <!-- Modal resultado de sincronización -->
+  @if (showSyncResult() && syncResult()) {
+    <app-sync-result-modal
+      [result]="syncResult()!"
+      (close)="onCloseSyncResult()">
+    </app-sync-result-modal>
   }
 
   <!-- Modal de confirmación de eliminación -->
