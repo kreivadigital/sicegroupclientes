@@ -117,6 +117,9 @@ export const ApiEndpoints = {
         // POST → Sincroniza masivo los contenedores activos (no DISCHARGED/CANCELLED)
         sync: `${apiBase}/containers/sync`,
 
+        // GET → Historial de actualizaciones (webhook + sync)
+        updates: `${apiBase}/container-updates`,
+
         // GET → Devuelve los movimientos del contenedor
         movements: (id: number) => `${apiBase}/containers/${id}/movements`,
 

@@ -59,6 +59,7 @@ export class Dashboard implements OnInit {
           'pending': 'warning',
           'processing': 'info',
           'shipped': 'warning',
+          'discharging': 'info',
           'delivered': 'success',
           'cancelled': 'danger'
         },
@@ -66,6 +67,7 @@ export class Dashboard implements OnInit {
           'pending': 'Pendiente',
           'processing': 'En Proceso',
           'shipped': 'En tránsito',
+          'discharging': 'Descargando',
           'delivered': 'Entregada',
           'cancelled': 'Cancelada'
         }
@@ -190,6 +192,7 @@ export class Dashboard implements OnInit {
       'pending': 'warning',
       'processing': 'info',
       'shipped': 'warning',
+      'discharging': 'info',
       'delivered': 'success',
       'cancelled': 'danger'
     };
@@ -201,6 +204,7 @@ export class Dashboard implements OnInit {
       'pending': 'Pendiente',
       'processing': 'En Proceso',
       'shipped': 'En tránsito',
+      'discharging': 'Descargando',
       'delivered': 'Entregada',
       'cancelled': 'Cancelada'
     };

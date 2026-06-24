@@ -9,6 +9,7 @@ import { ApiResponse, PaginatedResponse } from '../interfaces/api-response.inter
 export interface OrderFilters {
   search?: string;
   estados?: string[];
+  containerId?: number | string;
   fechaDesde?: string;
   fechaHasta?: string;
 }
@@ -29,6 +30,10 @@ export class OrderService {
 
     if (filters?.estados && filters.estados.length > 0) {
       params = params.set('status', filters.estados.join(','));
+    }
+
+    if (filters?.containerId) {
+      params = params.set('container_id', filters.containerId.toString());
     }
 
     if (filters?.fechaDesde) {

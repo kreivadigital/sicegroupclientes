@@ -67,6 +67,7 @@ export enum OrderStatus {
   Pending = 'pending',
   Processing = 'processing',
   Shipped = 'shipped',
+  Discharging = 'discharging',
   Delivered = 'delivered',
   Cancelled = 'cancelled',
 }
@@ -75,6 +76,7 @@ export const OrderStatusLabels: Record<OrderStatus, string> = {
   [OrderStatus.Pending]: 'Pendiente',
   [OrderStatus.Processing]: 'En Proceso',
   [OrderStatus.Shipped]: 'Enviado',
+  [OrderStatus.Discharging]: 'Descargando',
   [OrderStatus.Delivered]: 'Entregado',
   [OrderStatus.Cancelled]: 'Cancelado',
 };
@@ -83,6 +85,7 @@ export const OrderStatusColors: Record<OrderStatus, string> = {
   [OrderStatus.Pending]: 'warning',
   [OrderStatus.Processing]: 'primary',
   [OrderStatus.Shipped]: 'purple',
+  [OrderStatus.Discharging]: 'info',
   [OrderStatus.Delivered]: 'success',
   [OrderStatus.Cancelled]: 'danger',
 };
@@ -91,6 +94,7 @@ export const OrderStatusIcons: Record<OrderStatus, string> = {
   [OrderStatus.Pending]: 'bi-clock',
   [OrderStatus.Processing]: 'bi-gear',
   [OrderStatus.Shipped]: 'bi-truck',
+  [OrderStatus.Discharging]: 'bi-box-arrow-down',
   [OrderStatus.Delivered]: 'bi-check-circle',
   [OrderStatus.Cancelled]: 'bi-x-circle',
 };

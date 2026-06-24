@@ -1,0 +1,70 @@
+.updates-page {
+  padding: 0;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.page-subtitle {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin: 0.25rem 0 0;
+}
+
+.table-card {
+  background: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.updates-table {
+  font-size: 0.9rem;
+
+  thead th {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #6c757d;
+    white-space: nowrap;
+  }
+
+  tbody td {
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f3f5;
+  }
+
+  .cn {
+    font-weight: 600;
+  }
+
+  .ref {
+    font-size: 0.8rem;
+    color: #6c757d;
+  }
+
+  .route {
+    white-space: nowrap;
+
+    i {
+      color: #adb5bd;
+      font-size: 0.8rem;
+    }
+  }
+
+  .detail {
+    min-width: 240px;
+  }
+
+  .date {
+    white-space: nowrap;
+    color: #6c757d;
+    font-size: 0.85rem;
+  }
+}

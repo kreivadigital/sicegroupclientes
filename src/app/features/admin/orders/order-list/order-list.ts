@@ -1,10 +1,12 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { OrderService } from '../../../../core/services/order.service';
+import { ContainerService } from '../../../../core/services/container.service';
 import { Auth } from '../../../../core/services/auth';
 import { Order } from '../../../../core/models/order.model';
 import { TableColumn, TableAction } from '../../../../shared/interfaces/table.interface';
-import { PageToolbar } from '../../../../shared/components/page-toolbar/page-toolbar';
+import { SearchBar } from '../../../../shared/components/search-bar/search-bar';
 import { DataTable } from '../../../../shared/components/data-table/data-table';
 import { Pagination } from '../../../../shared/components/pagination/pagination';
 import { OrderModal } from '../../../../shared/components/order-modal/order-modal';
@@ -13,12 +15,14 @@ import { NotificationModal } from '../../../../shared/components/notification-mo
 
 @Component({
   selector: 'app-order-list',
-  imports: [CommonModule, PageToolbar, DataTable, Pagination, OrderModal, ContainerTrackingModal, NotificationModal],
+  imports: [CommonModule, SearchBar, DataTable, Pagination, OrderModal, ContainerTrackingModal, NotificationModal],
   templateUrl: './order-list.html',
   styleUrl: './order-list.scss',
 })
 export class OrderList implements OnInit {
   private orderService = inject(OrderService);
+  private containerService = inject(ContainerService);
+  private route = inject(ActivatedRoute);
   private auth = inject(Auth);
 
   // State management con signals
@@ -31,6 +35,21 @@ export class OrderList implements OnInit {
 
   // Búsqueda actual
   currentSearch = signal<string>('');
+
+  // Filtros
+  statusFilter = signal<string>('');
+  containerFilter = signal<string>('');
+  containers = signal<{ id: number; label: string }[]>([]);
+
+  statusOptions = [
+    { value: '', label: 'Todos los estados' },
+    { value: 'pending', label: 'Pendiente' },
+    { value: 'processing', label: 'En Proceso' },
+    { value: 'shipped', label: 'En tránsito' },
+    { value: 'discharging', label: 'Descargando' },
+    { value: 'delivered', label: 'Entregada' },
+    { value: 'cancelled', label: 'Cancelada' },
+  ];
 
   // Modal state
   showModal = signal<boolean>(false);
@@ -61,6 +80,7 @@ export class OrderList implements OnInit {
           'pending': 'warning',
           'processing': 'info',
           'shipped': 'warning',      // En tránsito - amarillo
+          'discharging': 'info',     // Descargando - cyan
           'delivered': 'success',     // Entregada - verde
           'cancelled': 'danger'       // Retrasado/Cancelado - rojo
         },
@@ -69,6 +89,7 @@ export class OrderList implements OnInit {
           'pending': 'Pendiente',
           'processing': 'En Proceso',
           'shipped': 'En tránsito',
+          'discharging': 'Descargando',
           'delivered': 'Entregada',
           'cancelled': 'Retrasado'
         }
@@ -99,13 +120,37 @@ export class OrderList implements OnInit {
   });
 
   ngOnInit() {
+    this.loadContainers();
+
+    // Si llega ?container_id=X (ej. desde la tabla de contenedores), pre-filtrar
+    const cid = this.route.snapshot.queryParamMap.get('container_id');
+    if (cid) {
+      this.containerFilter.set(cid);
+    }
+
     this.loadOrders();
   }
 
-  loadOrders(page: number = 1, search?: string) {
+  loadContainers() {
+    this.containerService.getAllContainers().subscribe({
+      next: (response) => {
+        const list = (response.data || []).map((c: any) => ({
+          id: c.id,
+          label: `${c.container_number} - ${c.shipment_reference}`,
+        }));
+        this.containers.set(list);
+      },
+      error: (error) => console.error('Error cargando contenedores:', error),
+    });
+  }
+
+  loadOrders(page: number = 1) {
     this.loading.set(true);
 
-    const filters = search ? { search } : undefined;
+    const filters: any = {};
+    if (this.currentSearch()) filters.search = this.currentSearch();
+    if (this.statusFilter()) filters.estados = [this.statusFilter()];
+    if (this.containerFilter()) filters.containerId = this.containerFilter();
 
     this.orderService.getOrders(page, filters).subscribe({
       next: (response) => {
@@ -129,7 +174,23 @@ export class OrderList implements OnInit {
 
   onSearch(searchTerm: string) {
     this.currentSearch.set(searchTerm);
-    this.loadOrders(1, searchTerm);
+    this.loadOrders(1);
+  }
+
+  onStatusFilterChange(value: string) {
+    this.statusFilter.set(value);
+    this.loadOrders(1);
+  }
+
+  onContainerFilterChange(value: string) {
+    this.containerFilter.set(value);
+    this.loadOrders(1);
+  }
+
+  clearFilters() {
+    this.statusFilter.set('');
+    this.containerFilter.set('');
+    this.loadOrders(1);
   }
 
   onAddOrder() {
@@ -186,11 +247,11 @@ export class OrderList implements OnInit {
 
   onOrderSaved(order: Order) {
     // Recargar la lista
-    this.loadOrders(this.currentPage(), this.currentSearch());
+    this.loadOrders(this.currentPage());
   }
 
   onPageChange(page: number) {
-    this.loadOrders(page, this.currentSearch());
+    this.loadOrders(page);
   }
 
   // Helpers para el template de cards
@@ -199,6 +260,7 @@ export class OrderList implements OnInit {
       'pending': 'warning',
       'processing': 'info',
       'shipped': 'warning',
+      'discharging': 'info',
       'delivered': 'success',
       'cancelled': 'danger'
     };
@@ -210,6 +272,7 @@ export class OrderList implements OnInit {
       'pending': 'Pendiente',
       'processing': 'En Proceso',
       'shipped': 'En tránsito',
+      'discharging': 'Descargando',
       'delivered': 'Entregada',
       'cancelled': 'Retrasado'
     };

@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ContainerService, SyncResult } from '../../../../core/services/container.service';
 import { DashboardService } from '../../../../core/services/dashboard.service';
 import { Container } from '../../../../core/models/container.model';
@@ -23,6 +24,7 @@ import { SyncResultModal } from '../sync-result-modal/sync-result-modal';
 export class ContainerList implements OnInit {
   private containerService = inject(ContainerService);
   private dashboardService = inject(DashboardService);
+  private router = inject(Router);
 
   // State management con signals
   containers = signal<Container[]>([]);
@@ -111,6 +113,7 @@ export class ContainerList implements OnInit {
   // Configuración de acciones (botones en última columna)
   actions: TableAction[] = [
     { icon: 'bi-eye', tooltip: 'Ver', action: 'view', class: 'btn-outline-success' },
+    { icon: 'bi-archive', tooltip: 'Ver órdenes', action: 'orders', class: 'btn-outline-primary' },
     { icon: 'bi-trash', tooltip: 'Eliminar', action: 'delete', class: 'btn-outline-danger' }
   ];
 
@@ -188,13 +191,31 @@ export class ContainerList implements OnInit {
     this.showModal.set(true);
   }
 
+  // Deshabilita el botón "Ver órdenes" si el contenedor no tiene órdenes asociadas.
+  // Arrow function para conservar el binding de this al pasarla al DataTable.
+  isActionDisabled = (action: string, row: Container): boolean => {
+    if (action === 'orders') {
+      return !(row.orders_count && row.orders_count > 0);
+    }
+    return false;
+  };
+
   onTableAction(event: { action: string; row: Container }) {
     const { action, row } = event;
+
+    // Guard: no navegar si no tiene órdenes (botón deshabilitado igual)
+    if (action === 'orders' && !(row.orders_count && row.orders_count > 0)) {
+      return;
+    }
 
     switch (action) {
       case 'view':
         this.selectedContainerId.set(row.id);
         this.showTrackingModal.set(true);
+        break;
+      case 'orders':
+        // Ir a la pantalla de órdenes filtrada por este contenedor
+        this.router.navigate(['/admin/ordenes'], { queryParams: { container_id: row.id } });
         break;
       case 'delete':
         this.onDeleteContainer(row);

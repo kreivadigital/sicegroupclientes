@@ -1,0 +1,87 @@
+<div class="updates-page">
+  <!-- Header -->
+  <div class="page-head mb-4">
+    <h2 class="page-title">Actualizaciones</h2>
+    <p class="page-subtitle">Historial de actualizaciones de contenedores (ShipsGo y sincronización manual)</p>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="page-toolbar mb-3">
+    <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+      <div class="flex-grow-1" style="max-width: 300px;">
+        <app-search-bar
+          placeholder="Buscar contenedor..."
+          (searchChange)="onSearch($event)">
+        </app-search-bar>
+      </div>
+      <div class="source-filters d-flex gap-2">
+        <button type="button" class="btn btn-sm"
+          [class.btn-primary]="sourceFilter() === ''"
+          [class.btn-outline-secondary]="sourceFilter() !== ''"
+          (click)="onSourceChange('')">Todas</button>
+        <button type="button" class="btn btn-sm"
+          [class.btn-primary]="sourceFilter() === 'webhook'"
+          [class.btn-outline-secondary]="sourceFilter() !== 'webhook'"
+          (click)="onSourceChange('webhook')">ShipsGo</button>
+        <button type="button" class="btn btn-sm"
+          [class.btn-primary]="sourceFilter() === 'sync'"
+          [class.btn-outline-secondary]="sourceFilter() !== 'sync'"
+          (click)="onSourceChange('sync')">Sincronización</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="table-card">
+    <div class="table-responsive">
+      <table class="table updates-table mb-0">
+        <thead>
+          <tr>
+            <th>Contenedor</th>
+            <th>Origen → Destino</th>
+            <th>Detalle</th>
+            <th>Fuente</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading()) {
+            <tr><td colspan="5" class="text-center py-4 text-muted">Cargando...</td></tr>
+          } @else if (updates().length === 0) {
+            <tr><td colspan="5" class="text-center py-4 text-muted">No hay actualizaciones registradas</td></tr>
+          } @else {
+            @for (u of updates(); track u.id) {
+              <tr>
+                <td>
+                  <div class="cn">{{ u.container_number }}</div>
+                  <div class="ref">{{ u.shipment_reference }}</div>
+                </td>
+                <td class="route">
+                  <span>{{ u.port_of_loading_name || 'N/A' }}</span>
+                  <i class="bi bi-arrow-right mx-1"></i>
+                  <span>{{ u.destination_port_name || 'N/A' }}</span>
+                </td>
+                <td class="detail">{{ u.description }}</td>
+                <td>
+                  <span class="badge" [class.bg-info]="u.source === 'webhook'" [class.bg-secondary]="u.source === 'sync'">
+                    {{ u.source === 'webhook' ? 'ShipsGo' : 'Sincronización' }}
+                  </span>
+                </td>
+                <td class="date">{{ u.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Paginación -->
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    [totalItems]="totalItems()"
+    [perPage]="perPage()"
+    (pageChange)="onPageChange($event)">
+  </app-pagination>
+</div>

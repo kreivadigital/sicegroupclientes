@@ -76,7 +76,8 @@
       </div>
 
       @for (step of getProgressSteps(); track $index) {
-      <div class="progress-step" [class.active]="step.active">
+      <div class="progress-step" [class.active]="step.active"
+        [style.left]="'calc(var(--ico-half) + (100% - var(--ico-full)) * ' + (step.progress / 100) + ')'">
         <div class="step-icon">
           @if (step.icon === 'ship') {
             <span class="icon-ship"></span>

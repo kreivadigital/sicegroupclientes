@@ -40,6 +40,7 @@ export class Sidebar implements OnInit {
         { label: 'Dashboard', icon: 'bi-columns-gap', route: '/admin/contenedores' },
         { label: 'Ordenes', icon: 'bi-archive', route: '/admin/ordenes' },
         { label: 'Clientes', icon: 'bi-people', route: '/admin/clientes' },
+        { label: 'Actualizaciones', icon: 'bi-clock-history', route: '/admin/actualizaciones' },
       ];
 
       // Solo super admin puede ver usuarios y configuraciones

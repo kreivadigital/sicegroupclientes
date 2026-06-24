@@ -54,6 +54,7 @@ export interface Container {
     description: string;
     status: string;
   }>;
+  orders_count?: number;
   movements?: Movement[];
 
   // Vessel actual (calculado desde movements)

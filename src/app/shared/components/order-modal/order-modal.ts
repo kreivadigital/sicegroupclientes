@@ -444,6 +444,7 @@ export class OrderModal implements OnInit {
       'pending': 'Pendiente',
       'processing': 'En Proceso',
       'shipped': 'En tránsito',
+      'discharging': 'Descargando',
       'delivered': 'Entregada',
       'cancelled': 'Cancelada'
     };

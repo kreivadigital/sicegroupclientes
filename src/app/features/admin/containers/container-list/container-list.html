@@ -78,6 +78,7 @@
     [data]="containers()"
     [actions]="actions"
     [loading]="loading()"
+    [isActionDisabledFn]="isActionDisabled"
     emptyMessage="No hay contenedores registrados"
     (actionClick)="onTableAction($event)">
 
@@ -136,6 +137,11 @@
           <button class="btn-view" (click)="onAction({ action: 'view', row: container })">
             <i class="bi bi-eye"></i>
             <span>Ver Detalles</span>
+          </button>
+          <button class="btn-view" (click)="onAction({ action: 'orders', row: container })"
+            [disabled]="!(container.orders_count && container.orders_count > 0)">
+            <i class="bi bi-archive"></i>
+            <span>Órdenes</span>
           </button>
           <button class="btn-delete" (click)="onAction({ action: 'delete', row: container })">
             <i class="bi bi-trash"></i>

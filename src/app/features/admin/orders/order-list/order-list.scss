@@ -4,6 +4,26 @@
 @use '../../../../../assets/styles/variables' as *;
 
 // ==========================================
+// TOOLBAR (search + filtros + agregar, misma card)
+// ==========================================
+.page-toolbar {
+  background-color: $bg-white;
+  padding: 1.5rem;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+
+  @media (max-width: 767.98px) {
+    padding: 1rem;
+
+    .form-select,
+    .search-wrap {
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+  }
+}
+
+// ==========================================
 // ORDER CARDS (Mobile)
 // ==========================================
 .order-card {
