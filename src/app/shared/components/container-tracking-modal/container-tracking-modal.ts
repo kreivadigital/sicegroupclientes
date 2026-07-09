@@ -34,6 +34,10 @@ export class ContainerTrackingModal implements OnInit {
 
   @Output() close = new EventEmitter<void>();
 
+  // Se emite cuando el contenedor se marca como entregado, para que la pantalla
+  // que abrió el modal refresque su grilla sin recargar la página.
+  @Output() delivered = new EventEmitter<void>();
+
   loading = signal(false);
   container = signal<Container | null>(null);
 
@@ -83,6 +87,14 @@ export class ContainerTrackingModal implements OnInit {
   showDeleteConfirm = signal(false);
   movementToDelete = signal<Movement | null>(null);
 
+  // Marcar entregado (solo admin)
+  showDeliverConfirm = signal(false);
+  deliverConfirmText = '';
+  delivering = signal(false);
+
+  // ¿El contenedor ya fue marcado como entregado?
+  isDelivered = computed(() => !!this.container()?.delivered_at);
+
   // Filas expandidas en la tabla de movimientos
   expandedRows = new Set<number>();
 
@@ -126,10 +138,13 @@ export class ContainerTrackingModal implements OnInit {
     const statusClasses: { [key: string]: string } = {
       'NEW': 'badge bg-secondary',
       'BOOKED': 'badge bg-info',
-      'INPROGRESS': 'badge bg-warning',
+      'INPROGRESS': 'badge bg-info',
+      'LOADED': 'badge bg-warning',
       'SAILING': 'badge bg-primary',
-      'ARRIVED': 'badge bg-success',
+      'ARRIVED': 'badge bg-warning',
+      'DISCHARGED': 'badge bg-warning',
       'DELIVERED': 'badge bg-success',
+      'UNTRACKED': 'badge bg-danger',
       'CANCELLED': 'badge bg-danger'
     };
     return statusClasses[status] || 'badge bg-secondary';
@@ -140,9 +155,12 @@ export class ContainerTrackingModal implements OnInit {
       'NEW': 'Nuevo',
       'BOOKED': 'Reservado',
       'INPROGRESS': 'En Proceso',
+      'LOADED': 'Cargado',
       'SAILING': 'En Tránsito',
       'ARRIVED': 'Arribado',
+      'DISCHARGED': 'Descargando',
       'DELIVERED': 'Entregado',
+      'UNTRACKED': 'Sin Seguimiento',
       'CANCELLED': 'Cancelado'
     };
     return statusLabels[status] || status;
@@ -343,6 +361,62 @@ export class ContainerTrackingModal implements OnInit {
       error: (error) => {
         console.error('Error cargando notas:', error);
         this.notesLoading.set(false);
+      }
+    });
+  }
+
+  // ==========================================
+  // MARCAR ENTREGADO (solo admin)
+  // ==========================================
+
+  /**
+   * El botón "Marcar entregado" solo se muestra a admin, cuando el contenedor
+   * ya arribó a destino (progreso >= 85) y todavía no fue entregado.
+   */
+  canMarkDelivered(): boolean {
+    return this.showAddNotification
+      && !this.isDelivered()
+      && this.getProgressPercentage() >= 85;
+  }
+
+  /** El texto tipeado debe ser exactamente "entregado" (sin distinguir mayúsculas) */
+  deliverConfirmValid(): boolean {
+    return this.deliverConfirmText.trim().toLowerCase() === 'entregado';
+  }
+
+  onOpenDeliver() {
+    this.deliverConfirmText = '';
+    this.showDeliverConfirm.set(true);
+  }
+
+  onCancelDeliver() {
+    this.showDeliverConfirm.set(false);
+    this.deliverConfirmText = '';
+  }
+
+  onConfirmDeliver() {
+    if (!this.deliverConfirmValid() || this.delivering()) return;
+
+    this.delivering.set(true);
+    this.containerService.markAsDelivered(this.containerId).subscribe({
+      next: (response) => {
+        // Actualizar el contenedor local para reflejar 100% y badge Entregado
+        this.container.update(c => c ? {
+          ...c,
+          delivered_at: response.data.delivered_at,
+          calculated_transit_percentage: response.data.calculated_transit_percentage,
+        } : c);
+        this.delivering.set(false);
+        this.showDeliverConfirm.set(false);
+        this.deliverConfirmText = '';
+        this.toast.success('Contenedor marcado como entregado');
+        // Avisar al padre para que refresque la grilla
+        this.delivered.emit();
+      },
+      error: (error) => {
+        console.error('Error marcando entregado:', error);
+        this.toast.error(error.error?.message || 'Error al marcar como entregado');
+        this.delivering.set(false);
       }
     });
   }

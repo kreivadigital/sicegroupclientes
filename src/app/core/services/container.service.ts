@@ -12,6 +12,7 @@ export interface ContainerFilters {
   salidaHasta?: string;
   llegadaDesde?: string;
   llegadaHasta?: string;
+  tab?: 'active' | 'completed';
 }
 
 export interface SyncChange {
@@ -66,6 +67,10 @@ export class ContainerService {
 
     if (filters?.llegadaHasta) {
       params = params.set('llegada_hasta', filters.llegadaHasta);
+    }
+
+    if (filters?.tab) {
+      params = params.set('tab', filters.tab);
     }
 
     return this.http.get<PaginatedResponse<Container>>(this.apiUrl, { params });
@@ -138,6 +143,15 @@ export class ContainerService {
 
   getVesselInfo(id: number): Observable<ApiResponse<VesselInfo>> {
     return this.http.get<ApiResponse<VesselInfo>>(`${this.apiUrl}/${id}/vessel-info`);
+  }
+
+  /**
+   * Marcar el contenedor como Entregado (admin). Setea la barra a 100% y pasa
+   * todas las órdenes asociadas (no canceladas) a Entregada. Solo permitido si
+   * el contenedor ya arribó a destino (progreso >= 85).
+   */
+  markAsDelivered(id: number): Observable<ApiResponse<{ id: number; delivered_at: string; orders_updated: number; calculated_transit_percentage: number }>> {
+    return this.http.post<ApiResponse<{ id: number; delivered_at: string; orders_updated: number; calculated_transit_percentage: number }>>(`${this.apiUrl}/${id}/deliver`, {});
   }
 
   // ==========================================

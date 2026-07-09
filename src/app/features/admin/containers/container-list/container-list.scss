@@ -4,15 +4,16 @@
 @use '../../../../../assets/styles/variables' as *;
 
 .container-list-page {
-  // Stats: flex en una sola fila con gap de 35px
+  // Stats: flex en una sola fila con gap parejo (aplica a cualquier cantidad de cards)
   .row.g-4 {
     display: flex;
     flex-wrap: nowrap;
-    gap: 35px;
+    gap: 24px;
     margin: 0;
 
-    .col-md-4 {
-      flex: 1;
+    > [class*="col-"] {
+      flex: 1 1 0;
+      min-width: 0;
       padding: 0;
       max-width: none;
       width: auto;
@@ -289,5 +290,48 @@
 
   &:active {
     transform: scale(0.95);
+  }
+}
+
+// ==========================================
+// TABS DE ESTADO (En progreso / Completados)
+// ==========================================
+.status-tabs {
+  display: inline-flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background-color: #f1f3f5;
+  border-radius: 10px;
+
+  .status-tab {
+    border: none;
+    background: transparent;
+    padding: 0.45rem 1.1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6c757d;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      color: #212529;
+    }
+
+    &.active {
+      background-color: #fff;
+      color: #02661E;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  @media (max-width: 575.98px) {
+    display: flex;
+    width: 100%;
+
+    .status-tab {
+      flex: 1;
+      text-align: center;
+    }
   }
 }

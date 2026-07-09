@@ -59,13 +59,22 @@ export class ContainerList implements OnInit {
   totalClients = signal<number>(0);
   activeOrders = signal<number>(0);
   totalContainers = signal<number>(0);
+  activeContainers = signal<number>(0);
+  completedContainers = signal<number>(0);
+
+  // Tab de estado: en progreso (no entregados) vs completados (entregados)
+  activeTab = signal<'active' | 'completed'>('active');
+  tabs: { value: 'active' | 'completed'; label: string }[] = [
+    { value: 'active', label: 'En progreso' },
+    { value: 'completed', label: 'Completados' },
+  ];
 
   // Configuración de columnas
   columns: TableColumn[] = [
     { key: 'container_number', label: 'Nro. de Contenedor', type: 'text' },
     { key: 'shipment_reference', label: 'Ref. de Envío', type: 'text' },
     {
-      key: 'status',
+      key: 'display_status',
       label: 'Estado',
       type: 'badge',
       badgeConfig: {
@@ -76,11 +85,12 @@ export class ContainerList implements OnInit {
           'LOADED': 'warning',         // Amarillo - Cargado
           'SAILING': 'primary',        // Azul - Navegando
           'ARRIVED': 'success',        // Verde - Arribado
-          'DISCHARGED': 'success',     // Verde - Descargado
+          'DISCHARGED': 'warning',     // Ámbar - Descargando
+          'DELIVERED': 'success',      // Verde - Entregado (marca manual)
           'UNTRACKED': 'danger',       // Rojo - Sin Rastreo
           'CANCELLED': 'secondary'     // Gris - Cancelado
         },
-        labelMap: ContainerStatusLabels as Record<string, string>
+        labelMap: { ...ContainerStatusLabels, DELIVERED: 'Entregado' } as Record<string, string>
       }
     },
     {
@@ -146,6 +156,8 @@ export class ContainerList implements OnInit {
         this.totalClients.set(response.data.total_clients);
         this.activeOrders.set(response.data.active_orders);
         this.totalContainers.set(response.data.total_containers);
+        this.activeContainers.set(response.data.active_containers ?? 0);
+        this.completedContainers.set(response.data.completed_containers ?? 0);
       },
       error: (error) => {
         console.error('Error cargando estadísticas:', error);
@@ -156,14 +168,19 @@ export class ContainerList implements OnInit {
   loadContainers(page: number = 1, search?: string) {
     this.loading.set(true);
 
-    const filters = search ? { search } : undefined;
+    const filters: any = { tab: this.activeTab() };
+    const term = search ?? this.currentSearch();
+    if (term) filters.search = term;
 
     this.containerService.getContainers(page, filters).subscribe({
       next: (response) => {
         const paginationData = response.data as any;
         const containers = (paginationData.data || []).map((c: any) => ({
           ...c,
-          origin_port_date: c.date_of_loading || c.created_at_shipsgo || null
+          origin_port_date: c.date_of_loading || c.created_at_shipsgo || null,
+          // Estado a mostrar en la grilla: si fue marcado entregado, "Entregado";
+          // si no, el status real de ShipsGo.
+          display_status: c.delivered_at ? 'DELIVERED' : c.status
         }));
 
         this.containers.set(containers);
@@ -183,6 +200,12 @@ export class ContainerList implements OnInit {
   onSearch(searchTerm: string) {
     this.currentSearch.set(searchTerm);
     this.loadContainers(1, searchTerm);
+  }
+
+  onTabChange(tab: 'active' | 'completed') {
+    if (this.activeTab() === tab) return;
+    this.activeTab.set(tab);
+    this.loadContainers(1);
   }
 
   onAddContainer() {
@@ -265,6 +288,13 @@ export class ContainerList implements OnInit {
     sessionStorage.removeItem(CONTAINER_AUTO_OPEN_KEY);
   }
 
+  // El contenedor se marcó como entregado desde el modal → refrescar grilla y stats
+  // para ver el nuevo estado sin recargar la página (F5).
+  onContainerDelivered() {
+    this.loadContainers(this.currentPage(), this.currentSearch());
+    this.loadStats();
+  }
+
   onContainerSaved(container: Container) {
     this.loadContainers(this.currentPage(), this.currentSearch());
   }
@@ -282,13 +312,15 @@ export class ContainerList implements OnInit {
       'LOADED': 'warning',
       'SAILING': 'primary',
       'ARRIVED': 'success',
-      'DISCHARGED': 'success',
+      'DISCHARGED': 'warning',      // Ámbar - Descargando
+      'DELIVERED': 'success',       // Verde - Entregado (marca manual)
       'UNTRACKED': 'danger'
     };
     return colorMap[status] || 'secondary';
   }
 
   getStatusLabel(status: string): string {
+    if (status === 'DELIVERED') return 'Entregado';
     return ContainerStatusLabels[status as keyof typeof ContainerStatusLabels] || status;
   }
 

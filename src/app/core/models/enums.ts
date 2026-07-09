@@ -122,7 +122,7 @@ export const ContainerStatusLabels: Record<ContainerStatus, string> = {
   [ContainerStatus.LOADED]: 'Cargado',
   [ContainerStatus.SAILING]: 'Navegando',
   [ContainerStatus.ARRIVED]: 'Arribado',
-  [ContainerStatus.DISCHARGED]: 'Descargado',
+  [ContainerStatus.DISCHARGED]: 'Descargando',
   [ContainerStatus.UNTRACKED]: 'Sin Seguimiento',
   [ContainerStatus.CANCELLED]: 'Cancelado',
 };
@@ -134,7 +134,7 @@ export const ContainerStatusColors: Record<ContainerStatus, string> = {
   [ContainerStatus.LOADED]: 'orange',
   [ContainerStatus.SAILING]: 'navy',
   [ContainerStatus.ARRIVED]: 'warning',
-  [ContainerStatus.DISCHARGED]: 'success',
+  [ContainerStatus.DISCHARGED]: 'warning',
   [ContainerStatus.UNTRACKED]: 'danger',
   [ContainerStatus.CANCELLED]: 'dark',
 };

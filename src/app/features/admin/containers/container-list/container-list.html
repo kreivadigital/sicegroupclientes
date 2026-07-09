@@ -1,7 +1,7 @@
 <div class="container-list-page">
   <!-- Stats Section -->
   <div class="row g-4 mb-4">
-    <div class="col-md-4 mt-0">
+    <div class="col-md-3 col-sm-6 mt-0">
       <app-stat-card
         title="Total de Clientes"
         [value]="totalClients()"
@@ -9,7 +9,7 @@
         iconColor="#155DFC">
       </app-stat-card>
     </div>
-    <div class="col-md-4 mt-0">
+    <div class="col-md-3 col-sm-6 mt-0">
       <app-stat-card
         title="Pedidos Activos"
         [value]="activeOrders()"
@@ -17,18 +17,39 @@
         iconColor="#02661E">
       </app-stat-card>
     </div>
-    <div class="col-md-4 mt-0">
+    <div class="col-md-3 col-sm-6 mt-0">
       <app-stat-card
-        title="Contenedores"
-        [value]="totalContainers()"
+        title="Contenedores activos"
+        [value]="activeContainers()"
         icon="bi-box"
         iconColor="#9810FA">
       </app-stat-card>
     </div>
+    <div class="col-md-3 col-sm-6 mt-0">
+      <app-stat-card
+        title="Contenedores completados"
+        [value]="completedContainers()"
+        icon="bi-check2-circle"
+        iconColor="#02661E">
+      </app-stat-card>
+    </div>
   </div>
 
-  <!-- Toolbar: Search + Buttons -->
+  <!-- Toolbar: Tabs + Search + Buttons -->
   <div class="page-toolbar mb-4">
+    <!-- Tabs de estado: En progreso / Completados -->
+    <div class="status-tabs mb-3">
+      @for (t of tabs; track t.value) {
+        <button
+          type="button"
+          class="status-tab"
+          [class.active]="activeTab() === t.value"
+          (click)="onTabChange(t.value)">
+          {{ t.label }}
+        </button>
+      }
+    </div>
+
     <div class="d-flex justify-content-between align-items-center gap-3">
       <div class="flex-grow-1" style="max-width: 300px;">
         <app-search-bar
@@ -88,8 +109,8 @@
         <!-- Header: Contenedor y Status -->
         <div class="card-header">
           <span class="container-number">Contenedor {{ container.container_number }}</span>
-          <span [class]="'badge bg-' + getStatusColor(container.status)">
-            {{ getStatusLabel(container.status) }}
+          <span [class]="'badge bg-' + getStatusColor(container.display_status || container.status)">
+            {{ getStatusLabel(container.display_status || container.status) }}
           </span>
         </div>
 
@@ -175,6 +196,7 @@
     <app-container-tracking-modal
       [containerId]="selectedContainerId()!"
       [showAddNotification]="true"
+      (delivered)="onContainerDelivered()"
       (close)="onTrackingModalClose()">
     </app-container-tracking-modal>
   }

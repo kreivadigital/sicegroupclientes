@@ -42,6 +42,13 @@ export interface Container {
   // Tracking
   map_token?: string;
 
+  // Entrega manual (marcada por admin, independiente de ShipsGo)
+  delivered_at?: string | null;
+  delivered_by?: number | null;
+
+  // Estado derivado para la grilla (DELIVERED si entregado, sino el status real)
+  display_status?: string;
+
   // Relaciones
   updated_by: number;
   creator?: {
